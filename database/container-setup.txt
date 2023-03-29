@@ -1,0 +1,13 @@
+
+#podman setup
+podman machine init
+podman machine start
+
+#pull container image
+podman pull docker.io/library/postgres
+
+#create container
+podman run --name db-fox -e POSTGRES_PASSWORD=123456 -p 5432:5432 -d postgres
+
+#start container
+podman start db-fox
