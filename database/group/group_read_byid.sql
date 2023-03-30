@@ -1,0 +1,5 @@
+CREATE OR REPLACE PROCEDURE  fox_group_read_byid_V1(_id uuid)
+LANGUAGE SQL
+BEGIN ATOMIC
+	SELECT name FROM Group WHERE id = _id
+END

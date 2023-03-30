@@ -20,10 +20,10 @@ create table if not exists User
 (
 	id uuid default gen_random_uuid() not null,
 	email varchar(255) not null,
-	login varchar(64) not null,
+	login varchar(63) not null,
 	password bytea not null,
 	salt bytea not null,
-	hash_method smallint not null,
+	hashMethod smallint not null,
 	name varchar(255) not null,
 
 	CONSTRAINT PK_USER PRIMARY KEY(id),
@@ -63,7 +63,7 @@ create table if not exists DocumentMetadata
 	id int GENERATED ALWAYS AS IDENTITY not null,
 	documentId uuid not null,
 	key varchar(255),
-	value varchar(1024),
+	value varchar(1023),
 
 	CONSTRAINT PK_DOCUMENTMETADA PRIMARY KEY(id),
 	CONSTRAINT FK_DOCUMENTMETADATA_DOCUMENT FOREIGN KEY (documentId) REFERENCES Document(id)
@@ -82,7 +82,7 @@ create table if not exists DocumentPermission
 /*
 
 TODO: Define indexes
-TODO: Write stored procedures that will be needed
+TODO: Write stored procedures regarding Document management and System permissions
 
 Implement a simple document storage api
 ● User must be able to log in
