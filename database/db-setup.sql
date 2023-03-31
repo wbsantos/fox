@@ -45,11 +45,13 @@ create table if not exists UserGroup
 create table if not exists SystemPermission
 (
 	id int GENERATED ALWAYS AS IDENTITY not null,
+	stampId int not null,
 	holderId uuid not null,
 	permission varchar(255) not null,
 
 	CONSTRAINT PK_SYSTEMPERMISSION PRIMARY KEY(id),
-	CONSTRAINT FK_USERGROUP_HOLDER FOREIGN KEY (holderId) REFERENCES Holder(id)
+	CONSTRAINT FK_SYSTEMPERMISSION_HOLDER FOREIGN KEY (holderId) REFERENCES Holder(id),
+	CONSTRAINT FK_SYSTEMPERMISSION_STAMP FOREIGN KEY (stampId) REFERENCES Stamp(id)	
 )
 
 create table if not exists Stamp
