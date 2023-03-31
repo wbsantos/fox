@@ -89,6 +89,7 @@ create table if not exists DocumentMetadata
 create table if not exists DocumentPermission
 (
 	id int GENERATED ALWAYS AS IDENTITY not null,
+	stampId int not null,
 	holderId uuid not null, 
 	documentId uuid not null,
 	permission varchar(255) not null,
@@ -96,12 +97,13 @@ create table if not exists DocumentPermission
 	CONSTRAINT PK_DOCUMENTPERMISSION PRIMARY KEY(id),
 	CONSTRAINT FK_DOCUMENTPERMISSION_HOLDER FOREIGN KEY (holderId) REFERENCES Holder(id),
 	CONSTRAINT FK_DOCUMENTPERMISSION_DOCUMENT FOREIGN KEY (documentId) REFERENCES Document(id),
+	CONSTRAINT FK_DOCUMENTPERMISSION_STAMP FOREIGN KEY (stampId) REFERENCES Stamp(id)
 )
 
 /*
 
 TODO: Define indexes
-TODO: Write stored procedures regarding Document management and System permissions
+TODO: Write stored procedures regarding System permissions
 
 Implement a simple document storage api
 ● User must be able to log in
