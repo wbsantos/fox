@@ -6,13 +6,12 @@ using System.Text;
 using API.Fox.AppBuilder;
 using API.Fox.Settings;
 
-//TODO: Fix authentiation
 //TODO: better organize the URL mapping using the modules folder
 
 var builder = WebApplication.CreateBuilder(args);
-var (corpInfo, appInfo) = builder.AddFoxConfig();
-builder.AddFoxSwagger(corpInfo, appInfo);
-builder.AddFoxAuth();
+var (corpInfo, appInfo, security) = builder.AddAppConfig();
+builder.AddAppSwagger(corpInfo, appInfo);
+builder.AddAppAuth(security);
 
 var app = builder.Build();
 app.MapPost("/security/token/create", [AllowAnonymous] (UserAuth user) =>

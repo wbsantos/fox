@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using API.Fox.Settings;
 
 namespace API.Fox.AppBuilder;
 
 internal static class Auth
 {
-    internal static WebApplicationBuilder AddFoxAuth(this WebApplicationBuilder builder)
+    internal static WebApplicationBuilder AddAppAuth(this WebApplicationBuilder builder, Security security)
     {
-        //TODO the data below should be loaded from config files or environment variables
         builder.Services.AddAuthentication(o => {
             o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -16,9 +16,9 @@ internal static class Auth
         }).AddJwtBearer(o => {
             o.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidIssuer = "fox.app",
-                ValidAudience = "fox.app",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("wbsantosabcdefghijklmnopq")),
+                ValidIssuers = security.TokenIssuers,
+                ValidAudiences = security.TokenAudiences,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(security.SymetricKey)),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,
@@ -27,8 +27,7 @@ internal static class Auth
         });
         
         builder.Services.AddAuthorization();
-        builder.Services.AddEndpointsApiExplorer();
-
+        
         return builder;
     }
 }

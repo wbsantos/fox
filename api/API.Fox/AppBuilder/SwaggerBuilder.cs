@@ -5,7 +5,7 @@ namespace API.Fox.AppBuilder;
 
 internal static class Swagger
 {
-    internal static WebApplicationBuilder AddFoxSwagger(this WebApplicationBuilder builder, CorporateInfo corporateInfo, AppInfo appInfo)
+    internal static WebApplicationBuilder AddAppSwagger(this WebApplicationBuilder builder, CorporateInfo corporateInfo, AppInfo appInfo)
     {
         var securityScheme = new OpenApiSecurityScheme()
         {
@@ -63,7 +63,7 @@ internal static class Swagger
             o.AddSecurityRequirement(securityRequirement);
         });
 
-
+        builder.Services.AddEndpointsApiExplorer();
         return builder;
     }
 }
