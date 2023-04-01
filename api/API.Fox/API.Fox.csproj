@@ -13,5 +13,14 @@
 
   <ItemGroup>
     <None Remove="AuthBuilder\" />
+    <None Remove="Modules\Login\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\Login\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>
