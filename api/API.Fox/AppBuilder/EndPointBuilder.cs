@@ -1,4 +1,5 @@
 ﻿using System;
+using API.Fox.Modules;
 using API.Fox.Settings;
 using API.Fox.EndPoint;
 
@@ -8,33 +9,35 @@ public static class EndPointBuilder
 {
     internal static WebApplication MapAppEndPoints(this WebApplication app)
     {
-        Type endpointInterface = typeof(IEndPoint);
+        Type endpointInterface = typeof(IEndPointAnonymous);
 
         IEnumerable<Type> endPointsImplementation =
-                AppDomain.CurrentDomain.GetAssemblies()
+                ModuleReferences.GetAssemblies()
                          .SelectMany(a => a.GetTypes())
                          .Where(c => endpointInterface.IsAssignableFrom(c)
                                      && c.GetConstructor(Type.EmptyTypes) != null);
 
         foreach (var implementation in endPointsImplementation)
         {
-            IEndPoint? implementationInstance = Activator.CreateInstance(implementation) as IEndPoint;
-            
+            IEndPointAnonymous? implementationInstance = Activator.CreateInstance(implementation) as IEndPointAnonymous;
+            RouteHandlerBuilder? handler = null;
             switch (implementationInstance?.Verb)
             {
                 case EndPoint.EndPointVerb.GET:
-                    app.MapGet(implementationInstance.UrlPattern, implementationInstance.Method);
+                    handler = app.MapGet(implementationInstance.UrlPattern, implementationInstance.Method);
                     break;
                 case EndPoint.EndPointVerb.POST:
-                    app.MapPost(implementationInstance.UrlPattern, implementationInstance.Method);
+                    handler = app.MapPost(implementationInstance.UrlPattern, implementationInstance.Method);
                     break;
                 case EndPoint.EndPointVerb.PUT:
-                    app.MapPut(implementationInstance.UrlPattern, implementationInstance.Method);
+                    handler = app.MapPut(implementationInstance.UrlPattern, implementationInstance.Method);
                     break;
                 case EndPoint.EndPointVerb.DELETE:
-                    app.MapDelete(implementationInstance.UrlPattern, implementationInstance.Method);
+                    handler = app.MapDelete(implementationInstance.UrlPattern, implementationInstance.Method);
                     break;
             }
+            if(handler != null && implementationInstance is IEndPoint endPointAuthorize)
+                handler.RequireAuthorization(endPointAuthorize.PermissionClaim);
         }
         return app;
 	}

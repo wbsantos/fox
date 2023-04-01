@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fox.Access", "Fox.Access\Fo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Fox.EndPoint", "API.Fox.EndPoint\API.Fox.EndPoint.csproj", "{20BE029B-1654-4DAB-AFAA-FC35244A01A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DB.Fox", "DB.Fox\DB.Fox.csproj", "{D3126485-31CC-40A3-9BD6-F401EFB36E89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{20BE029B-1654-4DAB-AFAA-FC35244A01A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20BE029B-1654-4DAB-AFAA-FC35244A01A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20BE029B-1654-4DAB-AFAA-FC35244A01A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3126485-31CC-40A3-9BD6-F401EFB36E89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3126485-31CC-40A3-9BD6-F401EFB36E89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3126485-31CC-40A3-9BD6-F401EFB36E89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3126485-31CC-40A3-9BD6-F401EFB36E89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

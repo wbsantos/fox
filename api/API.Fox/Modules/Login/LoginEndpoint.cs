@@ -5,19 +5,20 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Fox.Access.Repository;
 using API.Fox.EndPoint;
 
 namespace API.Fox.Modules.Login;
 
-public class LoginEndpoint : IEndPoint
+public class LoginEndpoint : IEndPointAnonymous
 {
     public string UrlPattern => "/security/token/create";
     public EndPointVerb Verb => EndPointVerb.POST;
-
+    
     public Delegate Method =>
-        [AllowAnonymous] (UserAuth user, Security security) =>
+        [AllowAnonymous] (UserAuth user, UserRepository userRepo, Security security) =>
     {
-        //TODO the validation should be done against a database
+        //TODO: the validation should be done against a database
         if (!(user.UserName == "admin" && user.Password == "123456" && user.GrandType == "password"))
             return Results.Unauthorized();
 
@@ -31,11 +32,11 @@ public class LoginEndpoint : IEndPoint
         {
             Subject = new ClaimsIdentity(new[]
             {
-            new Claim("Id", "1"),
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Email, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        }),
+                new Claim("Id", "1"),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            }),
             Expires = DateTime.UtcNow.AddMinutes(15),
             Audience = audience,
             Issuer = issuer,

@@ -1,11 +1,16 @@
 ﻿using System;
 namespace API.Fox.EndPoint;
 
-public interface IEndPoint
+public interface IEndPointAnonymous
 {
     public string UrlPattern { get; }
     public EndPointVerb Verb { get; }
     public Delegate Method { get; }
+}
+
+public interface IEndPoint
+{
+    public string PermissionClaim { get; }
 }
 
 public enum EndPointVerb

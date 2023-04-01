@@ -6,10 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 var (corpInfo, appInfo, security) = builder.AddAppConfig();
 builder.AddAppSwagger(corpInfo, appInfo);
 builder.AddAppAuth(security);
+builder.AddAppRepositories();
 
 var app = builder.Build();
 app.MapAppEndPoints();
-app.MapGet("/", [AllowAnonymous] () => "Hello World!");
+app.MapGet("/", () => "Hello World!");
 app.MapGet("/hello/get", [Authorize] () => "Hello World with Authorization!");
 
 app.UseSwagger();

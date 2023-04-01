@@ -9,9 +9,13 @@
   <ItemGroup>
     <None Remove="Hash\" />
     <None Remove="Hash\HashSHA512S12P12.json" />
+    <None Remove="Model\" />
+    <None Remove="Repository\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Hash\" />
+    <Folder Include="Model\" />
+    <Folder Include="Repository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Hash\HashSHA512S12P12.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">
@@ -19,5 +23,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DB.Fox\DB.Fox.csproj" />
   </ItemGroup>
 </Project>
