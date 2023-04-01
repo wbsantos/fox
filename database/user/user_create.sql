@@ -1,16 +1,19 @@
-CREATE OR REPLACE PROCEDURE  fox_user_create_V1 (
+CREATE OR REPLACE FUNCTION fox_user_create_V1 (
 			_email varchar(255),
 			_login varchar(63),
 			_password bytea,
 			_salt bytea,
 			_hashMethod smallint,
 			_name varchar(255))
-LANGUAGE SQL
-BEGIN ATOMIC
-	DECLARE _holderId uuid
-	INSERT INTO Holder DEFAULT VALUES RETURNING id into _holderId
+RETURNS UUID
+LANGUAGE plpgsql AS
+$$
+DECLARE _holderid uuid;
+BEGIN
+	
+	INSERT INTO Holder DEFAULT VALUES RETURNING id into _holderId;
 
-    INSERT INTO User
+    INSERT INTO UserAccount
 	(
 		id,
 		email,
@@ -29,6 +32,8 @@ BEGIN ATOMIC
 		_salt,
 		_hashMethod,
 		_name
-    )
-
+    );
+   
+   RETURN _holderId;
 END
+$$;
