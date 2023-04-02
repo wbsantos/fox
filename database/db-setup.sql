@@ -114,6 +114,10 @@ create table if not exists DocumentPermission
 	CONSTRAINT FK_DOCUMENTPERMISSION_STAMP FOREIGN KEY (stampId) REFERENCES Stamp(id)
 )
 
+
+--CREATING INDEXES
+CREATE UNIQUE INDEX UN_USERACCOUNT_01 ON UserAccount(login);
+
 /*
 TODO: Define indexes
 */

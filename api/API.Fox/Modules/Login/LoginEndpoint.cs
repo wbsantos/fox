@@ -14,7 +14,7 @@ namespace API.Fox.Modules.Login;
 
 public class LoginEndpoint : IEndPointAnonymous
 {
-    public string UrlPattern => "/security/token/create";
+    public string UrlPattern => "/security/token";
     public EndPointVerb Verb => EndPointVerb.POST;
     
     public Delegate Method => (UserAuth user, UserRepository userRepo, Security security) =>
@@ -51,7 +51,8 @@ public class LoginEndpoint : IEndPointAnonymous
 
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = jwtTokenHandler.WriteToken(token);
-        return Results.Ok(jwtToken);
+        return Results.Ok(new { token = jwtToken } );
     }; 
 }
 
+record UserAuth(string UserName, string Password, string GrandType);

@@ -8,7 +8,7 @@ public interface IEndPointAnonymous
     public Delegate Method { get; }
 }
 
-public interface IEndPoint
+public interface IEndPoint : IEndPointAnonymous
 {
     public string PermissionClaim { get; }
 }
