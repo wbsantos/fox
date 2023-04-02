@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE  fox_system_addpermission_V1 (
+CREATE OR REPLACE PROCEDURE  fox_system_addpermission_v1 (
 			_stampId int,
 			_holderId uuid,
 			_permission varchar(255)

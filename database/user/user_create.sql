@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION fox_user_create_V1 (
+CREATE OR REPLACE FUNCTION fox_user_create_v1 (
 			_email varchar(255),
 			_login varchar(63),
 			_password bytea,

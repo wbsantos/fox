@@ -23,7 +23,14 @@ public class DBConnection
 								 commandType: CommandType.Text);
     }
 
-	private string BuildProcedureSQL(string procedureName, object parameters)
+    public T ProcedureFirst<T>(string procedureName, object parameters)
+    {
+        return Instance.QueryFirst<T>(BuildProcedureSQL(procedureName, parameters),
+									  param: parameters,
+									  commandType: CommandType.Text);
+    }
+
+    private string BuildProcedureSQL(string procedureName, object parameters)
 	{
 		return $"SELECT {procedureName}({GetParametersNames(parameters)})";
     }

@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE  fox_user_delete_V1(_id uuid)
+CREATE OR REPLACE PROCEDURE  fox_user_delete_v1(_id uuid)
 LANGUAGE plpgsql AS
 $$
 BEGIN

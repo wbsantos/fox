@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE  fox_user_update_password_V1(
+CREATE OR REPLACE PROCEDURE  fox_user_update_password_v1(
 			_id uuid,
 			_password bytea,
 			_salt bytea,

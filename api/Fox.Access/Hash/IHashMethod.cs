@@ -1,9 +1,13 @@
-namespace API.Login.Fox;
+using Fox.Access.Model;
+
+namespace Fox.Access.Hash;
 
 internal interface IHashMethod
 {
+    HashMethod HashMethod { get; }
     byte[] ComputeHash(string password);
-    Dictionary<string, object> GetSecondaryParameters();
+    UserSecret GetSecret();
+    bool IsSameHash(byte[] a, byte[] b);
 }
 
 internal enum HashMethod

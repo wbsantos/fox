@@ -1,45 +1,40 @@
-namespace API.Login.Fox;
+using Fox.Access.Model;
+using System.Text.Json;
+
+namespace Fox.Access.Hash;
 
 
 internal static class HashMethodFactory
 {
     internal const HashMethod HASH_METHOD_DEFAULT = HashMethod.SHA512_S12_P12;
-    internal const string HASH_METHOD_KEY = "HASH_METHOD";
 
     internal static IHashMethod Create()
     {
-        var serverParameters = GetServerParameters(HASH_METHOD_DEFAULT.ToString());
-        return Create(HASH_METHOD_DEFAULT, serverParameters, null);
-    }
-
-    internal static IHashMethod Create(string userId)
-    {
-        var userParameters = GetUserParameters(userId);
-        HashMethod hashMethod = (HashMethod)userParameters[HASH_METHOD_KEY];
+        HashMethod hashMethod = HashMethod.SHA512_S12_P12; //Default hash method for new users
         var serverParameters = GetServerParameters(hashMethod.ToString());
-        return Create(hashMethod, serverParameters, userParameters); 
+        return Create(hashMethod, serverParameters, null);
     }
 
-    private static IHashMethod Create(HashMethod hashMethod, Dictionary<string, object> serverParameters, Dictionary<string, object>? userParameters)
+    internal static IHashMethod Create(UserSecret userSecret)
+    {
+        HashMethod hashMethod = userSecret.HashMethod;
+        var serverParameters = GetServerParameters(hashMethod.ToString());
+        return Create(hashMethod, serverParameters, userSecret); 
+    }
+
+    private static IHashMethod Create(HashMethod hashMethod,
+                                      ServerSettings serverParameters,
+                                      UserSecret? userSecret)
     {
         if(hashMethod == HashMethod.SHA512_S12_P12)
-        {
-            var sha = new HashSHA512S12P12(serverParameters, userParameters);
-            return sha;
-        }
+            return new HashSHA512S12P12(serverParameters, userSecret);
         else
             throw new NotImplementedException($"The hash method '{hashMethod}' is not implemented");
     }
 
-    internal static Dictionary<string, object> GetUserParameters(string userId)
+    internal static ServerSettings GetServerParameters(string hashMethod)
     {
-        //TODO throw excpetion if the user doesn't exist
-        throw new NotImplementedException();
-    }
-
-    internal static Dictionary<string, object> GetServerParameters(string hashMethod)
-    {
-        //throw exception if the config file doesn't exist
-        throw new NotImplementedException();
+        string json = File.ReadAllText($"Hash\\{hashMethod}.json");
+        return JsonSerializer.Deserialize<ServerSettings>(json) ?? new ServerSettings();
     }
 }

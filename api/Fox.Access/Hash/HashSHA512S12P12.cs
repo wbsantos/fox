@@ -1,20 +1,25 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
+using Fox.Access.Model;
 
-namespace API.Login.Fox;
+namespace Fox.Access.Hash;
 
 internal class HashSHA512S12P12 : IHashMethod
 {
-    private const byte SALT_SIZE = 12;
+    public HashMethod HashMethod => HashMethod.SHA512_S12_P12;
 
+    private const byte SALT_SIZE = 12;
     private byte[] Pepper { get; set; }
     private byte[] Salt { get; set; }
+    private byte[] LastComputedHash { get; set; } = Array.Empty<byte>();
 
-    internal HashSHA512S12P12(Dictionary<string, object> serverParameters, Dictionary<string, object>? userParameters)
+    internal HashSHA512S12P12(ServerSettings serverParameters,
+                              UserSecret? userSecret)
     {
-        Pepper = (byte[])serverParameters[nameof(Pepper)];
-        if(userParameters?.ContainsKey(nameof(Salt)) ?? false)
-            Salt = (byte[])userParameters[nameof(Salt)];
+        Pepper = Encoding.UTF8.GetBytes(serverParameters.Pepper);
+        if (userSecret != null)
+            Salt = userSecret.Salt;
         else
             Salt = CreateSalt(SALT_SIZE);
     }
@@ -25,15 +30,20 @@ internal class HashSHA512S12P12 : IHashMethod
         var passwordWithSeason = Salt.Concat(passwordBytes).Concat(Pepper).ToArray();
         using(var sha = SHA512.Create())
         {
-            return sha.ComputeHash(passwordWithSeason);
+            return LastComputedHash = sha.ComputeHash(passwordWithSeason);
         }
     }
  
-    public Dictionary<string, object> GetSecondaryParameters()
+    public UserSecret GetSecret()
     {
-        var dict = new Dictionary<string, object>();
-        dict.Add(nameof(Salt), Salt);
-        return dict;
+        if (LastComputedHash.Length == 0)
+            throw new Exception("No hash was computed before trying to build user secret");
+        return new UserSecret()
+        {
+            Password = LastComputedHash,
+            Salt = Salt,
+            HashMethod = HashMethod
+        };
     }
 
     internal byte[] CreateSalt(byte saltSize)
@@ -46,4 +56,8 @@ internal class HashSHA512S12P12 : IHashMethod
         return salt;
     }
 
+    public bool IsSameHash(byte[] a, byte[] b)
+    {
+        return a.SequenceEqual(b);
+    }
 }

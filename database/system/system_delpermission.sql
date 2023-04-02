@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE  fox_system_delpermission_V1 (
+CREATE OR REPLACE PROCEDURE  fox_system_delpermission_v1 (
 			_holderId uuid,
 			_permission varchar(255)
 )

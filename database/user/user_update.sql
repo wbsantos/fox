@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE  fox_user_update_V1(
+CREATE OR REPLACE PROCEDURE  fox_user_update_v1(
 			_id uuid,
 			_email varchar(255),
 			_login varchar(63),

@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION  fox_stamp_create_V1 (
+CREATE OR REPLACE FUNCTION  fox_stamp_create_v1 (
 			_userId uuid,
 			_systemVersion varchar(255)
 ) RETURNS INTEGER 
