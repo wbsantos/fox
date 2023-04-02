@@ -37,7 +37,9 @@ internal static class RepositoryBuilder
     public static void CreateAdminUser(Security security, DB.Fox.DBSettings dbSettings, AppInfo appInfo)
     {
         DB.Fox.DBConnection dbConnection = new DB.Fox.DBConnection(dbSettings);
-        UserRepository userRepo = new UserRepository(dbConnection);
+        StampRepository stampRepo = new StampRepository(dbConnection, appInfo, new LoggedUser());
+        PermissionRepository permissionRepo = new PermissionRepository(dbConnection, stampRepo);
+        UserRepository userRepo = new UserRepository(dbConnection, permissionRepo);
 
         User? user = userRepo.GetUser(security.AdminUserLogin);
         if(user == null) //user doesn't exist
@@ -48,11 +50,7 @@ internal static class RepositoryBuilder
                 Name = security.AdminUserName,
                 Email = security.AdminUserEmail
             };
-            user = userRepo.CreateUser(user, security.AdminUserPassword);
-
-            StampRepository stampRepo = new StampRepository(dbConnection, appInfo);
-            PermissionRepository permissionRepo = new PermissionRepository(dbConnection, stampRepo);
-            permissionRepo.AddPermission(user.Id, user.Id, "admin");
+            user = userRepo.CreateAdminUser(user, security.AdminUserPassword);
         }
     }
 }

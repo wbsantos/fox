@@ -3,18 +3,21 @@ using API.Fox.EndPoint;
 using Fox.Access.Model;
 using Fox.Access.Repository;
 
-namespace API.Fox.Modules.UserManagement;
+namespace API.Fox.Modules.UserSelfManagement;
 
-public class UserUpdatePasswordEndPoint : IEndPoint
+public class UserUpdateEndPoint : IEndPoint
 {
-    public string PermissionClaim => "USER_UPDATE_MANAGEMENT";
-    public string UrlPattern => "/management/user/password";
+    public string PermissionClaim => "USER_SELF_MANAGEMENT";
+    public string UrlPattern => "/selfmanagement/user";
     public EndPointVerb Verb => EndPointVerb.PUT;
-    public Delegate Method => (UserAuth user, UserRepository userRepo) =>
+    public Delegate Method => (User user, LoggedUser loggedUser, UserRepository userRepo) =>
     {
         try
         {
-            userRepo.UpdatePassword(user.Id, user.Password);
+            if (user.Id != loggedUser.Id)
+                return Results.Forbid();
+
+            userRepo.UpdateUser(user);
             return Results.Ok();
         }
         catch(ArgumentException argumentNull)
@@ -28,4 +31,3 @@ public class UserUpdatePasswordEndPoint : IEndPoint
     };
 }
 
-record UserAuth(Guid Id, string Password);

@@ -15,6 +15,7 @@
     <None Remove="AuthBuilder\" />
     <None Remove="Modules\Login\" />
     <None Remove="Modules\User\" />
+    <None Remove="Modules\UserSelfManagement\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
@@ -30,5 +31,6 @@
   <ItemGroup>
     <Folder Include="Modules\Login\" />
     <Folder Include="Modules\UserManagement\" />
+    <Folder Include="Modules\UserSelfManagement\" />
   </ItemGroup>
 </Project>

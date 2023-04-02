@@ -7,12 +7,9 @@ namespace API.Fox.Modules.UserManagement;
 
 public class UserReadAllEndPoint : IEndPoint
 {
-    public string PermissionClaim => "USER_READ_ALL";
-
+    public string PermissionClaim => "USER_READ_ALL_MANAGEMENT";
     public string UrlPattern => "/management/user/all";
-
     public EndPointVerb Verb => EndPointVerb.GET;
-
     public Delegate Method => (UserRepository userRepo) =>
     {
         try

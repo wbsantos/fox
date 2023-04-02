@@ -7,6 +7,7 @@ using Fox.Access.Hash;
 namespace Fox.Access.Repository;
 public class UserRepository : IRepository
 {
+    private PermissionRepository PermissionRepo { get; set; }
 	private DBConnection DB { get; set; }
     private const string PROC_GETPERMISSIONS = "fox_user_read_permission_v1";
     private const string PROC_GETSECRET = "fox_user_read_secret_v1";
@@ -18,9 +19,10 @@ public class UserRepository : IRepository
     private const string PROC_UPDATEPASSWORD = "fox_user_update_password_v1";
     private const string PROC_DELETEUSER = "fox_user_delete_v1";
 
-    public UserRepository(DBConnection dbConnection)
+    public UserRepository(DBConnection dbConnection, PermissionRepository permissionRepository)
 	{
 		DB = dbConnection;
+        PermissionRepo = permissionRepository;
 	}
 
     public IEnumerable<User> GetAllUsers()
@@ -60,28 +62,47 @@ public class UserRepository : IRepository
 
 	public User CreateUser(User user, string password)
 	{
+        user = CreateUser(user, password, false);
+        return user;
+    }
+
+    public User CreateAdminUser(User user, string password)
+    {
+        user = CreateUser(user, password, true);
+        PermissionRepo.AddPermission(user.Id, user.Id, "admin");
+        return user;
+    }
+
+    private User CreateUser(User user, string password, bool selfCreation)
+    {
         if (string.IsNullOrWhiteSpace(password))
             throw new ArgumentNullException(nameof(password));
         CheckUserFields(user);
-		
-        IHashMethod hashMethod = HashMethodFactory.Create();
-		hashMethod.ComputeHash(password);
-		UserSecret secret = hashMethod.GetSecret();
 
-		var parameters = new {
-			_email = user.Email,
-			_login = user.Login,
-			_password = secret.Password,
-			_salt = secret.Salt,
-			_hashMethod = (int)secret.HashMethod,
-			_name = user.Name
-		};
+        IHashMethod hashMethod = HashMethodFactory.Create();
+        hashMethod.ComputeHash(password);
+        UserSecret secret = hashMethod.GetSecret();
+
+        var parameters = new
+        {
+            _email = user.Email,
+            _login = user.Login,
+            _password = secret.Password,
+            _salt = secret.Salt,
+            _hashMethod = (int)secret.HashMethod,
+            _name = user.Name
+        };
 
         user.Id = DB.ProcedureFirst<Guid>(PROC_CREATEUSER, parameters);
-		return user;
-	}
 
-	public void UpdateUser(User user)
+        if (selfCreation)
+            PermissionRepo.AddPermission(user.Id, user.Id, "USER_SELF_MANAGEMENT");
+        else
+            PermissionRepo.AddPermission(user.Id, "USER_SELF_MANAGEMENT");
+        return user;
+    }
+
+    public void UpdateUser(User user)
 	{
 		CheckUserFields(user);
 

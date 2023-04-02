@@ -4,6 +4,8 @@ using System.Text;
 using API.Fox.Settings;
 using API.Fox.EndPoint;
 using API.Fox.Modules;
+using Fox.Access.Model;
+using System.Linq;
 
 namespace API.Fox.AppBuilder;
 
@@ -37,7 +39,27 @@ internal static class Auth
                                                                 new string[] { policyClaim, "admin" }));
             }
         });
-        
+
+        builder.Services.AddScoped<LoggedUser>(provider =>
+        {
+            var httpContext = provider.GetRequiredService<IHttpContextAccessor>();
+            Func<string, string> getClaim = key => httpContext?.HttpContext
+                                                              ?.User
+                                                              ?.Claims
+                                                              ?.FirstOrDefault(c => c.Type == key)
+                                                              ?.Value ?? string.Empty;
+            LoggedUser user = new LoggedUser();
+            string userId = getClaim(nameof(User.Id));
+            if (string.IsNullOrEmpty(userId))
+                return user;
+            
+            user.Id = new Guid(userId);
+            user.Name = getClaim(nameof(User.Name));
+            user.Login = getClaim(nameof(User.Login));
+            user.Email = getClaim(nameof(User.Email));
+
+            return user;
+        });
         return builder;
     }
 
@@ -55,7 +77,7 @@ internal static class Auth
         foreach (var implementation in endPointsImplementation)
         {
             IEndPoint? implementationInstance = Activator.CreateInstance(implementation) as IEndPoint;
-            if (implementationInstance != null)
+            if (implementationInstance != null && !claims.Contains(implementationInstance.PermissionClaim))
                 claims.Add(implementationInstance.PermissionClaim);
         }
         return claims;

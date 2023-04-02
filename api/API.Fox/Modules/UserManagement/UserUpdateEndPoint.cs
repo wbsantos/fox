@@ -7,12 +7,9 @@ namespace API.Fox.Modules.UserManagement;
 
 public class UserUpdateEndPoint : IEndPoint
 {
-    public string PermissionClaim => "USER_UPDATE";
-
+    public string PermissionClaim => "USER_UPDATE_MANAGEMENT";
     public string UrlPattern => "/management/user";
-
     public EndPointVerb Verb => EndPointVerb.PUT;
-
     public Delegate Method => (User user, UserRepository userRepo) =>
     {
         try

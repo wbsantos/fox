@@ -3,17 +3,20 @@ using API.Fox.EndPoint;
 using Fox.Access.Model;
 using Fox.Access.Repository;
 
-namespace API.Fox.Modules.UserManagement;
+namespace API.Fox.Modules.UserSelfManagement;
 
 public class UserReadEndPoint : IEndPoint
 {
-    public string PermissionClaim => "USER_READ_MANAGEMENT";
-    public string UrlPattern => "/management/user";
+    public string PermissionClaim => "USER_SELF_MANAGEMENT";
+    public string UrlPattern => "/selfmanagement/user";
     public EndPointVerb Verb => EndPointVerb.GET;
-    public Delegate Method => (Guid userId, UserRepository userRepo) =>
+    public Delegate Method => (Guid userId, LoggedUser loggedUser, UserRepository userRepo) =>
     {
         try
         {
+            if (userId != loggedUser.Id)
+                return Results.Forbid();
+
             User? userData = userRepo.GetUser(userId);
             if (userData == null)
                 return Results.NotFound();

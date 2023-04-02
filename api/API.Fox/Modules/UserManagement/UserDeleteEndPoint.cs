@@ -8,12 +8,9 @@ namespace API.Fox.Modules.UserManagement;
 //TODO: Control user access to other users data
 public class UserDeleteEndPoint : IEndPoint
 {
-    public string PermissionClaim => "USER_DELETION";
-
+    public string PermissionClaim => "USER_DELETION_MANAGEMENT";
     public string UrlPattern => "/management/user";
-
     public EndPointVerb Verb => EndPointVerb.DELETE;
-
     public Delegate Method => (Guid userId, UserRepository userRepo) =>
     {
         try

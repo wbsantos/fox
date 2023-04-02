@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security;
 using DB.Fox;
 
 namespace Fox.Access.Repository;
@@ -18,7 +19,19 @@ public class PermissionRepository : IRepository
     public void AddPermission(Guid permissionHolderId, Guid permissionGiverId, string permission)
     {
         int stampId = StampRepo.CreateStamp(permissionGiverId);
-        var parameters = new {
+        AddPermission(stampId, permissionHolderId, permission);
+    }
+
+    public void AddPermission(Guid permissionHolderId, string permission)
+    {
+        int stampId = StampRepo.CreateStamp();
+        AddPermission(stampId, permissionHolderId, permission);
+    }
+
+    private void AddPermission(int stampId, Guid permissionHolderId, string permission)
+    {
+        var parameters = new
+        {
             _stampId = stampId,
             _holderId = permissionHolderId,
             _permission = permission

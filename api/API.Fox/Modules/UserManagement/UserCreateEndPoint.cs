@@ -7,12 +7,9 @@ namespace API.Fox.Modules.UserManagement;
 
 public class UserCreateEndPoint : IEndPoint
 {
-    public string PermissionClaim => "USER_CREATION";
-
+    public string PermissionClaim => "USER_CREATION_MANAGEMENT";
     public string UrlPattern => "/management/user";
-
     public EndPointVerb Verb => EndPointVerb.POST;
-
     public Delegate Method => (UserCreationData user, UserRepository userRepo) =>
     {
         try
