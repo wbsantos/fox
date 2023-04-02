@@ -1,4 +1,5 @@
 using Fox.Access.Model;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Fox.Access.Hash;
@@ -34,7 +35,9 @@ internal static class HashMethodFactory
 
     internal static ServerSettings GetServerParameters(string hashMethod)
     {
-        string json = File.ReadAllText($"Hash\\{hashMethod}.json");
+        string binFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty;
+        string jsonPath = Path.Combine(binFolder, "Hash", $"Hash{hashMethod}.json");
+        string json = File.ReadAllText(jsonPath);
         return JsonSerializer.Deserialize<ServerSettings>(json) ?? new ServerSettings();
     }
 }

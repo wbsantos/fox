@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Data.Common;
 using API.Fox.Modules;
 using API.Fox.Settings;
 using DB.Fox;
+using Fox.Access.Repository;
+using Fox.Access.Model;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace API.Fox.AppBuilder;
 
 internal static class RepositoryBuilder
 {
-	internal static WebApplicationBuilder AddAppRepositories(this WebApplicationBuilder builder)
+	internal static WebApplicationBuilder AddAppRepositories(this WebApplicationBuilder builder, Security security, AppInfo appInfo)
     {
         DBSettings dbSettings = new();
         builder.Configuration.GetSection("DBSettings").Bind(dbSettings);
@@ -26,7 +29,31 @@ internal static class RepositoryBuilder
         {
             builder.Services.AddTransient(implementation);
         }
+
+        CreateAdminUser(security, dbSettings, appInfo);
         return builder;
+    }
+
+    public static void CreateAdminUser(Security security, DB.Fox.DBSettings dbSettings, AppInfo appInfo)
+    {
+        DB.Fox.DBConnection dbConnection = new DB.Fox.DBConnection(dbSettings);
+        UserRepository userRepo = new UserRepository(dbConnection);
+
+        User? user = userRepo.GetUser(security.AdminUserLogin);
+        if(user == null) //user doesn't exist
+        {
+            user = new User()
+            {
+                Login = security.AdminUserLogin,
+                Name = security.AdminUserName,
+                Email = security.AdminUserEmail
+            };
+            user = userRepo.CreateUser(user, security.AdminUserPassword);
+
+            StampRepository stampRepo = new StampRepository(dbConnection, appInfo);
+            PermissionRepository permissionRepo = new PermissionRepository(dbConnection, stampRepo);
+            permissionRepo.AddPermission(user.Id, user.Id, "admin");
+        }
     }
 }
 

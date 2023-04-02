@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION fox_user_create_v1 (
 			_login varchar(63),
 			_password bytea,
 			_salt bytea,
-			_hashMethod smallint,
+			_hashMethod int,
 			_name varchar(255))
 RETURNS UUID
 LANGUAGE plpgsql AS

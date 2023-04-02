@@ -5,7 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Linq;
 using Fox.Access.Repository;
+using Fox.Access.Model;
 using API.Fox.EndPoint;
 
 namespace API.Fox.Modules.Login;
@@ -17,8 +19,7 @@ public class LoginEndpoint : IEndPointAnonymous
     
     public Delegate Method => (UserAuth user, UserRepository userRepo, Security security) =>
     {
-        //TODO: the validation should be done against a database
-        if (!(user.UserName == "admin" && user.Password == "123456" && user.GrandType == "password"))
+        if (!(user.GrandType == "password" && userRepo.ValidateUserPassword(user.UserName, user.Password)))
             return Results.Unauthorized();
 
         var issuer = security.TokenIssuers.First();
@@ -27,19 +28,21 @@ public class LoginEndpoint : IEndPointAnonymous
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-
-        IEnumerable<string> permissions = userRepo.GetSystemPermissions(new Guid());
-        //TODO: add permissions to user claims (check claim type being used by authorization)
-        //TODO: add user data to claims
+        User? userData = userRepo.GetUser(user.UserName);
+        if (userData == null)
+            return Results.Unauthorized();
+        IEnumerable<string> permissions = userRepo.GetSystemPermissions(userData.Id);
+        IEnumerable<Claim> permissionsClaims = permissions.Select(permissionKey => new Claim("SystemPermission", permissionKey));
+        
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("Id", "1"),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            }),
+                        {
+                            new Claim(nameof(User.Id), userData.Id.ToString()),
+                            new Claim(nameof(User.Login), userData.Login),
+                            new Claim(nameof(User.Email), userData.Email),
+                            new Claim(nameof(User.Name), userData.Name)
+                        }.Union(permissionsClaims)),
             Expires = DateTime.UtcNow.AddMinutes(15),
             Audience = audience,
             Issuer = issuer,

@@ -35,7 +35,7 @@ create table if not exists UserAccount
 	login varchar(63) not null,
 	password bytea not null,
 	salt bytea not null,
-	hashMethod smallint not null,
+	hashMethod int not null,
 	name varchar(255) not null,
 
 	CONSTRAINT PK_USERACCOUNT PRIMARY KEY(id),

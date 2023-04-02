@@ -22,4 +22,9 @@ public class Security
     public string[] TokenIssuers { get; set; } = Array.Empty<string>();
     public string[] TokenAudiences { get; set; } = Array.Empty<string>();
     public string SymetricKey { get; set; } = string.Empty;
+
+    public string AdminUserLogin { get; set; } = string.Empty;
+    public string AdminUserName { get; set; } = string.Empty;
+    public string AdminUserPassword { get; set; } = string.Empty;
+    public string AdminUserEmail { get; set; } = string.Empty;
 }

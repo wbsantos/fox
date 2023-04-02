@@ -16,9 +16,6 @@
     <None Remove="Modules\Login\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Modules\Login\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
@@ -28,5 +25,8 @@
     <ProjectReference Include="..\Fox.Access\Fox.Access.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\Login\" />
   </ItemGroup>
 </Project>

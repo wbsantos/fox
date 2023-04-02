@@ -34,7 +34,7 @@ internal static class Auth
             {
                 options.AddPolicy(policyClaim,
                                   policy => policy.RequireClaim("SystemPermission",
-                                                                new string[] { policyClaim }));
+                                                                new string[] { policyClaim, "admin" }));
             }
         });
         

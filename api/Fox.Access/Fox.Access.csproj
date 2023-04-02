@@ -18,7 +18,7 @@
     <Folder Include="Repository\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Hash\HashSHA512S12P12.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">
+    <Content Include="Hash\HashSHA512_S12_P12.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -26,5 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DB.Fox\DB.Fox.csproj" />
+    <ProjectReference Include="..\API.Fox.Settings\API.Fox.Settings.csproj" />
   </ItemGroup>
 </Project>

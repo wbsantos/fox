@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 var (corpInfo, appInfo, security) = builder.AddAppConfig();
 builder.AddAppSwagger(corpInfo, appInfo);
 builder.AddAppAuth(security);
-builder.AddAppRepositories();
+builder.AddAppRepositories(security, appInfo);
 
 var app = builder.Build();
 app.MapAppEndPoints();

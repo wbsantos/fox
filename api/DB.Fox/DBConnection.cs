@@ -18,21 +18,45 @@ public class DBConnection
 
 	public IEnumerable<T> Procedure<T>(string procedureName, object parameters)
 	{
-        return Instance.Query<T>(BuildProcedureSQL(procedureName, parameters),
+        return Instance.Query<T>(BuildSQL(QueryType.Function, procedureName, parameters),
 				   			     param: parameters,
 								 commandType: CommandType.Text);
     }
 
+    public T ProcedureFirstOrDefault<T>(string procedureName, object parameters)
+    {
+        return Instance.QueryFirstOrDefault<T>(BuildSQL(QueryType.Function, procedureName, parameters),
+											   param: parameters,
+											   commandType: CommandType.Text);
+		
+    }
+
     public T ProcedureFirst<T>(string procedureName, object parameters)
     {
-        return Instance.QueryFirst<T>(BuildProcedureSQL(procedureName, parameters),
+        return Instance.QueryFirst<T>(BuildSQL(QueryType.Function, procedureName, parameters),
 									  param: parameters,
 									  commandType: CommandType.Text);
     }
 
-    private string BuildProcedureSQL(string procedureName, object parameters)
+	public int ProcedureExecute(string procedureName, object parameters)
 	{
-		return $"SELECT {procedureName}({GetParametersNames(parameters)})";
+		return Instance.Execute(BuildSQL(QueryType.Procedure, procedureName, parameters),
+								param: parameters,
+								commandType: CommandType.Text);
+
+	}
+
+    private string BuildSQL(QueryType queryType, string sqlQuery, object parameters)
+	{
+		switch (queryType)
+		{
+			case QueryType.Function:
+                return $"SELECT * FROM {sqlQuery}({GetParametersNames(parameters)})";
+			case QueryType.Procedure:
+                return $"CALL {sqlQuery}({GetParametersNames(parameters)})";
+            default:
+				return sqlQuery;
+		}
     }
 
 	private string GetParametersNames(object parameters)
@@ -44,6 +68,13 @@ public class DBConnection
 						           .Select(p => $"{p.Name} => @{p.Name}")
 								   .ToArray();
 		return string.Join(',', names);
+	}
+
+	private enum QueryType
+	{
+		Procedure,
+		Function,
+		Text
 	}
 }
 
