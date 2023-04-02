@@ -117,6 +117,8 @@ create table if not exists DocumentPermission
 
 --CREATING INDEXES
 CREATE UNIQUE INDEX UN_USERACCOUNT_01 ON UserAccount(login);
+CREATE UNIQUE INDEX UN_GROUPACCOUNT_01 ON GroupAccount(name);
+CREATE UNIQUE INDEX UN_USERGROUP_01 ON UserGroup(groupId, userId);
 
 /*
 TODO: Define indexes

@@ -8,6 +8,11 @@ $$
 BEGIN
 	INSERT INTO UserGroup (groupId, userId, stampId)
 	SELECT _groupId, _userId, _stampId
-	FROM UNNEST(_userIdsToAdd) AS _userId;
+	FROM UNNEST(_userIdsToAdd) AS _userId
+	WHERE
+		NOT EXISTS(SELECT 1 FROM UserGroup U
+				   WHERE
+				   		U.groupId = _groupId
+				   		AND U.userId = _userId);
 END
 $$;

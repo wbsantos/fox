@@ -151,7 +151,6 @@ public class UserRepository : IRepository
             user.Name = user.Login;
         if (string.IsNullOrWhiteSpace(user.Email))
             user.Email = string.Empty;
-
     }
 }
 
