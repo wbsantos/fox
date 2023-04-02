@@ -5,7 +5,6 @@ using Fox.Access.Repository;
 
 namespace API.Fox.Modules.UserManagement;
 
-//TODO: Control user access to other users data
 public class UserDeleteEndPoint : IEndPoint
 {
     public string PermissionClaim => "USER_DELETION_MANAGEMENT";

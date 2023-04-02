@@ -16,6 +16,7 @@
     <None Remove="Modules\Login\" />
     <None Remove="Modules\User\" />
     <None Remove="Modules\UserSelfManagement\" />
+    <None Remove="Modules\GroupManagement\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
@@ -32,5 +33,6 @@
     <Folder Include="Modules\Login\" />
     <Folder Include="Modules\UserManagement\" />
     <Folder Include="Modules\UserSelfManagement\" />
+    <Folder Include="Modules\GroupManagement\" />
   </ItemGroup>
 </Project>
