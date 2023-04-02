@@ -3,8 +3,10 @@ CREATE OR REPLACE PROCEDURE  fox_system_addpermission_V1 (
 			_holderId uuid,
 			_permission varchar(255)
 )
-LANGUAGE SQL
-BEGIN ATOMIC
+LANGUAGE plpgsql AS
+$$
+BEGIN
 	INSERT INTO SystemPermission (stampId, holderId, permission)
-	VALUES (_stampId, _holderId, _permission)
+	VALUES (_stampId, _holderId, _permission);
 END
+$$;

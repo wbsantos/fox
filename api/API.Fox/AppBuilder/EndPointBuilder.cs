@@ -38,6 +38,8 @@ public static class EndPointBuilder
             }
             if(handler != null && implementationInstance is IEndPoint endPointAuthorize)
                 handler.RequireAuthorization(endPointAuthorize.PermissionClaim);
+            else if (handler != null && implementationInstance != null)
+                handler.AllowAnonymous();
         }
         return app;
 	}

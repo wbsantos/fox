@@ -20,7 +20,8 @@ internal static class RepositoryBuilder
                          .SelectMany(a => a.GetTypes())
                          .Where(c => repoInterface.IsAssignableFrom(c)
                                      && !c.IsInterface);
-        
+
+        builder.Services.AddTransient<DBConnection>();
         foreach (var implementation in repoImplementation)
         {
             builder.Services.AddTransient(implementation);

@@ -15,8 +15,7 @@ public class LoginEndpoint : IEndPointAnonymous
     public string UrlPattern => "/security/token/create";
     public EndPointVerb Verb => EndPointVerb.POST;
     
-    public Delegate Method =>
-        [AllowAnonymous] (UserAuth user, UserRepository userRepo, Security security) =>
+    public Delegate Method => (UserAuth user, UserRepository userRepo, Security security) =>
     {
         //TODO: the validation should be done against a database
         if (!(user.UserName == "admin" && user.Password == "123456" && user.GrandType == "password"))
@@ -28,6 +27,10 @@ public class LoginEndpoint : IEndPointAnonymous
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
+
+        IEnumerable<string> permissions = userRepo.GetSystemPermissions(new Guid());
+        //TODO: add permissions to user claims (check claim type being used by authorization)
+        //TODO: add user data to claims
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]

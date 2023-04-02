@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Data;
 using DB.Fox;
 
 namespace Fox.Access.Repository;
 public class UserRepository : IRepository
 {
-	DBSettings _dbSettings;
+	private DBConnection DB { get; set; }
+	private const string PROC_GETPERMISSIONS = "fox_user_read_permission_v1";
 
-    public UserRepository(DBSettings dbSettings)
+    public UserRepository(DBConnection dbSettings)
 	{
-		_dbSettings = dbSettings;
+		DB = dbSettings;
 	}
 
-	public List<string> GetSystemPermissions(string userId)
+	public IEnumerable<string> GetSystemPermissions(Guid userId)
 	{
-		//TODO: go to the actual database
-		return new List<string>(new string[] { "teste1", "teste2" });
+		var parameters = new { _userId = userId };
+        return DB.Procedure<string>(PROC_GETPERMISSIONS, parameters);		
 	}
 }
 
