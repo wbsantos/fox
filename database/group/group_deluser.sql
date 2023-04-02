@@ -1,19 +1,23 @@
-CREATE OR REPLACE PROCEDURE  fox_group_deluser_V1 (
+CREATE OR REPLACE PROCEDURE  fox_group_deluser_v1 (
 			_groupId uuid,
 			_userIds uuid[]
 )
-LANGUAGE SQL
-BEGIN ATOMIC
+LANGUAGE plpgsql AS
+$$
+BEGIN
 	
-	DELETE S FROM Stamp 
-	JOIN UserGroup ON UserGroup.stampId = Stamp.Id 
-	JOIN UNNEST(_userIds) AS _userId ON UserGroup.userId = _userId
-	WHERE UserGroup.groupId = _groupId
+	DELETE FROM Stamp
+	USING UserGroup, UNNEST(_userIds) AS _userId
+	WHERE 
+		UserGroup.stampId = Stamp.Id
+		AND UserGroup.userId = _userId
+		AND UserGroup.groupId = _groupId;
 
-	DELETE G FROM UserGroup G
-	INNER JOIN UNNEST(_userIds) AS _userId ON
-		G.userId = _userId
+	DELETE FROM UserGroup G
+	USING UNNEST(_userIds) AS _userId 
 	WHERE
-		G.groupId = _groupId
+		G.userId = _userId
+		AND G.groupId = _groupId;
 
 END
+$$;
