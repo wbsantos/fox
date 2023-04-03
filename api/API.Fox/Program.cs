@@ -12,6 +12,7 @@ builder.AddAppRepositories(security, appInfo);
 
 var app = builder.Build();
 app.MapAppEndPoints();
+//TODO: remove the URL's bellow and redirect the root to swagger page
 app.MapGet("/", () => "Hello World!");
 app.MapGet("/hello/get", [Authorize] () => "Hello World with Authorization!");
 

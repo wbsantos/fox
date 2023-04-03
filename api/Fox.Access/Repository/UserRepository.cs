@@ -18,6 +18,7 @@ public class UserRepository : IRepository
     private const string PROC_UPDATEUSER = "fox_user_update_v1";
     private const string PROC_UPDATEPASSWORD = "fox_user_update_password_v1";
     private const string PROC_DELETEUSER = "fox_user_delete_v1";
+    private const string PROC_GETGROUPS = "fox_user_read_groups_v1";
 
     public UserRepository(DBConnection dbConnection, PermissionRepository permissionRepository)
 	{
@@ -151,6 +152,12 @@ public class UserRepository : IRepository
             user.Name = user.Login;
         if (string.IsNullOrWhiteSpace(user.Email))
             user.Email = string.Empty;
+    }
+
+    public IEnumerable<Group> GetUserGroups(Guid userId)
+    {
+        var parameters = new { _userId = userId };
+        return DB.Procedure<Group>(PROC_GETGROUPS, parameters);
     }
 }
 

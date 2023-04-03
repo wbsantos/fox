@@ -7,6 +7,11 @@ LANGUAGE plpgsql AS
 $$
 BEGIN
 	RETURN query
-		SELECT id, name FROM GroupAccount WHERE id = _id;
+		SELECT 
+			G.id, 
+			G.name
+		FROM GroupAccount G 
+		WHERE 
+			g.id = _id;
 END
 $$;

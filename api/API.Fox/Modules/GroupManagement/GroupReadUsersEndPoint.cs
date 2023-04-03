@@ -6,20 +6,20 @@ using Fox.Access.Repository;
 
 namespace API.Fox.Modules.GroupManagement;
 
-public class GroupReadAllEndPoint : IEndPoint
+public class GroupReadUserEndPoint : IEndPoint
 {
-    public string PermissionClaim => "GROUP_READ_ALL_MANAGEMENT";
-    public string UrlPattern => "/management/group/all";
+    public string PermissionClaim => "GROUP_MANAGEMENT_READ_USER";
+    public string UrlPattern => "/management/group/user";
     public EndPointVerb Verb => EndPointVerb.GET;
-    public Delegate Method => (GroupRepository groupRepository) =>
+    public Delegate Method => (Guid groupId, GroupRepository groupRepository) =>
     {
         try
         {
-            IEnumerable<Group> groups = groupRepository.GetAllGroups();
-            if (groups.Count() == 0)
+            IEnumerable<User> users = groupRepository.GetUsersFromGroup(groupId);
+            if (users.Count() == 0)
                 return Results.NotFound();
             else
-                return Results.Ok(new { groups = groups });
+                return Results.Ok(new { users = users } );
         }
         catch (ArgumentException argumentNull)
         {
@@ -31,4 +31,3 @@ public class GroupReadAllEndPoint : IEndPoint
         }
     };
 }
-

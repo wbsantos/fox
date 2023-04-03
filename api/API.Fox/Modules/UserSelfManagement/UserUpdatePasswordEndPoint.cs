@@ -10,7 +10,7 @@ public class UserUpdatePasswordEndPoint : IEndPoint
     public string PermissionClaim => "USER_SELF_MANAGEMENT";
     public string UrlPattern => "/selfmanagement/user/password";
     public EndPointVerb Verb => EndPointVerb.PUT;
-    public Delegate Method => (UserAuth user, LoggedUser loggedUser, UserRepository userRepo) =>
+    public Delegate Method => (UserSelfUpdatePasswordData user, LoggedUser loggedUser, UserRepository userRepo) =>
     {
         try
         {
@@ -31,4 +31,4 @@ public class UserUpdatePasswordEndPoint : IEndPoint
     };
 }
 
-record UserAuth(Guid Id, string Password);
+record UserSelfUpdatePasswordData(Guid Id, string Password);

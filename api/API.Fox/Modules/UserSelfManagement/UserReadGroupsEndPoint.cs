@@ -4,18 +4,21 @@ using API.Fox.Modules.UserManagement;
 using Fox.Access.Model;
 using Fox.Access.Repository;
 
-namespace API.Fox.Modules.GroupManagement;
+namespace API.Fox.Modules.UserSelfManagement;
 
-public class GroupReadAllEndPoint : IEndPoint
+public class UserReadGroupsEndPoint : IEndPoint
 {
-    public string PermissionClaim => "GROUP_READ_ALL_MANAGEMENT";
-    public string UrlPattern => "/management/group/all";
+    public string PermissionClaim => "USER_SELF_MANAGEMENT";
+    public string UrlPattern => "/selfmanagement/user/group";
     public EndPointVerb Verb => EndPointVerb.GET;
-    public Delegate Method => (GroupRepository groupRepository) =>
+    public Delegate Method => (Guid userId, LoggedUser loggedUser, UserRepository userRepository) =>
     {
         try
         {
-            IEnumerable<Group> groups = groupRepository.GetAllGroups();
+            if (userId != loggedUser.Id)
+                return Results.Forbid();
+
+            IEnumerable<Group> groups = userRepository.GetUserGroups(userId);
             if (groups.Count() == 0)
                 return Results.NotFound();
             else
@@ -31,4 +34,3 @@ public class GroupReadAllEndPoint : IEndPoint
         }
     };
 }
-

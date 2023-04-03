@@ -5,7 +5,7 @@ $$
 DECLARE _holderId uuid;
 BEGIN
 	INSERT INTO Holder DEFAULT VALUES RETURNING id into _holderId;
-    INSERT INTO GroupAccount (name) VALUES (_name);
+    INSERT INTO GroupAccount (id, name) VALUES (_holderId, _name);
    
    RETURN _holderId;
 END

@@ -17,7 +17,7 @@ public class LoginEndpoint : IEndPointAnonymous
     public string UrlPattern => "/security/token";
     public EndPointVerb Verb => EndPointVerb.POST;
     
-    public Delegate Method => (UserAuth user, UserRepository userRepo, Security security) =>
+    public Delegate Method => (LoginData user, UserRepository userRepo, Security security) =>
     {
         if (!(user.GrandType == "password" && userRepo.ValidateUserPassword(user.UserName, user.Password)))
             return Results.Unauthorized();
@@ -55,4 +55,4 @@ public class LoginEndpoint : IEndPointAnonymous
     }; 
 }
 
-record UserAuth(string UserName, string Password, string GrandType);
+record LoginData(string UserName, string Password, string GrandType);

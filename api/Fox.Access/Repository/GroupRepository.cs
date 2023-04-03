@@ -15,6 +15,7 @@ public class GroupRepository : IRepository
 	private const string PROC_DELETEGROUP = "fox_group_delete_v1";
 	private const string PROC_ADDTOGROUP = "fox_group_adduser_v1";
 	private const string PROC_DELFROMGROUP = "fox_group_deluser_v1";
+	private const string PROC_GETUSERS = "fox_group_read_users_v1";
 
 	public GroupRepository(DBConnection dbConnection, StampRepository stampRepo)
 	{
@@ -80,5 +81,11 @@ public class GroupRepository : IRepository
         };
         DB.ProcedureExecute(PROC_DELFROMGROUP, parameters);
     }
+
+	public IEnumerable<User> GetUsersFromGroup(Guid id)
+	{
+		var parameters = new { _groupId = id };
+		return DB.Procedure<User>(PROC_GETUSERS, parameters);
+	}
 }
 
