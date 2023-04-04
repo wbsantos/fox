@@ -1,12 +1,19 @@
-CREATE OR REPLACE PROCEDURE  fox_document_addmetadata_V1 (
+CREATE OR REPLACE PROCEDURE  fox_document_addmetadata_v1 (
 			_documentId uuid,
 			_keys varchar(255)[],
 			_values varchar(1023)[]
 )
-LANGUAGE SQL
-BEGIN ATOMIC
+LANGUAGE plpgsql AS
+$$
+BEGIN
+	DELETE FROM DocumentMetadata
+	WHERE 
+		documentId = _document
+		AND key = ANY(_keys);
+	
 	INSERT INTO DocumentMetadata (documentId, key, value)
 	SELECT _documentId, _key, _value
 	FROM UNNEST(_keys) WITH ORDINALITY AS keys (_key, _i)
-	JOIN UNNEST(_values) WITH ORDINALITY AS values (_value, _j) ON keys._i = values._j
+	JOIN UNNEST(_values) WITH ORDINALITY AS values (_value, _j) ON keys._i = values._j;
 END
+$$;

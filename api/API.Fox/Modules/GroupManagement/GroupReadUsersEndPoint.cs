@@ -16,10 +16,7 @@ public class GroupReadUserEndPoint : IEndPoint
         try
         {
             IEnumerable<User> users = groupRepository.GetUsersFromGroup(groupId);
-            if (users.Count() == 0)
-                return Results.NotFound();
-            else
-                return Results.Ok(new { users = users } );
+            return Results.Ok(new { users = users } );
         }
         catch (ArgumentException argumentNull)
         {

@@ -19,10 +19,7 @@ public class UserReadGroupsEndPoint : IEndPoint
                 return Results.Forbid();
 
             IEnumerable<Group> groups = userRepository.GetUserGroups(userId);
-            if (groups.Count() == 0)
-                return Results.NotFound();
-            else
-                return Results.Ok(new { groups = groups });
+            return Results.Ok(new { groups = groups });
         }
         catch (ArgumentException argumentNull)
         {

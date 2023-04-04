@@ -17,22 +17,32 @@
     <None Remove="Modules\User\" />
     <None Remove="Modules\UserSelfManagement\" />
     <None Remove="Modules\GroupManagement\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-    <ProjectReference Include="..\DB.Fox\DB.Fox.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-    <ProjectReference Include="..\Fox.Access\Fox.Access.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
+    <None Remove="Modules\PermissionManagement\" />
+    <None Remove="Modules\DocumentManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modules\Login\" />
     <Folder Include="Modules\UserManagement\" />
     <Folder Include="Modules\UserSelfManagement\" />
     <Folder Include="Modules\GroupManagement\" />
+    <Folder Include="Modules\PermissionManagement\" />
+    <Folder Include="Modules\DocumentManagement\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\Fox.Access\Fox.Access.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\Fox.Dox\Fox.Dox.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\DB.Fox\DB.Fox.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\API.Fox.Settings\API.Fox.Settings.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>

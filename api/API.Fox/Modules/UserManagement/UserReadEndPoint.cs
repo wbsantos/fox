@@ -15,10 +15,7 @@ public class UserReadEndPoint : IEndPoint
         try
         {
             User? userData = userRepo.GetUser(userId);
-            if (userData == null)
-                return Results.NotFound();
-            else
-                return Results.Ok(userData);
+            return Results.Ok(userData);
         }
         catch(ArgumentException argumentNull)
         {

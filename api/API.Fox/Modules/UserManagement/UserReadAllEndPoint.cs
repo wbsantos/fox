@@ -15,10 +15,7 @@ public class UserReadAllEndPoint : IEndPoint
         try
         {
             IEnumerable<User> userData = userRepo.GetAllUsers();
-            if (userData.Count() == 0)
-                return Results.NotFound();
-            else
-                return Results.Ok(new { users = userData });
+            return Results.Ok(new { users = userData });
         }
         catch(ArgumentException argumentNull)
         {

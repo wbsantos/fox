@@ -74,6 +74,11 @@ public class UserRepository : IRepository
         return user;
     }
 
+    public bool IsAdmin(Guid userId)
+    {
+        return GetSystemPermissions(userId).Contains("admin");
+    }
+
     private User CreateUser(User user, string password, bool selfCreation)
     {
         if (string.IsNullOrWhiteSpace(password))

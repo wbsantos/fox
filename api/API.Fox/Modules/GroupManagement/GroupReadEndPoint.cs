@@ -16,10 +16,7 @@ public class GroupReadEndPoint : IEndPoint
         try
         {
             Group? group = groupRepository.GetGroup(groupId);
-            if (group == null)
-                return Results.NotFound();
-            else
-                return Results.Ok(group);
+            return Results.Ok(group);
         }
         catch (ArgumentException argumentNull)
         {

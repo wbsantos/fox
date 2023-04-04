@@ -51,7 +51,7 @@ public class LoginEndpoint : IEndPointAnonymous
 
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = jwtTokenHandler.WriteToken(token);
-        return Results.Ok(new { token = jwtToken } );
+        return Results.Ok(new { token = jwtToken, secondsToExpire = 15*60 } );
     }; 
 }
 

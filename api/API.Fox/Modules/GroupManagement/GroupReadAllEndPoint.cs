@@ -16,10 +16,7 @@ public class GroupReadAllEndPoint : IEndPoint
         try
         {
             IEnumerable<Group> groups = groupRepository.GetAllGroups();
-            if (groups.Count() == 0)
-                return Results.NotFound();
-            else
-                return Results.Ok(new { groups = groups });
+            return Results.Ok(new { groups = groups });
         }
         catch (ArgumentException argumentNull)
         {
