@@ -23,6 +23,13 @@ public class DBConnection
 								 commandType: CommandType.Text);
     }
 
+    public IEnumerable<dynamic> Procedure(string procedureName, object parameters)
+    {
+        return Instance.Query(BuildSQL(QueryType.Function, procedureName, parameters),
+                              param: parameters,
+                              commandType: CommandType.Text);
+    }
+
     public T ProcedureFirstOrDefault<T>(string procedureName, object parameters)
     {
         return Instance.QueryFirstOrDefault<T>(BuildSQL(QueryType.Function, procedureName, parameters),

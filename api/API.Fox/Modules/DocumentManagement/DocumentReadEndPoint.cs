@@ -6,17 +6,21 @@ using Fox.Access.Repository;
 
 namespace API.Fox.Modules.DocumentManagement;
 
-public class DocumentReadPermissionEndPoint : IEndPoint
+public class DocumentReadEndPoint : IEndPoint
 {
-    public string PermissionClaim => "DOCUMENT_PERMISSION_READ";
-    public string UrlPattern => "/document/permission";
+    public string PermissionClaim => "DOCUMENT_READ";
+    public string UrlPattern => "/document";
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid documentId, DocumentRepository docRepo) =>
     {
         try
         {
-            IEnumerable<DocumentHolder> permissions = docRepo.GetPermissionByDocument(documentId);
-            return Results.Ok(new { permissions = permissions });
+            DocumentInformation? document = docRepo.GetDocumentInformation(documentId);
+            return Results.Ok(document);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
         }
         catch (ArgumentException argumentNull)
         {

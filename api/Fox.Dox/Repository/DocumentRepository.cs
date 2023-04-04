@@ -20,6 +20,11 @@ public class DocumentRepository : IRepository
     private const string PROC_READPERMISSION_BYDOCUMENT = "fox_document_read_permissions_bydoc_v1";
     private const string PROC_ADDPERMISSION = "fox_document_addpermission_v1";
     private const string PROC_DELPERMISSION = "fox_document_delpermission_v1";
+    private const string PROC_READ_METADATA = "fox_document_read_metadata_v1";
+    private const string PROC_READ_INFORMATION = "fox_document_read_information_v1";
+    private const string PROC_READ_BINARY = "fox_document_read_binary_v1";
+    private const string PROC_READ_ALL = "fox_document_read_information_all_v1";
+    private const string PROC_UPDATE = "fox_document_update_v1";
 
     public DocumentRepository(DBConnection dbConnection, LoggedUser loggedUser, StampRepository stampRepo, UserRepository userRepo)
 	{
@@ -107,6 +112,28 @@ public class DocumentRepository : IRepository
         return DB.Procedure<DocumentHolder>(PROC_READPERMISSION_BYDOCUMENT, parameters);
     }
 
+    public DocumentInformation? GetDocumentInformation(Guid id)
+    {
+        if (!HasPermission(id, DocumentPermission.Download))
+            throw new UnauthorizedAccessException();
+        var parameters = new { _documentId = id };
+        var document = DB.ProcedureFirstOrDefault<DocumentInformation>(PROC_READ_INFORMATION, parameters);
+        if (document == null)
+            return null;
+
+        document.Metadata = DB.Procedure(PROC_READ_METADATA, parameters)
+                              .ToDictionary(row => (string)row.key, row => (string)row.value);
+        return document;
+    }
+
+    public byte[] GetDocumentBinary(Guid id)
+    {
+        if (!HasPermission(id, DocumentPermission.Download))
+            throw new UnauthorizedAccessException();
+        var parameters = new { _id = id };
+        return DB.ProcedureFirst<byte[]>(PROC_READ_BINARY, parameters);
+    }
+
     public void AddPermission(Guid documentId, Guid holderId, DocumentPermission permission)
     {
         int stampId = StampRepo.CreateStamp();
@@ -128,6 +155,19 @@ public class DocumentRepository : IRepository
             _permission = permission.ToString()
         };
         DB.ProcedureExecute(PROC_DELPERMISSION, parameters);
+    }
+
+    public IEnumerable<DocumentInformation> GetAllDocuments()
+    {
+        //TODO: the result should be paginated in the procedure (so this method should receive the offset and limit)
+        var parameters = new { _userId = LoggedUser.Id };
+        return DB.Procedure<DocumentInformation>(PROC_READ_ALL, parameters);
+    }
+
+    public void UpdateDocument(DocumentInformation document)
+    {
+        var parameters = new { _id = document.Id, _name = document.Name };
+        DB.ProcedureExecute(PROC_UPDATE, parameters);
     }
 
     private void CheckDocumentFields(Document document)
