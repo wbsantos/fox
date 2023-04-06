@@ -12,7 +12,7 @@ internal static class ModuleReferences
         var loadedAssemblies = new HashSet<string>();
         var assembliesToCheck = new Queue<Assembly>();
 
-        Assembly? entryDll = Assembly.GetEntryAssembly();
+        Assembly? entryDll = Assembly.GetExecutingAssembly();
         if (entryDll == null)
             return returnAssemblies;
 

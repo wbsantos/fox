@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Fox.Settings", "API.Fox
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fox.Dox", "Fox.Dox\Fox.Dox.csproj", "{45B499AF-25F2-45C1-AEA4-75038DFBA53B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Test.Fox", "API.Test.Fox\API.Test.Fox.csproj", "{8675BB8D-EC86-4F6A-9F4B-77FD209AACEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{45B499AF-25F2-45C1-AEA4-75038DFBA53B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45B499AF-25F2-45C1-AEA4-75038DFBA53B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45B499AF-25F2-45C1-AEA4-75038DFBA53B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8675BB8D-EC86-4F6A-9F4B-77FD209AACEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8675BB8D-EC86-4F6A-9F4B-77FD209AACEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8675BB8D-EC86-4F6A-9F4B-77FD209AACEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8675BB8D-EC86-4F6A-9F4B-77FD209AACEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

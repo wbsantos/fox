@@ -21,6 +21,8 @@ public class DBSettings
         }
     }
 
+    public bool AutoCreateProcedures { get; set; }
+
     public DBSettings()
     {
         _keyAes = GetRandomData(128);

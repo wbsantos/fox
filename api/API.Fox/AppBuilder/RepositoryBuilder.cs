@@ -16,6 +16,8 @@ internal static class RepositoryBuilder
         DBSettings dbSettings = new();
         builder.Configuration.GetSection("DBSettings").Bind(dbSettings);
         builder.Services.AddSingleton<DBSettings>(dbSettings);
+        if (dbSettings.AutoCreateProcedures)
+            new DBConnection(dbSettings).CreateProcedures();
 
         Type repoInterface = typeof(IRepository);
         IEnumerable<Type> repoImplementation =

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Data;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using Dapper;
 using Npgsql;
 
@@ -82,6 +84,33 @@ public class DBConnection
 		Procedure,
 		Function,
 		Text
+	}
+
+	public void CreateProcedures()
+	{
+		string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location) ?? string.Empty, "database");
+		string[] sqlFiles =  System.IO.Directory.GetFiles(path, "*.sql", SearchOption.AllDirectories);
+		IEnumerable<string> currentProcedures = GetCurrentProcedures();
+
+		foreach (var sqlFile in sqlFiles)
+		{
+			string sql = File.ReadAllText(sqlFile);
+
+            string pattern = @"(PROCEDURE|FUNCTION) +([a-z0-9_]+)";
+			Match? match = Regex.Matches(sql, pattern, RegexOptions.IgnoreCase).FirstOrDefault();
+			if (match == null)
+				continue;
+
+			if (!currentProcedures.Contains(match.Groups[2].Value))
+			{
+				Instance.Execute(sql);
+			}
+        }
+    }
+
+	private IEnumerable<string> GetCurrentProcedures()
+	{
+		return Instance.Query<string>("SELECT routine_name FROM information_schema.routines WHERE routine_type in ('FUNCTION', 'PROCEDURE') AND routine_schema = 'public';", commandType: CommandType.Text);
 	}
 }
 

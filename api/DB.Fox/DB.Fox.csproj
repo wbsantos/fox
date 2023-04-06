@@ -10,4 +10,152 @@
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="Npgsql" Version="7.0.2" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\database\db-setup.sql">
+      <Link>database\db-setup.sql</Link>
+    </None>
+    <None Include="..\..\database\container-setup.txt">
+      <Link>database\container-setup.txt</Link>
+    </None>
+    <None Include="..\..\database\group\group_read_all.sql">
+      <Link>database\group\group_read_all.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_delete.sql">
+      <Link>database\group\group_delete.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_deluser.sql">
+      <Link>database\group\group_deluser.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_read_users.sql">
+      <Link>database\group\group_read_users.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_update.sql">
+      <Link>database\group\group_update.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_adduser.sql">
+      <Link>database\group\group_adduser.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_create.sql">
+      <Link>database\group\group_create.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\group\group_read_byid.sql">
+      <Link>database\group\group_read_byid.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_update.sql">
+      <Link>database\user\user_update.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_create.sql">
+      <Link>database\user\user_create.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_delete.sql">
+      <Link>database\user\user_delete.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_read.sql">
+      <Link>database\user\user_read.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_read_byid.sql">
+      <Link>database\user\user_read_byid.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_read_all.sql">
+      <Link>database\user\user_read_all.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_update_password.sql">
+      <Link>database\user\user_update_password.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_read_groups.sql">
+      <Link>database\user\user_read_groups.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_read_permissions.sql">
+      <Link>database\user\user_read_permissions.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\user\user_read_secret.sql">
+      <Link>database\user\user_read_secret.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_delete.sql">
+      <Link>database\document\document_delete.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_read_binary.sql">
+      <Link>database\document\document_read_binary.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_read_information_all.sql">
+      <Link>database\document\document_read_information_all.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_update.sql">
+      <Link>database\document\document_update.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_addpermission.sql">
+      <Link>database\document\document_addpermission.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_delmetadata.sql">
+      <Link>database\document\document_delmetadata.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_read_permissions_bydoc.sql">
+      <Link>database\document\document_read_permissions_bydoc.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_create.sql">
+      <Link>database\document\document_create.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_delpermission.sql">
+      <Link>database\document\document_delpermission.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_addmetadata.sql">
+      <Link>database\document\document_addmetadata.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_read_permissions_byholder.sql">
+      <Link>database\document\document_read_permissions_byholder.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_read_metadata.sql">
+      <Link>database\document\document_read_metadata.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\document\document_read_information.sql">
+      <Link>database\document\document_read_information.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\system\system_read_permissions.sql">
+      <Link>database\system\system_read_permissions.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\system\system_delpermission.sql">
+      <Link>database\system\system_delpermission.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\system\system_addpermission.sql">
+      <Link>database\system\system_addpermission.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\database\stamp\stamp_create.sql">
+      <Link>database\stamp\stamp_create.sql</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
