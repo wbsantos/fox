@@ -50,6 +50,7 @@ public class DocumentRepository : IRepository
 
         document.Id = DB.ProcedureFirst<Guid>(PROC_CREATEDOC, parameters);
         AddMetadata(document.Id, document.Metadata);
+        AddPermission(document.Id, LoggedUser.Id, DocumentPermission.Download);
         AddPermission(document.Id, LoggedUser.Id, DocumentPermission.Deletion);
         return document;
     }

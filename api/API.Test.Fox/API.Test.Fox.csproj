@@ -26,4 +26,12 @@
   <ItemGroup>
     <ProjectReference Include="..\API.Fox\API.Fox.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Backend_Engineer Interview_Project.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Backend_engineer_interview_project.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ $$
 BEGIN
 	DELETE FROM DocumentMetadata
 	WHERE 
-		documentId = _document
+		documentId = _documentId
 		AND key = ANY(_keys);
 	
 	INSERT INTO DocumentMetadata (documentId, key, value)

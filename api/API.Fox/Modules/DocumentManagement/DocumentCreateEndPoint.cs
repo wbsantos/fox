@@ -44,7 +44,6 @@ public class DocumentCreateEndPoint : IEndPoint
 
 public class DocumentCreateData
 {
-    public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public Dictionary<string, string> Metadata { get; set; } = new Dictionary<string, string>();
     public string FileBase64 { get; set; } = string.Empty;

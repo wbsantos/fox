@@ -6,10 +6,11 @@ RETURNS TABLE (
 LANGUAGE plpgsql AS
 $$
 BEGIN
-	SELECT
-		M.key,
-		M.value
-	FROM DocumentMetadata M 
-	WHERE M.documentId = _documentId;
+	RETURN query
+		SELECT
+			M.key,
+			M.value
+		FROM DocumentMetadata M 
+		WHERE M.documentId = _documentId;
 END
 $$;
