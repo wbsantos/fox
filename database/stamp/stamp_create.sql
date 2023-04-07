@@ -10,7 +10,7 @@ BEGIN
 	INSERT INTO Stamp (userId, systemVersion, createdAt)
 	VALUES (_userId, _systemVersion, now()) 
 	RETURNING id into _stampId;
-ß
+
 	RETURN _stampId;
 END
 $$;
