@@ -41,5 +41,5 @@ public class DocumentUpdateData
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public Dictionary<string, string> MetadataToAdd { get; set; } = new Dictionary<string, string>();
-    public string[] MetadataToRemove = Array.Empty<string>();
+    public string[] MetadataToRemove { get; set; } = Array.Empty<string>();
 }

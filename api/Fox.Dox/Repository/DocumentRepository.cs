@@ -50,14 +50,13 @@ public class DocumentRepository : IRepository
 
         document.Id = DB.ProcedureFirst<Guid>(PROC_CREATEDOC, parameters);
         AddMetadata(document.Id, document.Metadata);
-        AddPermission(document.Id, LoggedUser.Id, DocumentPermission.Download);
-        AddPermission(document.Id, LoggedUser.Id, DocumentPermission.Deletion);
+        AddPermission(document.Id, LoggedUser.Id, DocumentPermission.Manage);
         return document;
     }
 
     public bool DeleteDocument(Guid id)
     {
-        if (!HasPermission(id, DocumentPermission.Deletion))
+        if (!HasPermission(id, DocumentPermission.Manage))
             return false;
         var parameters = new { _id = id };
         DB.ProcedureExecute(PROC_DELETEDOC, parameters);
@@ -91,7 +90,10 @@ public class DocumentRepository : IRepository
     public bool HasPermission(Guid documentId, DocumentPermission permission)
     {
         IEnumerable<string> permissions = GetPermissionByHolder(documentId);
-        bool hasPermission = permissions.Any(p => p.ToUpper() == permission.ToString().ToUpper());
+        string permissionToTest = permission.ToString().ToUpper();
+        string permissionToManage = DocumentPermission.Manage.ToString().ToUpper();
+        bool hasPermission = permissions.Any(p => p.ToUpper() == permissionToTest || p.ToUpper() == permissionToManage);
+
         hasPermission = hasPermission || UserRepo.IsAdmin(LoggedUser.Id);
         return hasPermission;
     }

@@ -17,5 +17,5 @@ public class Document : DocumentInformation
 public enum DocumentPermission
 {
 	Download,
-	Deletion
+	Manage
 }

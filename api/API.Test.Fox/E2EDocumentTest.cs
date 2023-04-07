@@ -14,7 +14,9 @@ namespace API.Test.Fox;
 public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
 {
     private const string URL_DOCUMENT = "/document";
+    private const string URL_DOCUMENT_ALL = "/document/all";
     private const string URL_DOCUMENT_DOWNLOAD = "/document/download";
+    private const string URL_DOCUMENT_PERMISSION = "/document/permission";
 
     private string _pdfTestPath;
     private readonly FoxApplicationFactory<Program> _factory;
@@ -34,6 +36,35 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         string token = await _factory.GetToken("admin", "123456");
 
         var document = await UploadDocument(token);
+        IEnumerable<dynamic>  allDocuments = await GetAllDocuments(token);
+        Assert.Contains(allDocuments, d => d.Id == document!.Id);
+        await UpdateDocument(token, document!.Id);
+
+        Guid groupId = await groupTest.AddGroup(token, $"Group test for doc permission {DateTime.Now.Ticks}");
+        (Guid userId, _) = await userTest.AddUser(token);
+
+        IEnumerable<dynamic> permissions = await GetDocumentPermissions(token, document!.Id);
+        Assert.Contains(permissions, p => p.HolderLogin == "admin" && p.Permission == DocumentPermission.Manage);
+        Assert.DoesNotContain(permissions, p => p.HolderId == groupId);
+        Assert.DoesNotContain(permissions, p => p.HolderId == userId);
+
+        await AddDocumentPermission(token, document!.Id, groupId, DocumentPermission.Download);
+        await AddDocumentPermission(token, document!.Id, userId, DocumentPermission.Manage);
+        permissions = await GetDocumentPermissions(token, document!.Id);
+        Assert.Contains(permissions, p => p.HolderId == groupId && p.Permission == DocumentPermission.Download);
+        Assert.Contains(permissions, p => p.HolderId == userId && p.Permission == DocumentPermission.Manage);
+
+        await DelDocumentPermission(token, document!.Id, userId, DocumentPermission.Manage);
+        permissions = await GetDocumentPermissions(token, document!.Id);
+        Assert.Contains(permissions, p => p.HolderLogin == "admin" && p.Permission == DocumentPermission.Manage);
+        Assert.Contains(permissions, p => p.HolderId == groupId && p.Permission == DocumentPermission.Download);
+        Assert.DoesNotContain(permissions, p => p.HolderId == userId && p.Permission == DocumentPermission.Manage);
+
+        await DeleteDocument(token, document!.Id);
+        await GetDocumentInformation(token, document!.Id, false);
+
+        await groupTest.DeleteGroup(token, groupId);
+        await userTest.DeleteUser(token, userId);
     }
 
     public async Task<dynamic?> UploadDocument(string token)
@@ -104,6 +135,104 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         var dataResponse = await response.Content.ReadAsByteArrayAsync();
         Assert.NotNull(dataResponse);
         return dataResponse;
+    }
+
+    public async Task UpdateDocument(string token, Guid documentId)
+    {
+        var dataRequest = new
+        {
+            Id = documentId,
+            Name = "Interview Project Updated.pdf",
+            MetadataToRemove = new string[]
+            {
+                "Just a Metadata"
+            },
+            MetadataToAdd = new Dictionary<string, string>()
+            {
+                { "CATEGORY", "Test 2" },
+                { "Just another Metadata", "Test X" },
+                { "EXTENSION", "PDF" },
+            }
+        };
+
+        var client = _factory.BuildClient(token);
+        var response = await client.PutAsJsonAsync(URL_DOCUMENT, dataRequest);
+        response.EnsureSuccessStatusCode();
+
+        var documentToTest = await GetDocumentInformation(token, documentId, true);
+        Assert.Equal(dataRequest.Name, documentToTest!.Name);
+        Assert.Equal(dataRequest.MetadataToAdd["CATEGORY"], documentToTest!.Metadata["CATEGORY"]);
+        Assert.Equal(dataRequest.MetadataToAdd["Just another Metadata"], documentToTest!.Metadata["Just another Metadata"]);
+        Assert.Equal(dataRequest.MetadataToAdd["EXTENSION"], documentToTest!.Metadata["EXTENSION"]);
+        dataRequest.MetadataToRemove.ToList().ForEach(r => Assert.DoesNotContain(r, documentToTest!.Metadata.Keys));
+    }
+
+    public async Task DeleteDocument(string token, Guid documentId)
+    {
+        var client = _factory.BuildClient(token);
+        var response = await client.DeleteAsync($"{URL_DOCUMENT}?documentId={documentId}");
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task<IEnumerable<dynamic>> GetAllDocuments(string token)
+    {
+        var client = _factory.BuildClient(token);
+        var response = await client.GetAsync($"{URL_DOCUMENT_ALL}");
+        response.EnsureSuccessStatusCode();
+        var dataResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(),
+                                                                new {
+                                                                    documents = new[] {
+                                                                    new {
+                                                                        Id = new Guid(),
+                                                                        Name = string.Empty,
+                                                                        Metadata = new Dictionary<string, string>(),
+                                                                        FileSizeBytes = 0
+                                                                    }}
+                                                                });
+        Assert.NotNull(dataResponse);
+        return dataResponse!.documents;
+    }
+
+    public async Task<IEnumerable<dynamic>> GetDocumentPermissions(string token, Guid documentId)
+    {
+        var client = _factory.BuildClient(token);
+        var response = await client.GetAsync($"{URL_DOCUMENT_PERMISSION}?documentId={documentId}");
+        response.EnsureSuccessStatusCode();
+        var dataResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(),
+                                                                new
+                                                                {
+                                                                    permissions = new[] {
+                                                                    new {
+                                                                        HolderId = new Guid(),
+                                                                        HolderLogin = string.Empty,
+                                                                        HolderName = string.Empty,
+                                                                        Permission = DocumentPermission.Download,
+                                                                        HolderType = string.Empty
+                                                                    }}
+                                                                });
+        Assert.NotNull(dataResponse);
+        return dataResponse!.permissions;
+    }
+
+    public async Task AddDocumentPermission(string token, Guid documentId, Guid holderId, DocumentPermission permission)
+    {
+        var dataRequest = new { documentId = documentId, holderId = holderId, permission = permission };
+        var client = _factory.BuildClient(token);
+        var response = await client.PostAsJsonAsync(URL_DOCUMENT_PERMISSION, dataRequest);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public async Task DelDocumentPermission(string token, Guid documentId, Guid holderId, DocumentPermission permission)
+    {
+        var client = _factory.BuildClient(token);
+        var response = await client.DeleteAsync($"{URL_DOCUMENT_PERMISSION}?documentId={documentId}&holderId={holderId}&permission={permission}");
+        response.EnsureSuccessStatusCode();
+    }
+
+    public enum DocumentPermission
+    {
+        Download,
+        Manage
     }
 }
 
