@@ -67,6 +67,68 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         await userTest.DeleteUser(token, userId);
     }
 
+    [Fact]
+    public async Task PermissionTest()
+    {
+        var groupTest = new E2EGroupManagementTest(_factory);
+        var userTest = new E2EUserManagementTest(_factory);
+        var systemTest = new E2EPermissionManagementTest(_factory);
+        string token = await _factory.GetToken("admin", "123456");
+        string userName = $"userdocpermission{DateTime.Now.Ticks}";
+        string userPassword = "123456789";
+
+        var document = await UploadDocument(token);
+        Guid groupId = await groupTest.AddGroup(token, $"Group test for doc permission {DateTime.Now.Ticks}");
+        (Guid userId, string userToken) = await _factory.AddUser(token,
+                                                                "email@email.com",
+                                                                userName,
+                                                                "User for testing document permission",
+                                                                userPassword);
+        await systemTest.AddPermission(token, userId, "DOCUMENT_READ");
+        await systemTest.AddPermission(token, userId, "DOCUMENT_DELETION");
+        await systemTest.AddPermission(token, userId, "DOCUMENT_UPDATE");
+        await systemTest.AddPermission(token, userId, "DOCUMENT_PERMISSION_ADDITION");
+        await systemTest.AddPermission(token, userId, "DOCUMENT_PERMISSION_REMOVAL");
+        await systemTest.AddPermission(token, userId, "DOCUMENT_PERMISSION_READ");
+        userToken = await _factory.GetToken(userName, userPassword);
+
+        await GetDocumentInformation(userToken, document!.Id, true, expectsForbidden: true);
+        await GetDocumentBinary(userToken, document!.Id, expectsForbidden: true);
+        await AddDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: true);
+        await DelDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: true);
+        await GetDocumentPermissions(userToken, document!.Id, expectsForbidden: true);
+
+        await AddDocumentPermission(token, document!.Id, userId, DocumentPermission.Download);
+        await GetDocumentInformation(userToken, document!.Id, true, expectsForbidden: false);
+        await GetDocumentBinary(userToken, document!.Id, expectsForbidden: false);
+        await AddDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: true);
+        await DelDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: true);
+        await GetDocumentPermissions(userToken, document!.Id, false);
+
+        await DelDocumentPermission(token, document!.Id, userId, DocumentPermission.Download);
+        await GetDocumentInformation(userToken, document!.Id, true, expectsForbidden: true);
+
+        await groupTest.AddUsersInGroup(token, groupId, new Guid[] { userId });
+        await AddDocumentPermission(token, document!.Id, groupId, DocumentPermission.Download);
+        await GetDocumentInformation(userToken, document!.Id, true, expectsForbidden: false);
+        await AddDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: true);
+        await DelDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: true);
+        await GetDocumentPermissions(userToken, document!.Id, expectsForbidden: false);
+
+        await UpdateDocument(userToken, document!.Id, expectsForbidden: true);
+        await DeleteDocument(userToken, document!.Id, expectsForbidden: true);
+
+        await AddDocumentPermission(token, document!.Id, groupId, DocumentPermission.Manage);
+        await UpdateDocument(userToken, document!.Id, expectsForbidden: false);
+        await AddDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: false);
+        await DelDocumentPermission(userToken, document!.Id, userId, DocumentPermission.Download, expectsForbidden: false);
+        await GetDocumentPermissions(userToken, document!.Id, false);
+        await DeleteDocument(userToken, document!.Id, expectsForbidden: false);
+
+        await groupTest.DeleteGroup(token, groupId);
+        await userTest.DeleteUser(token, userId);
+    }
+
     public async Task<dynamic?> UploadDocument(string token)
     {
         var fileBytes = await System.IO.File.ReadAllBytesAsync(_pdfTestPath);
@@ -108,10 +170,16 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         return documentCreated;
     }
 
-    public async Task<dynamic?> GetDocumentInformation(string token, Guid documentId, bool expectExists)
+    public async Task<dynamic?> GetDocumentInformation(string token, Guid documentId, bool expectExists, bool expectsForbidden = false)
     {
         var client = _factory.BuildClient(token);
         var response = await client.GetAsync($"{URL_DOCUMENT}?documentId={documentId}");
+        if(expectsForbidden)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return null;
+
+        }
         response.EnsureSuccessStatusCode();
         var dataResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(),
                                                                 new {
@@ -124,20 +192,27 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
             Assert.NotNull(dataResponse);
         else
             Assert.Null(dataResponse);
+
         return dataResponse;
     }
 
-    public async Task<byte[]> GetDocumentBinary(string token, Guid documentId)
+    public async Task<byte[]> GetDocumentBinary(string token, Guid documentId, bool expectsForbidden = false)
     {
         var client = _factory.BuildClient(token);
         var response = await client.GetAsync($"{URL_DOCUMENT_DOWNLOAD}?documentId={documentId}");
+        if (expectsForbidden)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return Array.Empty<byte>();
+
+        }
         response.EnsureSuccessStatusCode();
         var dataResponse = await response.Content.ReadAsByteArrayAsync();
         Assert.NotNull(dataResponse);
         return dataResponse;
     }
 
-    public async Task UpdateDocument(string token, Guid documentId)
+    public async Task UpdateDocument(string token, Guid documentId, bool expectsForbidden = false)
     {
         var dataRequest = new
         {
@@ -157,6 +232,11 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
 
         var client = _factory.BuildClient(token);
         var response = await client.PutAsJsonAsync(URL_DOCUMENT, dataRequest);
+        if(expectsForbidden)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return;
+        }
         response.EnsureSuccessStatusCode();
 
         var documentToTest = await GetDocumentInformation(token, documentId, true);
@@ -167,11 +247,14 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         dataRequest.MetadataToRemove.ToList().ForEach(r => Assert.DoesNotContain(r, documentToTest!.Metadata.Keys));
     }
 
-    public async Task DeleteDocument(string token, Guid documentId)
+    public async Task DeleteDocument(string token, Guid documentId, bool expectsForbidden = false)
     {
         var client = _factory.BuildClient(token);
         var response = await client.DeleteAsync($"{URL_DOCUMENT}?documentId={documentId}");
-        response.EnsureSuccessStatusCode();
+        if(expectsForbidden)
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        else
+            response.EnsureSuccessStatusCode();
     }
 
     public async Task<IEnumerable<dynamic>> GetAllDocuments(string token)
@@ -193,10 +276,15 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         return dataResponse!.documents;
     }
 
-    public async Task<IEnumerable<dynamic>> GetDocumentPermissions(string token, Guid documentId)
+    public async Task<IEnumerable<dynamic>> GetDocumentPermissions(string token, Guid documentId, bool expectsForbidden = false)
     {
         var client = _factory.BuildClient(token);
         var response = await client.GetAsync($"{URL_DOCUMENT_PERMISSION}?documentId={documentId}");
+        if (expectsForbidden)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return Array.Empty<object>();
+        }
         response.EnsureSuccessStatusCode();
         var dataResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(),
                                                                 new
@@ -214,18 +302,28 @@ public class E2EDocumentTest : IClassFixture<FoxApplicationFactory<Program>>
         return dataResponse!.permissions;
     }
 
-    public async Task AddDocumentPermission(string token, Guid documentId, Guid holderId, DocumentPermission permission)
+    public async Task AddDocumentPermission(string token, Guid documentId, Guid holderId, DocumentPermission permission, bool expectsForbidden = false)
     {
         var dataRequest = new { documentId = documentId, holderId = holderId, permission = permission };
         var client = _factory.BuildClient(token);
         var response = await client.PostAsJsonAsync(URL_DOCUMENT_PERMISSION, dataRequest);
+        if (expectsForbidden)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return;
+        }
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task DelDocumentPermission(string token, Guid documentId, Guid holderId, DocumentPermission permission)
+    public async Task DelDocumentPermission(string token, Guid documentId, Guid holderId, DocumentPermission permission, bool expectsForbidden = false)
     {
         var client = _factory.BuildClient(token);
         var response = await client.DeleteAsync($"{URL_DOCUMENT_PERMISSION}?documentId={documentId}&holderId={holderId}&permission={permission}");
+        if (expectsForbidden)
+        {
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+            return;
+        }
         response.EnsureSuccessStatusCode();
     }
 

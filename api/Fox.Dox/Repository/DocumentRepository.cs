@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 using DB.Fox;
 using Fox.Access.Model;
 using Fox.Access.Repository;
@@ -111,6 +112,8 @@ public class DocumentRepository : IRepository
 
     public IEnumerable<DocumentHolder> GetPermissionByDocument(Guid documentId)
     {
+        if (!HasPermission(documentId, DocumentPermission.Download))
+            throw new UnauthorizedAccessException();
         var parameters = new { _documentId = documentId };
         return DB.Procedure<DocumentHolder>(PROC_READPERMISSION_BYDOCUMENT, parameters);
     }
@@ -139,6 +142,8 @@ public class DocumentRepository : IRepository
 
     public void AddPermission(Guid documentId, Guid holderId, DocumentPermission permission)
     {
+        if (!HasPermission(documentId, DocumentPermission.Manage))
+            throw new UnauthorizedAccessException();
         int stampId = StampRepo.CreateStamp();
         var parameters = new {
             _stampId = stampId,
@@ -151,6 +156,8 @@ public class DocumentRepository : IRepository
 
     public void DelPermission(Guid documentId, Guid holderId, DocumentPermission permission)
     {
+        if (!HasPermission(documentId, DocumentPermission.Manage))
+            throw new UnauthorizedAccessException();
         var parameters = new
         {
             _documentId = documentId,
@@ -169,6 +176,8 @@ public class DocumentRepository : IRepository
 
     public void UpdateDocument(DocumentInformation document)
     {
+        if (!HasPermission(document.Id, DocumentPermission.Manage))
+            throw new UnauthorizedAccessException();
         var parameters = new { _id = document.Id, _name = document.Name };
         DB.ProcedureExecute(PROC_UPDATE, parameters);
     }

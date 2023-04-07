@@ -168,6 +168,15 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
         return userIds;
     }
 
+    public async Task<Guid[]> AddUsersInGroup(string token, Guid groupId, Guid[] userIds)
+    {
+        var client = _factory.BuildClient(token);
+        var dataRequest = new { GroupId = groupId, UserIds = userIds };
+        var response = await client.PostAsJsonAsync(URL_GROUP_USER_MANAGEMENT, dataRequest);
+        response.EnsureSuccessStatusCode();
+        return userIds;
+    }
+
     public async Task<IEnumerable<dynamic>> GetUsersInGroup(string token, Guid groupId)
     {
         var client = _factory.BuildClient(token);

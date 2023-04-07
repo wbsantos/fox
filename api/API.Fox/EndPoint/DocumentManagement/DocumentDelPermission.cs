@@ -19,6 +19,10 @@ public class DocumentDelPermission : IEndPoint
             docRepo.DelPermission(documentId, holderId, permission);
             return Results.Ok();
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
         catch (ArgumentException argumentNull)
         {
             return Results.Problem(title: argumentNull.Message, statusCode: 400);

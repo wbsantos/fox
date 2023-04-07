@@ -20,6 +20,10 @@ public class DocumentAddPermission : IEndPoint
             docRepo.AddPermission(permissionData.DocumentId, permissionData.HolderId, permissionData.Permission);
             return Results.Ok();
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
         catch (ArgumentException argumentNull)
         {
             return Results.Problem(title: argumentNull.Message, statusCode: 400);

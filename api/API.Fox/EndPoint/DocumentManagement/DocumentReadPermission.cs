@@ -18,6 +18,10 @@ public class DocumentReadPermission : IEndPoint
             IEnumerable<DocumentHolder> permissions = docRepo.GetPermissionByDocument(documentId);
             return Results.Ok(new { permissions = permissions });
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
         catch (ArgumentException argumentNull)
         {
             return Results.Problem(title: argumentNull.Message, statusCode: 400);

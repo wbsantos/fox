@@ -25,6 +25,10 @@ public class DocumentUpdate : IEndPoint
             docRepo.AddMetadata(document.Id, document.MetadataToAdd);
             return Results.Ok();
         }
+        catch (UnauthorizedAccessException)
+        {
+            return Results.Forbid();
+        }
         catch (ArgumentException argumentNull)
         {
             return Results.Problem(title: argumentNull.Message, statusCode: 400);

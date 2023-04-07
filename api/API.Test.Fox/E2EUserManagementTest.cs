@@ -45,11 +45,12 @@ public class E2EUserManagementTest : IClassFixture<FoxApplicationFactory<Program
     public async Task<(Guid userId, string userToken)> AddUser(string token)
     {
         string login = $"usertest{DateTime.Now.Ticks}";
+        string password = "ABCDEF";
         (Guid userId, string userToken) = await _factory.AddUser(token,
                                                                 "user@email.com",
                                                                 login,
                                                                 "User for Testing",
-                                                                "ABCDEF");
+                                                                password);
 
         var user = await GetUser(token, userId, true);
         Assert.Equal("user@email.com", user!.Email);
@@ -61,7 +62,7 @@ public class E2EUserManagementTest : IClassFixture<FoxApplicationFactory<Program
                                                                                           "user@email.com",
                                                                                           login,
                                                                                           "User for Testing",
-                                                                                          "ABCDEF"));
+                                                                                          password));
         return (userId, userToken);
     }
 
