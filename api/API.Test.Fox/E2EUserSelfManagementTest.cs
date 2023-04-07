@@ -11,7 +11,6 @@ namespace API.Test.Fox;
 
 public class E2EUserSelfManagementTest : IClassFixture<FoxApplicationFactory<Program>>
 {
-    private const string URL_TOKEN = "/security/token";
     private const string URL_USER_MANAGEMENT = "/management/user";
     private const string URL_USER_SELFMANAGEMENT = "/selfmanagement/user";
     private const string URL_USER_SELF_UPDATE_PASSWORD = "/selfmanagement/user/password";
@@ -39,6 +38,7 @@ public class E2EUserSelfManagementTest : IClassFixture<FoxApplicationFactory<Pro
         var userNewLogin = await SelfUpdateUser(userToken, userId);
         await SelfGetUserGroups(token, userToken, userId);
         await SelfUpdateUserPassword(userToken, userNewLogin, userId);
+        await new E2EUserManagementTest(_factory).DeleteUser(token, userId);
     }
 
     public async Task<string> SelfUpdateUser(string token, Guid userId)

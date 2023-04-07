@@ -11,7 +11,6 @@ namespace API.Test.Fox;
 
 public class E2EUserManagementTest : IClassFixture<FoxApplicationFactory<Program>>
 {
-    private const string URL_TOKEN = "/security/token";
     private const string URL_USER_MANAGEMENT = "/management/user";
     private const string URL_USER_GET_ALL = "/management/user/all";
     private const string URL_USER_UPDATE_PASSWORD = "/management/user/password";

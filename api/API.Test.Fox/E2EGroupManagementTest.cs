@@ -12,7 +12,6 @@ namespace API.Test.Fox;
 
 public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Program>>
 {
-    private const string URL_TOKEN = "/security/token";
     private const string URL_GROUP_MANAGEMENT = "/management/group";
     private const string URL_GROUP_USER_MANAGEMENT = "/management/group/user";
     private const string URL_GROUP_GET_ALL = "/management/group/all";
@@ -37,6 +36,8 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
 
         var usersInGroup = await AddUsersInGroup(token, groupId);
         await DeleteUserFromGroup(token, groupId, usersInGroup);
+        var userTest = new E2EUserManagementTest(_factory);
+        usersInGroup.ToList().ForEach(async ug => await userTest.DeleteUser(token, ug));
 
         await DeleteGroup(token, groupId);
         await GetGroup(token, groupId, false);
