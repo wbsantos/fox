@@ -17,20 +17,7 @@
 
   <ItemGroup>
     <None Remove="AuthBuilder\" />
-    <None Remove="Modules\Login\" />
     <None Remove="Modules\User\" />
-    <None Remove="Modules\UserSelfManagement\" />
-    <None Remove="Modules\GroupManagement\" />
-    <None Remove="Modules\PermissionManagement\" />
-    <None Remove="Modules\DocumentManagement\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules\Login\" />
-    <Folder Include="Modules\UserManagement\" />
-    <Folder Include="Modules\UserSelfManagement\" />
-    <Folder Include="Modules\GroupManagement\" />
-    <Folder Include="Modules\PermissionManagement\" />
-    <Folder Include="Modules\DocumentManagement\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">

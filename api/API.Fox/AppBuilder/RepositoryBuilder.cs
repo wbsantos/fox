@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.Common;
-using API.Fox.Modules;
+using API.Fox.EndPoint;
 using API.Fox.Settings;
 using DB.Fox;
 using Fox.Access.Repository;

@@ -1,7 +1,6 @@
 ﻿using System;
-using API.Fox.Modules;
-using API.Fox.Settings;
 using API.Fox.EndPoint;
+using API.Fox.Settings;
 
 namespace API.Fox.AppBuilder;
 
