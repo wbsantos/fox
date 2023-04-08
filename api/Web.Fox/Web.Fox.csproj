@@ -8,10 +8,6 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'API.Fox' " />
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\API.Fox.EndPoint\API.Fox.EndPoint.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
@@ -27,5 +23,8 @@
     <ProjectReference Include="..\API.Fox.Settings\API.Fox.Settings.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\favicon.ico" />
   </ItemGroup>
 </Project>

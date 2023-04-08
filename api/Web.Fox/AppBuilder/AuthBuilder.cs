@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Fox.Settings;
 using Fox.Access.Model;

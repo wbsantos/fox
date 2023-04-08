@@ -1,35 +1,32 @@
 ﻿@page
 @model Web.Fox.Pages.LoginModel
 @{
-    Layout = null;
+    Layout = "_Layout";
+    ViewBag.Title = "Login";
 }
 
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <meta name="viewport" content="width=device-width"/>
-        <title>Login</title>
-    </head>
-
-    <body>
-        <h3>Login</h3>
-        @Model.Msg
-        <form method="post">
-            <table>
-                <tr>
-                    <td>Username</td>
-                    <td><input type="text" asp-for="UserLogin" /></td>
-                </tr>
-                <tr>
-                    <td>Password</td>
-                    <td><input type="password" asp-for="UserPassword" /></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td><button type="submit" />Login</td>
-                </tr>
-            </table>
-        </form>
-    </body>
-</html>
+<main class="form-signin w-100 vh-100 m-auto d-flex justify-content-center align-items-center ">
+    <form method="post">
+        <div class="card p-5 bg-light">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <div class="form-floating">
+                <input class="form-control" type="text" asp-for="UserLogin" placeholder="Username" id="userloginInput" />
+                <label for="userloginInput">Username</label>
+            </div>
+            <div class="form-floating">
+                <input class="form-control" type="password" asp-for="UserPassword" placeholder="Username" id="passwordInput" />
+                <label for="userloginInput">Password</label>
+            </div>
+            <div class="mt-3">
+                @if (!string.IsNullOrEmpty(Model.Msg))
+                {
+                    <div class="alert alert-warning mb-1" role="alert">
+                        @Model.Msg
+                    </div>
+                }
+                <button class="btn btn-primary w-100" type="submit">Login</button>
+            </div>
+        </div>
+        <p class="mt-5 mb-3 text-body-secondary">&copy; Fox Web App - 2023</p>
+    </form>
+</main>
