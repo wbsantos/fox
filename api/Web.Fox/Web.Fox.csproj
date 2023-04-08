@@ -27,4 +27,10 @@
   <ItemGroup>
     <Content Remove="wwwroot\favicon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Pages\Menu\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\Menu\" />
+  </ItemGroup>
 </Project>

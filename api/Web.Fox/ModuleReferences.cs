@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Web.Fox.Pages.Menu;
 
 namespace Web.Fox;
 
@@ -40,6 +41,29 @@ internal static class ModuleReferences
         }
 
         return returnAssemblies;        
+    }
+
+    private static IEnumerable<INavBarItem>? _menuPages = null;
+    internal static IEnumerable<INavBarItem> GetMenuPages()
+    {
+        if (_menuPages != null)
+            return _menuPages;
+
+        IList<INavBarItem> menuPages = new List<INavBarItem>();
+        Type menuPageType = typeof(Web.Fox.Pages.Menu.INavBarItem);
+        IEnumerable<Type> typesMenuPage =
+                Web.Fox.ModuleReferences.GetAssemblies()
+                                        .SelectMany(a => a.GetTypes())
+                                        .Where(c => menuPageType.IsAssignableFrom(c)
+                                                    && !c.IsInterface);
+        foreach (var item in typesMenuPage)
+        {
+            var instance = Activator.CreateInstance(item) as Web.Fox.Pages.Menu.INavBarItem;
+            if (instance != null)
+                menuPages.Add(instance);
+        }
+        _menuPages = menuPages;
+        return menuPages;
     }
 }
 

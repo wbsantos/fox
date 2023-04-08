@@ -11,16 +11,11 @@ using Fox.Access.Model;
 namespace Web.Fox.Pages;
 
 [Authorize]
-public class IndexModel : PageModel
+public class LogoutModel : PageModel
 {
-    public LoggedUser LoggedUser { get; }
-
-    public IndexModel(LoggedUser loggedUser)
+    public async Task<IActionResult> OnGetAsync()
     {
-        LoggedUser = loggedUser;
-    }
-
-    public void OnGet()
-    {
+        await HttpContext.SignOutAsync();
+        return RedirectToPage("/login");
     }
 }

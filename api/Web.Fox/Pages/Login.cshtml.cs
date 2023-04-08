@@ -68,7 +68,7 @@ public class LoginModel : PageModel
         );
 
         if(string.IsNullOrEmpty(ReturnUrl))
-            return RedirectToPage("Index");
+            return RedirectToPage("Menu/Profile");
         else
             return Redirect(ReturnUrl);
     }
