@@ -6,10 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <InternalsVisibleTo Include="API.Test.Fox" />
-  </ItemGroup>
-
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'API.Fox' " />
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
