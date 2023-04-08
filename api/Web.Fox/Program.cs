@@ -8,16 +8,13 @@ builder.Services.AddHttpContextAccessor();
 var (corpInfo, appInfo, security) = builder.AddAppConfig();
 builder.AddAppAuth(security);
 builder.AddAppRepositories(security, appInfo);
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
-app.MapGet("/", () => Results.Redirect("/swagger", true));
-app.MapRazorPages();
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseStaticFiles();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapRazorPages(); //by default will map the razor pages in the Pages subfolder
 
 app.Run();
-
-
-public partial class Program { } //expose Program as public so it can run in the API.Test.Fox project

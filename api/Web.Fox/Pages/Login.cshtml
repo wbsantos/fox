@@ -1,0 +1,35 @@
+﻿@page
+@model Web.Fox.Pages.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width"/>
+        <title>Login</title>
+    </head>
+
+    <body>
+        <h3>Login</h3>
+        @Model.Msg
+        <form method="post">
+            <table>
+                <tr>
+                    <td>Username</td>
+                    <td><input type="text" asp-for="UserLogin" /></td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td><input type="password" asp-for="UserPassword" /></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><button type="submit" />Login</td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

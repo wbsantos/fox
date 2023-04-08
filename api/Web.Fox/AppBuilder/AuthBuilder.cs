@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Fox.Settings;
@@ -12,20 +12,13 @@ internal static class Auth
     internal static WebApplicationBuilder AddAppAuth(this WebApplicationBuilder builder, Security security)
     {
         builder.Services.AddAuthentication(o => {
-            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(o => {
-            o.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidIssuers = security.TokenIssuers,
-                ValidAudiences = security.TokenAudiences,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(security.SymetricKey)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true
-            };
+            o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        }).AddCookie("Cookies", options =>
+        {
+            options.LoginPath = "/login";
+            options.ExpireTimeSpan = TimeSpan.FromDays(1);
         });
         
         builder.Services.AddAuthorization(options =>
@@ -64,6 +57,6 @@ internal static class Auth
     internal static IEnumerable<string> GetEndPointsPolicies(this WebApplicationBuilder builder)
     {
         //TODO: return policies being used by the web app
-        return Array.Empty<string>();
+        return new string[] { "admin" };
     }
 }

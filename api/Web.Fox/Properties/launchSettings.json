@@ -18,7 +18,7 @@
     "API.Fox": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5032;https://localhost:7077",
+      "applicationUrl": "http://localhost:5033;https://localhost:7078",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

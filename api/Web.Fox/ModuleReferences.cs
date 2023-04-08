@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Web.Fox.Page;
+namespace Web.Fox;
 
 internal static class ModuleReferences
 {
