@@ -52,7 +52,17 @@ internal static class RepositoryBuilder
                 Name = security.AdminUserName,
                 Email = security.AdminUserEmail
             };
-            user = userRepo.CreateAdminUser(user, security.AdminUserPassword);
+
+            try
+            {
+                user = userRepo.CreateAdminUser(user, security.AdminUserPassword);
+            }
+            catch
+            {
+                user = userRepo.GetUser(security.AdminUserLogin);
+                if (user == null)
+                    throw;
+            }
         }
     }
 }

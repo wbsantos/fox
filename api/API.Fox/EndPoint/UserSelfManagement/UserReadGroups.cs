@@ -15,7 +15,7 @@ public class UserReadGroups : IEndPoint
         try
         {
             if (userId != loggedUser.Id)
-                return Results.Forbid();
+                return Results.Unauthorized();
 
             IEnumerable<Group> groups = userRepository.GetUserGroups(userId);
             return Results.Ok(new { groups = groups });

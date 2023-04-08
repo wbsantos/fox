@@ -15,7 +15,7 @@ public class UserUpdate : IEndPoint
         try
         {
             if (user.Id != loggedUser.Id)
-                return Results.Forbid();
+                return Results.Unauthorized();
 
             userRepo.UpdateUser(user);
             return Results.Ok();

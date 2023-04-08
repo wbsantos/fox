@@ -15,7 +15,7 @@ public class UserUpdatePassword : IEndPoint
         try
         {
             if (user.Id != loggedUser.Id)
-                return Results.Forbid();
+                return Results.Unauthorized();
 
             userRepo.UpdatePassword(user.Id, user.Password);
             return Results.Ok();

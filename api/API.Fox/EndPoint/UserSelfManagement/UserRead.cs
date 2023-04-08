@@ -15,7 +15,7 @@ public class UserRead : IEndPoint
         try
         {
             if (userId != loggedUser.Id)
-                return Results.Forbid();
+                return Results.Unauthorized();
 
             User? userData = userRepo.GetUser(userId);
             return Results.Ok(userData);

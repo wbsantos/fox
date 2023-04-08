@@ -11,10 +11,11 @@ public class FoxApplicationFactory<TProgram> : WebApplicationFactory<TProgram> w
 {
     private const string URL_TOKEN = "/security/token";
     private const string URL_USER_MANAGEMENT = "/management/user";
-
+        
     public FoxApplicationFactory()
 	{
-	}
+        
+    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -80,5 +81,10 @@ public class FoxApplicationFactory<TProgram> : WebApplicationFactory<TProgram> w
 
         string userToken = await GetToken(credentials.Login, credentials.Password);
         return (data!.id, userToken);
+    }
+
+    public string UniqueId()
+    {
+        return $"{DateTime.Now.Ticks}";
     }
 }

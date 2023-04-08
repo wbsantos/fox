@@ -32,7 +32,7 @@ public class E2EUserSelfManagementTest : IClassFixture<FoxApplicationFactory<Pro
 
         (Guid userId, string userToken) = await _factory.AddUser(token,
                                                                 "self@email.com",
-                                                                $"selfuser{DateTime.Now.Ticks}",
+                                                                $"selfuser{_factory.UniqueId()}",
                                                                 "Self Management User Test",
                                                                 "123XYZ");
         var userNewLogin = await SelfUpdateUser(userToken, userId);
@@ -47,7 +47,7 @@ public class E2EUserSelfManagementTest : IClassFixture<FoxApplicationFactory<Pro
         {
             Id = userId,
             Email = "userselfedit@email.com",
-            Login = $"userstestselfedit{DateTime.Now.Ticks}",
+            Login = $"userstestselfedit{_factory.UniqueId()}",
             Name = "User Self Edit Testing"
         };
 
@@ -115,7 +115,7 @@ public class E2EUserSelfManagementTest : IClassFixture<FoxApplicationFactory<Pro
     public async Task SelfGetUserGroups(string adminToken, string userToken, Guid userId)
     {
         E2EGroupManagementTest groupTest = new E2EGroupManagementTest(_factory);
-        Guid groupId = await groupTest.AddGroup(adminToken, $"Group Self User Test {DateTime.Now.Ticks}");
+        Guid groupId = await groupTest.AddGroup(adminToken, $"Group Self User Test {_factory.UniqueId()}");
         await AddUsersInGroup(adminToken, groupId, userId);
 
         var client = _factory.BuildClient(userToken);

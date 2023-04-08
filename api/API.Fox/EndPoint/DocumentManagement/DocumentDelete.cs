@@ -17,7 +17,7 @@ public class DocumentDelete : IEndPoint
             if (docRepo.DeleteDocument(documentId))
                 return Results.Ok();
             else
-                return Results.Forbid();
+                return Results.Unauthorized();
         }
         catch (ArgumentException argumentNull)
         {

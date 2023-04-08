@@ -27,7 +27,7 @@ public class E2EPermissionManagementTest : IClassFixture<FoxApplicationFactory<P
         var userTest = new E2EUserManagementTest(_factory);
         string token = await _factory.GetToken("admin", "123456");
 
-        Guid groupId = await groupTest.AddGroup(token, $"Group Permission Test {DateTime.Now.Ticks}");
+        Guid groupId = await groupTest.AddGroup(token, $"Group Permission Test {_factory.UniqueId()}");
         (Guid userId, _) = await userTest.AddUser(token);
 
         await AddPermission(token, groupId, "SYSTEM_PERMISSION_ADDITION");

@@ -20,7 +20,7 @@ public class DocumentReadPermission : IEndPoint
         }
         catch (UnauthorizedAccessException)
         {
-            return Results.Forbid();
+            return Results.Unauthorized();
         }
         catch (ArgumentException argumentNull)
         {

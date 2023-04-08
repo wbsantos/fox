@@ -44,7 +44,7 @@ public class E2EUserManagementTest : IClassFixture<FoxApplicationFactory<Program
 
     public async Task<(Guid userId, string userToken)> AddUser(string token)
     {
-        string login = $"usertest{DateTime.Now.Ticks}";
+        string login = $"usertest{_factory.UniqueId()}";
         string password = "ABCDEF";
         (Guid userId, string userToken) = await _factory.AddUser(token,
                                                                 "user@email.com",
@@ -72,7 +72,7 @@ public class E2EUserManagementTest : IClassFixture<FoxApplicationFactory<Program
         {
             Id = userId,
             Email = "useredit@email.com",
-            Login = $"usertestedit{DateTime.Now.Ticks}",
+            Login = $"usertestedit{_factory.UniqueId()}",
             Name = "User Edit for Testing"
         };
 
@@ -169,7 +169,7 @@ public class E2EUserManagementTest : IClassFixture<FoxApplicationFactory<Program
     public async Task GetUserGroups(string token, Guid userId)
     {
         E2EGroupManagementTest groupTest = new E2EGroupManagementTest(_factory);
-        Guid groupId = await groupTest.AddGroup(token, $"Group User Management Test {DateTime.Now.Ticks}");
+        Guid groupId = await groupTest.AddGroup(token, $"Group User Management Test {_factory.UniqueId()}");
         await AddUsersInGroup(token, groupId, userId);
 
         var client = _factory.BuildClient(token);

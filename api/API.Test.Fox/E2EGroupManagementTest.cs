@@ -28,7 +28,7 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
     {
         string token = await _factory.GetToken("admin", "123456");
 
-        Guid groupId = await AddGroup(token, $"Group Test {DateTime.Now.Ticks}");
+        Guid groupId = await AddGroup(token, $"Group Test {_factory.UniqueId()}");
         var userNewLogin = await UpdateGroup(token, groupId);
         
         var allGroups = await GetAllGroups(token);
@@ -68,7 +68,7 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
         var dataRequest = new
         {
             Id = groupId,
-            Name = $"Group Edit Test {DateTime.Now.Ticks}"
+            Name = $"Group Edit Test {_factory.UniqueId()}"
         };
 
         var client = _factory.BuildClient(token);
@@ -79,7 +79,7 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
         Assert.Equal(dataRequest.Name, group!.Name);
 
 
-        string tempGroupName = $"Temp Group {DateTime.Now.Ticks}";
+        string tempGroupName = $"Temp Group {_factory.UniqueId()}";
         Guid tempGroup = await AddGroup(token, tempGroupName);
         response = await client.PutAsJsonAsync(URL_GROUP_MANAGEMENT, new { Id = groupId, Name = tempGroupName });
         Assert.False(response.IsSuccessStatusCode);
@@ -136,8 +136,8 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
 
     public async Task<Guid[]> AddUsersInGroup(string token, Guid groupId)
     {
-        string userLogin1 = $"usergroup1{DateTime.Now.Ticks}";
-        string userLogin2 = $"usergroup2{DateTime.Now.Ticks}";
+        string userLogin1 = $"usergroup1{_factory.UniqueId()}";
+        string userLogin2 = $"usergroup2{_factory.UniqueId()}";
         (Guid userId1, _) = await _factory.AddUser(token,
                                                    "usergroup1@email.com",
                                                     userLogin1,
