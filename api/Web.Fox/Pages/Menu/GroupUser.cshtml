@@ -1,0 +1,77 @@
+﻿@page
+@model Web.Fox.Pages.Menu.GroupUserModel
+@{
+    Layout = "../_Layout";
+    ViewBag.Title = "Groups";
+}
+
+<main class="form-signin w-100 vh-100" >
+    @if (!string.IsNullOrEmpty(Model.Msg))
+    {
+        <div class="alert alert-danger mb-1" role="alert">
+            @Model.Msg
+        </div>
+    }
+<form method="post">
+    <input type="hidden" asp-for="GroupId" />
+    <input type="hidden" asp-for="GroupName" />
+    <div class="w-75 mx-auto">
+        <div class="card p-5 bg-light w-100 col">
+            <h1 class="h3 mb-3 fw-normal text-center">@Model.GroupName</h1>
+            <div class="row">
+                <div class="col">
+                    <h1 class="h5 mb-3 fw-normal">Users not in the group</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Login</th>
+                                <th scope="col">User Name</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.UsersNotInGroup)
+                            {
+                                <tr>
+                                    <td>@user.Login</td>
+                                    <td>@user.Name</td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="AddToGroup" asp-route-userId="@user.Id">Add</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col border-start">
+                    <h1 class="h5 mb-3 fw-normal">Users in the group</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">User Login</th>
+                                <th scope="col">User Name</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.UsersInGroup)
+                            {
+                                <tr>
+                                    <td>@user.Login</td>
+                                    <td>@user.Name</td>
+                                    <td>
+                                        <button class="btn btn-danger" type="submit" asp-page-handler="DelFromGroup" asp-route-userId="@user.Id">Del</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-end">
+                <a class="btn btn-secondary" asp-page="GroupManagement" style="max-width: 100px" >Go Back</a>
+            </div>
+        </div>
+    </div>
+</form>
+</main>

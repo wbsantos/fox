@@ -2,5 +2,103 @@
 @model Web.Fox.Pages.Menu.UserManagementModel
 @{
     Layout = "../_Layout";
-    ViewBag.Title = "User Management";
+    ViewBag.Title = "Users";
 }
+
+<main class="form-signin w-100 vh-100">
+    @if (!string.IsNullOrEmpty(Model.Msg))
+    {
+        <div class="alert alert-danger mb-1" role="alert">
+            @Model.Msg
+        </div>
+    }
+    <form method="post">
+        <div class="w-100 row">
+            <div class="card p-5 bg-light w-50 col">
+                <h1 class="h3 mb-3 fw-normal text-center">Users</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Login</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            if (Model.AlterModeFor == null)
+                            {
+                                <tr>
+                                    <td>@user.Name</td>
+                                    <td>@user.Login</td>
+                                    <td>@user.Email</td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="EnterUpdateMode" asp-route-userId="@user.Id">Alter</button>&nbsp;
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="UserGroups" asp-route-userId="@user.Id">Groups</button>&nbsp;
+                                        <button class="btn btn-danger" type="submit" asp-page-handler="DeleteUser" asp-route-userId="@user.Id">Delete</button>&nbsp;
+                                    </td>
+                                </tr>
+                                if(Model.GroupsFor == user.Id)
+                                {
+                                    <tr>
+                                        <td class="p-5" colspan="4">
+                                            @if (Model.UserGroups.Count() == 0)
+                                            {
+                                                <p>@user.Login is not currently in an group</p>
+                                            }
+                                            else if (Model.UserGroups.Count() == 1)
+                                            {
+                                                <p>@user.Login belongs to the group @(string.Join(", ", Model.UserGroups.Select(g => g.Name)))</p>
+                                            }
+                                            else
+                                            {
+                                                <p>@user.Login belongs to groups: @(string.Join(", ", Model.UserGroups.Select(g => g.Name)))</p>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                if (Model.AlterModeFor == user.Id)
+                                {
+                                    <tr>
+                                        <td><input class="form-control" type="text" asp-for="AlterModeNewUserName" id="userNewName" value="@user.Name" /></td>
+                                        <td>
+                                            <input class="form-control" type="text" asp-for="AlterModeNewLogin" id="userNewLogin" value="@user.Login" />
+                                            <br />
+                                            <div class="form-floating">
+                                                <input class="form-control" type="password" asp-for="AlterModeNewPassword" placeholder="Password" id="passwordInput" />
+                                                <label for="passwordInput">Password: empty for no change</label>
+                                            </div>
+                                        </td>
+                                        <td><input class="form-control" type="text" asp-for="AlterModeNewEmail" id="userNewEmail" value="@user.Email" /></td>
+                                        <td>
+                                            <button class="btn btn-primary" type="submit" asp-page-handler="UpdateUser" asp-route-userId="@user.Id">Confirm</button>&nbsp;
+                                            <button class="btn btn-danger" type="submit" asp-page-handler="CancelUpdate" asp-route-userId="@user.Id">Cancel</button>&nbsp;
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@user.Name</td>
+                                        <td>@user.Login</td>
+                                        <td>@user.Email</td>
+                                        <td>
+                                            <button class="btn btn-primary disabled">Alter</button>&nbsp;
+                                            <button class="btn btn-danger disabled">Groups</button>&nbsp;
+                                            <button class="btn btn-danger disabled">Delete</button>&nbsp;
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</main>

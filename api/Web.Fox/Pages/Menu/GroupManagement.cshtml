@@ -1,0 +1,70 @@
+﻿@page
+@model Web.Fox.Pages.Menu.GroupManagementModel
+@{
+    Layout = "../_Layout";
+    ViewBag.Title = "Groups";
+}
+
+<main class="form-signin w-50 vh-100 mx-auto" style="max-width: 540px; min-width: 400px">
+    @if (!string.IsNullOrEmpty(Model.Msg))
+    {
+        <div class="alert alert-danger mb-1" role="alert">
+            @Model.Msg
+        </div>
+    }
+    <form method="post">
+        <div class="w-100 row">
+            <div class="card p-5 bg-light w-50 col">
+                <h1 class="h3 mb-3 fw-normal text-center">Groups</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var group in Model.Groups)
+                        {
+                            if (Model.AlterModeFor == null)
+                            {
+                                <tr>
+                                    <td>@group.Name</td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="EnterUpdateMode" asp-route-groupId="@group.Id">Alter</button>&nbsp;
+                                        <a class="btn btn-primary" asp-page="GroupUser" asp-route-groupId="@group.Id" asp-route-groupName="@group.Name">Users</a>&nbsp;
+                                        <button class="btn btn-danger" type="submit" asp-page-handler="DeleteGroup" asp-route-groupId="@group.Id">Delete</button>&nbsp;
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                if (Model.AlterModeFor == group.Id)
+                                {
+                                    <tr>
+                                        <td><input class="form-control" type="text" asp-for="AlterModeNewGroupName" id="groupNewName" value="@group.Name" /></td>
+                                        <td>
+                                            <button class="btn btn-primary" type="submit" asp-page-handler="UpdateGroup" asp-route-groupId="@group.Id">Confirm</button>&nbsp;
+                                            <button class="btn btn-danger" type="submit" asp-page-handler="CancelUpdate" asp-route-groupId="@group.Id">Cancel</button>&nbsp;
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@group.Name</td>
+                                        <td>
+                                            <button class="btn btn-primary disabled">Alter</button>&nbsp;
+                                            <button class="btn btn-primary disabled">Users</button>&nbsp;
+                                            <button class="btn btn-danger disabled">Delete</button>&nbsp;
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</main>

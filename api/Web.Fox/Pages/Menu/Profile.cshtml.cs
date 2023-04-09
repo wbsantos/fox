@@ -53,7 +53,7 @@ public class ProfileModel : PageModel, INavBarItem
             SuccessOnPost = true;
             MsgInformation = "Information updated!";
         }
-        catch(ArgumentException argEx)
+        catch(Exception argEx)
         {
             MsgInformation = argEx.Message;
             SuccessOnPost = false;
@@ -72,7 +72,7 @@ public class ProfileModel : PageModel, INavBarItem
             MsgPassword = "Password changed!";
             SuccessOnPost = true;
         }
-        catch (ArgumentException argEx)
+        catch (Exception argEx)
         {
             MsgPassword = argEx.Message;
             SuccessOnPost = false;

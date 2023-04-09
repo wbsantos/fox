@@ -29,7 +29,7 @@
                                 if (Accessor?.HttpContext?.Request.Path.Value?.ToLower() == instance.PagePath.ToLower())
                                 {
                                     <li class="nav-item">
-                                        <a class="btn rounded-0 btn-primary p-3" aria-current="page" aso-page="@instance.PagePath">@instance.MenuDescription</a>
+                                        <a class="btn rounded-0 btn-primary p-3" aria-current="page" asp-page="@instance.PagePath">@instance.MenuDescription</a>
                                     </li>
                                 }
                                 else
