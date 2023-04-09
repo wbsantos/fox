@@ -31,4 +31,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\API.Fox\API.Fox.csproj" />
+  </ItemGroup>
 </Project>
