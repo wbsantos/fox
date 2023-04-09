@@ -1,0 +1,81 @@
+﻿@page
+@model Web.Fox.Pages.Menu.SystemPermissionModel
+@{
+    Layout = "../_Layout";
+    ViewBag.Title = "System Permissions";
+}
+
+<main class="form-signin w-100 vh-100" >
+    @if (!string.IsNullOrEmpty(Model.Msg))
+    {
+        <div class="alert alert-danger mb-1" role="alert">
+            @Model.Msg
+        </div>
+    }
+<form method="post">
+    <input type="hidden" asp-for="HolderId" />
+    <input type="hidden" asp-for="HolderName" />
+    <input type="hidden" asp-for="HolderType" />
+    <div class="w-75 mx-auto">
+        <div class="card p-5 bg-light w-100 col">
+            <h1 class="h5 mb-3 fw-normal text-center">Permissions for @Model.HolderType: @Model.HolderName</h1>
+            <div class="row">
+                <div class="col">
+                    <h1 class="h5 mb-3 fw-normal">Permissions Denied</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Permission</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var permission in Model.PermissionsDenied)
+                            {
+                                <tr>
+                                    <td>@permission</td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="AddPermission" asp-route-permission="@permission">Add</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col border-start">
+                    <h1 class="h5 mb-3 fw-normal">Permissions Given</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Permission</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var permission in Model.PermissionsGiven)
+                            {
+                                <tr>
+                                    <td>@permission</td>
+                                    <td>
+                                        <button class="btn btn-danger" type="submit" asp-page-handler="DelPermission" asp-route-permission="@permission">Del</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-end">
+                @if (Model.HolderType.ToLower() == "group")
+                {
+                    <a class="btn btn-secondary" asp-page="GroupManagement" style="max-width: 100px">Go Back</a>
+                }
+                else
+                {
+                    <a class="btn btn-secondary" asp-page="UserManagement" style="max-width: 100px">Go Back</a>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+</main>

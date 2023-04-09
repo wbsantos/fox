@@ -33,6 +33,7 @@
                                     <td>
                                         <button class="btn btn-primary" type="submit" asp-page-handler="EnterUpdateMode" asp-route-groupId="@group.Id">Alter</button>&nbsp;
                                         <a class="btn btn-primary" asp-page="GroupUser" asp-route-groupId="@group.Id" asp-route-groupName="@group.Name">Users</a>&nbsp;
+                                        <a class="btn btn-primary" asp-page="SystemPermission" asp-route-holderId="@group.Id" asp-route-holderName="@group.Name" asp-route-holderType="group">Permissions</a>&nbsp;
                                         <button class="btn btn-danger" type="submit" asp-page-handler="DeleteGroup" asp-route-groupId="@group.Id">Delete</button>&nbsp;
                                     </td>
                                 </tr>
@@ -56,6 +57,7 @@
                                         <td>
                                             <button class="btn btn-primary disabled">Alter</button>&nbsp;
                                             <button class="btn btn-primary disabled">Users</button>&nbsp;
+                                            <button class="btn btn-primary disabled">Permissions</button>&nbsp;
                                             <button class="btn btn-danger disabled">Delete</button>&nbsp;
                                         </td>
                                     </tr>

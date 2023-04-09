@@ -22,7 +22,7 @@ internal static class Auth
         
         builder.Services.AddAuthorization(options =>
         {
-            foreach (var policyClaim in builder.GetEndPointsPolicies())
+            foreach (var policyClaim in GetEndPointsPolicies())
             {
                 options.AddPolicy(policyClaim,
                                   policy => policy.RequireClaim("SystemPermission",
@@ -53,9 +53,9 @@ internal static class Auth
         return builder;
     }
 
-    internal static IEnumerable<string> GetEndPointsPolicies(this WebApplicationBuilder builder)
+    internal static IEnumerable<string> GetEndPointsPolicies()
     {
         //TODO: return policies being used by the web app
-        return new string[] { "admin" };
+        return new string[] { "admin", "TEST1", "TEST2" };
     }
 }
