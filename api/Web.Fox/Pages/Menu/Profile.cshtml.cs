@@ -15,6 +15,7 @@ public class ProfileModel : PageModel, INavBarItem
     public string MenuDescription => "Profile";
     public string PagePath => "/Menu/Profile";
     public LoggedUser LoggedUser { get; set; }
+    public string MenuCategory => "SELF_MANAGEMENT";
 
     UserRepository _userRepo;
     public ProfileModel(UserRepository userRepo, LoggedUser loggedUser)

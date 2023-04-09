@@ -1,8 +1,8 @@
 ﻿@page
-@model Web.Fox.Pages.Menu.UploadDocumentModel
+@model Web.Fox.Pages.Menu.UpdateDocumentModel
 @{
     Layout = "../_Layout";
-    ViewBag.Title = "Upload new document";
+    ViewBag.Title = "Update Document";
 }
 
 
@@ -49,10 +49,12 @@
 <main class="form-signin w-50 vh-100 mx-auto" style="max-width: 540px; min-width: 400px">
     <div class="w-100 row">
         <div class="card p-5 bg-light w-50 col">
-            <form method="post" asp-page-handler="UploadDocument" enctype="multipart/form-data">
-                <h1 class="h3 mb-5 fw-normal text-center">Upload new document</h1>
-                <div class="mb-3">
-                    <input class="form-control" type="file" asp-for="FileBinary" />
+            <form method="post" asp-page-handler="UpdateDocument" enctype="multipart/form-data">
+                <input type="hidden" asp-for="DocumentId" />
+                <h1 class="h3 mb-5 fw-normal text-center">Update Document</h1>
+                <div class="form-floating">
+                    <input class="form-control" type="text" asp-for="DocumentName" placeholder="documentname" id="documentname" value="@Model.DocumentName" />
+                    <label for="documentname">Document name</label>
                 </div>
 
                 <div class="mt-3 border p-3">
@@ -76,16 +78,29 @@
                             @Model.MsgInformation
                         </div>
                     }
-                    <button class="btn btn-primary w-100" type="submit">Upload Document</button>
+                    <button class="btn btn-primary w-100" type="submit" >Update Document</button>
                 </div>
             </form>
+            <div class="row mt-3 d-flex justify-content-end">
+                <a class="btn btn-secondary" asp-page="DownloadDocument" style="max-width: 100px">Go Back</a>
+            </div>
         </div>
     </div>
 </main>
 
 
 <script>
-    addMetadataRow();
-    addMetadataRow();
-    addMetadataRow();
+    totalMetadataRows = @(Model.DocumentInformation.Metadata.Count);
+    RecreateMetadaRows();
+    @for (int i = 0; i < Model.DocumentInformation.Metadata.Count; i++)
+    {
+        <text>
+        var keyInput = document.querySelector('#mkey_' + @(i));
+        var valueInput = document.querySelector('#mvalue_' + @(i));
+
+        keyInput.value = "@(Model.DocumentInformation.Metadata.ElementAt(i).Key)";
+        valueInput.value = "@(Model.DocumentInformation.Metadata.ElementAt(i).Value)";
+        </text>
+    }
+
 </script>

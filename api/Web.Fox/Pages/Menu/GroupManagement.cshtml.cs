@@ -13,6 +13,7 @@ public class GroupManagementModel : PageModel, INavBarItem
 {
     public string MenuDescription => "Groups";
     public string PagePath => "/Menu/GroupManagement";
+    public string MenuCategory => "MANAGEMENT";
 
     public string Msg { get; set; } = string.Empty;
     private IEnumerable<Group> _groups = Array.Empty<Group>();

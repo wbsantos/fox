@@ -1,0 +1,47 @@
+﻿@page
+@model Web.Fox.Pages.Menu.UserCreateModel
+@{
+    Layout = "../_Layout";
+    ViewBag.Title = "New User";
+}
+
+
+
+<main class="form-signin w-50 vh-100 mx-auto" style="max-width: 540px; min-width: 400px">
+    <div class="w-100 row">
+        <div class="card p-5 bg-light w-50 col">
+            <form method="post" asp-page-handler="UserInformation">
+                <h1 class="h3 mb-3 fw-normal">User Information</h1>
+                <div class="form-floating">
+                    <input class="form-control" type="text" asp-for="UserData.Login" placeholder="Login" id="userloginInput" />
+                    <label for="userloginInput">Login</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" type="text" asp-for="UserData.Name" placeholder="Name" id="usernameInput" />
+                    <label for="usernameInput">Name</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" type="text" asp-for="UserData.Email" placeholder="E-mail" id="useremailInput" />
+                    <label for="useremailInput">E-mail</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" type="password" asp-for="UserData.Password" placeholder="Password" id="passwordInput" />
+                    <label for="useremailInput">Password</label>
+                </div>
+                <div class="form-floating">
+                    <input class="form-control" type="password" asp-for="UserData.PasswordConfirmation" placeholder="Password Confirmation" id="passwordconfirmationInput" />
+                    <label for="passwordconfirmationInput">Password Confirmation</label>
+                </div>
+                <div class="mt-3">
+                    @if (!string.IsNullOrEmpty(Model.MsgInformation))
+                    {
+                        <div class="alert @(Model.SuccessOnPost ? "alert-success" : "alert-danger") mb-1" role="alert">
+                            @Model.MsgInformation
+                        </div>
+                    }
+                    <button class="btn btn-primary w-100" type="submit">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

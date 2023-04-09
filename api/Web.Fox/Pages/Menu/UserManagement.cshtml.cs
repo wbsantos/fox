@@ -14,6 +14,7 @@ public class UserManagementModel : PageModel, INavBarItem
 {
     public string MenuDescription => "Users";
     public string PagePath => "/Menu/UserManagement";
+    public string MenuCategory => "MANAGEMENT";
 
     public string Msg { get; set; } = string.Empty;
     private IEnumerable<FoxUser> _users = Array.Empty<FoxUser>();

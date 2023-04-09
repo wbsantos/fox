@@ -5,10 +5,8 @@ using API.Fox;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
-//builder.Services.AddSession(options => options.IdleTimeout = TimeSpan.FromMinutes(20));
-//builder.Services.AddMemoryCache();
 
-var (corpInfo, appInfo, security) = builder.AddAppConfig();
+var (appInfo, security) = builder.AddAppConfig();
 builder.AddAppAuth(security);
 builder.AddAppRepositories(security, appInfo);
 var razorBuilder = builder.Services.AddRazorPages();
@@ -17,7 +15,6 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 app.UseStaticFiles();
-//app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

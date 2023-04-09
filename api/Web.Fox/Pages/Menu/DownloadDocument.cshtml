@@ -1,0 +1,94 @@
+﻿@page
+@model Web.Fox.Pages.Menu.DownloadDocumentModel
+@{
+    Layout = "../_Layout";
+    ViewBag.Title = "Documents";
+}
+
+<main class="form-signin w-100 vh-100">
+    @if (!string.IsNullOrEmpty(Model.Msg))
+    {
+        <div class="alert alert-danger mb-1" role="alert">
+            @Model.Msg
+        </div>
+    }
+    <form method="post">
+        <div class="w-100 row">
+            <div class="card p-5 bg-light w-50 col">
+                <h1 class="h3 mb-3 fw-normal text-center">Documents</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Metadata</th>
+                            <th scope="col">File Size</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var document in Model.Documents)
+                        {
+                            <tr>
+                                <td>@document.Name</td>
+                                <td>
+                                    <table class="table">
+                                        <tbody>
+                                            @foreach (var metadata in document.Metadata)
+                                            {
+                                                <tr>
+                                                    <td>@metadata.Key</td>
+                                                    <td>@metadata.Value</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>@($"{(document.FileSizeBytes / 1024d / 1024d):f3}")mb</td>
+                                <td>
+                                    <a class="btn btn-primary" type="submit" asp-page="UpdateDocument" asp-route-documentId="@document.Id" asp-route-documentName="@document.Name">Alter</a>&nbsp;
+                                    <button class="btn btn-primary" type="submit" asp-page-handler="Holders" asp-route-documentId="@document.Id">Holders</button>&nbsp;
+                                    <button class="btn btn-primary" type="submit" asp-page-handler="Download" asp-route-documentId="@document.Id" asp-route-documentName="@document.Name">Download</button>&nbsp;
+                                    <button class="btn btn-danger" type="submit" asp-page-handler="DeleteDocument" asp-route-documentId="@document.Id">Delete</button>&nbsp;
+                                </td>
+                            </tr>
+                            if(Model.HoldersFor == document.Id)
+                            {
+                                <tr>
+                                    <td colspan="4">
+                                        @if (Model.DocumentHolders.Count() == 0)
+                                        {
+                                            <p>Only admin users have access to this document</p>
+                                        }
+                                        else if (Model.DocumentHolders.Count() >= 1)
+                                        {
+                                            <p>This document can be accessed by:</p>
+                                            <table class="table mb-5 mt-1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Holder Name</th>
+                                                        <th>Holder Type</th>
+                                                        <th>Access to</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach(var holder in Model.DocumentHolders)
+                                                    {
+                                                        <tr>
+                                                            <td>@holder.HolderName</td>
+                                                            <td>@holder.HolderType</td>
+                                                            <td>@holder.Permission.ToString()</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</main>
