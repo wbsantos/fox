@@ -5,7 +5,7 @@ using Web.Fox.Pages.Menu;
 
 namespace Web.Fox;
 
-internal static class ModuleReferences
+public static class ModuleReferences
 {
 	internal static IEnumerable<Assembly> GetAssemblies()
 	{
@@ -44,7 +44,7 @@ internal static class ModuleReferences
     }
 
     private static IEnumerable<INavBarItem>? _menuPages = null;
-    internal static IEnumerable<INavBarItem> GetMenuPages()
+    public static IEnumerable<INavBarItem> GetMenuPages(IServiceProvider serviceProvider)
     {
         if (_menuPages != null)
             return _menuPages;
@@ -58,7 +58,7 @@ internal static class ModuleReferences
                                                     && !c.IsInterface);
         foreach (var item in typesMenuPage)
         {
-            var instance = Activator.CreateInstance(item) as Web.Fox.Pages.Menu.INavBarItem;
+            var instance = ActivatorUtilities.CreateInstance(serviceProvider, item) as INavBarItem;
             if (instance != null)
                 menuPages.Add(instance);
         }

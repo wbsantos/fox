@@ -1,5 +1,6 @@
 ﻿@inject Fox.Access.Model.LoggedUser LoggedUser
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor Accessor
+@inject IServiceProvider ServiceProvider
 
 <!DOCTYPE html>
 <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
@@ -22,7 +23,7 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav me-auto mb-2 mb-md-0">
                         @{
-                            IEnumerable<Web.Fox.Pages.Menu.INavBarItem> menuPageList = Web.Fox.ModuleReferences.GetMenuPages();
+                            IEnumerable<Web.Fox.Pages.Menu.INavBarItem> menuPageList = Web.Fox.ModuleReferences.GetMenuPages(ServiceProvider);
                             foreach (var instance in menuPageList)
                             {
                                 if (Accessor?.HttpContext?.Request.Path.Value?.ToLower() == instance.PagePath.ToLower())
@@ -45,16 +46,17 @@
                             <p class="nav-link disabled">Welcome @LoggedUser.Name</p>
                         </div>
                         <div class="d-flex nav-item">
-                            <a class="btn btn-outline-success p-3 rounded-0" asp-page="Logout">Logout</a>
+                            <a class="btn btn-outline-success p-3 rounded-0" href="~/logout">Logout</a>
                         </div>
                     </div>
                 </div>
             </div>
         </nav>
     }
-    <div>
+    <div class="p-5">
         @RenderBody()
     </div>
+    <p class="mt-5 mb-3 text-body-secondary">&copy; Fox Web App - 2023</p>
 </body>
 </html>
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Authorization;
 using Web.Fox.AppBuilder;
 using API.Fox;
@@ -8,7 +9,9 @@ builder.Services.AddHttpContextAccessor();
 var (corpInfo, appInfo, security) = builder.AddAppConfig();
 builder.AddAppAuth(security);
 builder.AddAppRepositories(security, appInfo);
-builder.Services.AddRazorPages();
+var razorBuilder = builder.Services.AddRazorPages();
+if (builder.Environment.IsDevelopment())
+    razorBuilder.AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 app.UseStaticFiles();
