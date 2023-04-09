@@ -62,7 +62,7 @@
                                         else if (Model.DocumentHolders.Count() >= 1)
                                         {
                                             <p>This document can be accessed by:</p>
-                                            <table class="table mb-5 mt-1">
+                                            <table class="table mt-1">
                                                 <thead>
                                                     <tr>
                                                         <th>Holder Name</th>
@@ -71,7 +71,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach(var holder in Model.DocumentHolders)
+                                                    @foreach (var holder in Model.DocumentHolders)
                                                     {
                                                         <tr>
                                                             <td>@holder.HolderName</td>
@@ -82,6 +82,10 @@
                                                 </tbody>
                                             </table>
                                         }
+                                    <div class="d-flex mb-5 justify-content-end">
+                                        <a class="btn btn-info" type="submit" asp-page="DocumentPermission" asp-route-documentId="@document.Id" asp-route-documentName="@document.Name" asp-route-holderType="Group">Manage permissions for Groups</a> &nbsp;
+                                        <a class="btn btn-info" type="submit" asp-page="DocumentPermission" asp-route-documentId="@document.Id" asp-route-documentName="@document.Name" asp-route-holderType="User">Manage permissions for Users</a>
+                                    </div>
                                     </td>
                                 </tr>
                             }

@@ -1,0 +1,93 @@
+﻿@page
+@model Web.Fox.Pages.Menu.DocumentPermissionModel
+@{
+    Layout = "../_Layout";
+    ViewBag.Title = "Document Permissions";
+}
+
+<main class="form-signin w-100 vh-100" >
+    @if (!string.IsNullOrEmpty(Model.Msg))
+    {
+        <div class="alert alert-danger mb-1" role="alert">
+            @Model.Msg
+        </div>
+    }
+<form method="post">
+    <input type="hidden" asp-for="DocumentId" />
+    <input type="hidden" asp-for="DocumentName" />
+    <input type="hidden" asp-for="HolderType" />
+    <div class="w-100 mx-auto">
+        <div class="card p-5 bg-light w-100 col">
+            <h1 class="h4 mb-3 fw-normal text-center">@Model.HolderType permissions for document: @Model.DocumentName</h1>
+            <div class="row mt-3">
+                <div class="col">
+                    <h1 class="h5 mb-3 fw-normal">Holders Forbidden</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                @if (Model.HolderType.ToLower() == "user")
+                                {
+                                    <th scope="col">Login</th>
+                                }
+                                <th scope="col">Name</th>
+                                <th scope="col">Permission</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var permission in Model.PermissionsDenied)
+                            {
+                                <tr>
+                                    @if (Model.HolderType.ToLower() == "user")
+                                    {
+                                        <td>@permission.HolderLogin</td>
+                                    }
+                                    <td>@permission.HolderName</td>
+                                    <td>
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="AddPermission" asp-route-holderId="@permission.HolderId" asp-route-permission="@Fox.Dox.Model.DocumentPermission.Download">To Download</button>&nbsp;
+                                        <button class="btn btn-primary" type="submit" asp-page-handler="AddPermission" asp-route-holderId="@permission.HolderId" asp-route-permission="@Fox.Dox.Model.DocumentPermission.Manage">To Manage</button>&nbsp;
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col border-start">
+                    <h1 class="h5 mb-3 fw-normal">Holders Allowed</h1>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                @if (Model.HolderType.ToLower() == "user")
+                                {
+                                    <th scope="col">Login</th>
+                                }
+                                <th scope="col">Name</th>
+                                <th scope="col">Permission</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var permission in Model.PermissionsGiven)
+                            {
+                                <tr>
+                                    @if (Model.HolderType.ToLower() == "user")
+                                    {
+                                        <td>@permission.HolderLogin</td>
+                                    }
+                                    <td>@permission.HolderName</td>
+                                    <td>@permission.Permission.ToString()</td>
+                                    <td>
+                                        <button class="btn btn-danger" type="submit" asp-page-handler="DelPermission" asp-route-holderId="@permission.HolderId" asp-route-permission="@permission.Permission">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-end">
+                <a class="btn btn-secondary" asp-page="DownloadDocument" style="max-width: 100px">Go Back</a>                
+            </div>
+        </div>
+    </div>
+</form>
+</main>
