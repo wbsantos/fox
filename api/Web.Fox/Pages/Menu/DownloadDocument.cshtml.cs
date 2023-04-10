@@ -6,9 +6,11 @@ using Fox.Dox.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Fox.Dox.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "DOCUMENT_READ")]
 public class DownloadDocumentModel : PageModel, INavBarItem
 {
     public string MenuDescription => "Download";
@@ -50,6 +52,7 @@ public class DownloadDocumentModel : PageModel, INavBarItem
     {
         try
         {
+            HttpContext.HasPermission("DOCUMENT_DELETION");
             _docRepo.DeleteDocument(documentId);
         }
         catch (ArgumentException argEx)
@@ -63,6 +66,7 @@ public class DownloadDocumentModel : PageModel, INavBarItem
     {
         try
         {
+            HttpContext.HasPermission("DOCUMENT_PERMISSION_READ");
             DocumentHolders = _docRepo.GetPermissionByDocument(documentId);
             HoldersFor = documentId;
         }
@@ -77,6 +81,7 @@ public class DownloadDocumentModel : PageModel, INavBarItem
     {
         try
         {
+            HttpContext.HasPermission("DOCUMENT_READ");
             var docFile = _docRepo.GetDocumentBinary(documentId);
             FillDocuments();
             return File(docFile, "application/octet-stream", documentName);

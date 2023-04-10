@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Fox.Access.Repository;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "USER_CREATION_MANAGEMENT")]
 public class UserCreateModel : PageModel
 {
     UserRepository _userRepo;

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fox.Access.Model;
 using Fox.Access.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FoxUser = Fox.Access.Model.User;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "USER_READ_ALL_MANAGEMENT")]
 public class UserManagementModel : PageModel, INavBarItem
 {
     public string MenuDescription => "Users";
@@ -60,6 +62,7 @@ public class UserManagementModel : PageModel, INavBarItem
     {
         try
         {
+            HttpContext.HasPermission("USER_DELETION_MANAGEMENT");
             _userRepo.DeleteUser(userId);
         }
         catch (ArgumentException argEx)
@@ -73,6 +76,7 @@ public class UserManagementModel : PageModel, INavBarItem
     {
         try
         {
+            HttpContext.HasPermission("USER_UPDATE_MANAGEMENT");
             _userRepo.UpdateUser(new FoxUser()
             {
                 Id = userId,
@@ -96,6 +100,7 @@ public class UserManagementModel : PageModel, INavBarItem
     {
         try
         {
+            HttpContext.HasPermission("USER_MANAGEMENT_READ_GROUP");
             UserGroups = _userRepo.GetUserGroups(userId);
             GroupsFor = userId;
         }

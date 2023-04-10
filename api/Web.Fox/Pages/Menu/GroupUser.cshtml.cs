@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Fox.Access.Repository;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "GROUP_MANAGEMENT_READ_USER")]
 public class GroupUserModel : PageModel
 {
     [BindProperty]
@@ -53,6 +55,7 @@ public class GroupUserModel : PageModel
     {
         try
         {
+            HttpContext.HasPermission("GROUP_MANAGEMENT_ADDUSER");
             _groupRepo.AddUserToGroup(GroupId, new Guid[] { userId });
         }
         catch(Exception argEx)
@@ -66,6 +69,7 @@ public class GroupUserModel : PageModel
     {
         try
         {
+            HttpContext.HasPermission("GROUP_MANAGEMENT_DELUSER");
             _groupRepo.DelUserFromGroup(GroupId, new Guid[] { userId });
         }
         catch (Exception argEx)

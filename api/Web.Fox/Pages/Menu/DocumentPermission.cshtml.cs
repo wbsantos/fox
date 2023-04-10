@@ -9,9 +9,12 @@ using FoxUser = Fox.Access.Model.User;
 using FoxGroup = Fox.Access.Model.Group;
 using Fox.Dox.Repository;
 using Fox.Dox.Model;
+using Microsoft.AspNetCore.Authorization;
+using Fox.Access.Model;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "DOCUMENT_PERMISSION_READ")]
 public class DocumentPermissionModel : PageModel
 {
     [BindProperty]
@@ -85,6 +88,7 @@ public class DocumentPermissionModel : PageModel
     {
         try
         {
+            HttpContext.HasPermission("DOCUMENT_PERMISSION_ADDITION");
             _docRepo.AddPermission(DocumentId, holderId, permission);
         }
         catch(Exception argEx)
@@ -98,6 +102,7 @@ public class DocumentPermissionModel : PageModel
     {
         try
         {
+            HttpContext.HasPermission("DOCUMENT_PERMISSION_REMOVAL");
             _docRepo.DelPermission(DocumentId, holderId, permission);
         }
         catch (Exception argEx)

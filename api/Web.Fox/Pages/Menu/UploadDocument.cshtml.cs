@@ -9,9 +9,11 @@ using Fox.Dox.Repository;
 using Fox.Access.Model;
 using Fox.Dox.Model;
 using FoxUser = Fox.Access.Model.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "DOCUMENT_CREATION")]
 public class UploadDocumentModel : PageModel, INavBarItem
 {
     public string MenuDescription => "Upload";

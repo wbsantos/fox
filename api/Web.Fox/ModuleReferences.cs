@@ -65,5 +65,16 @@ public static class ModuleReferences
         _menuPages = menuPages;
         return menuPages;
     }
+
+    public static void HasPermission(this HttpContext httpContext, string claimToTest)
+    {
+        bool permission = httpContext?.User
+                                     ?.Claims
+                                     ?.Any(claim => claim.Type == "SystemPermission" &&
+                                                    (claim.Value == claimToTest || claim.Value == "admin"))
+                          ?? false;
+        if (!permission)
+            throw new UnauthorizedAccessException("User has no permission to perform this action");
+    }
 }
 

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Fox.Access.Repository;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Web.Fox.Pages.Menu;
 
+[Authorize(Policy = "SYSTEM_PERMISSION_READ")]
 public class SystemPermissionModel : PageModel
 {
     [BindProperty]
@@ -56,6 +58,7 @@ public class SystemPermissionModel : PageModel
     {
         try
         {
+            HttpContext.HasPermission("SYSTEM_PERMISSION_ADDITION");
             _permissionRepo.AddPermission(HolderId, permission);
         }
         catch(Exception argEx)
@@ -69,6 +72,7 @@ public class SystemPermissionModel : PageModel
     {
         try
         {
+            HttpContext.HasPermission("SYSTEM_PERMISSION_REMOVAL");
             _permissionRepo.DeletePermission(HolderId, permission);
         }
         catch (Exception argEx)

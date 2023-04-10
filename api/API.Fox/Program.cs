@@ -13,7 +13,6 @@ builder.AddAppRepositories(security, appInfo);
 var app = builder.Build();
 app.MapAppEndPoints();
 app.MapGet("/", () => Results.Redirect("/swagger", true));
-app.MapGet("/hello", [AllowAnonymous] () => "Hello World!");
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -55,7 +55,37 @@ internal static class Auth
 
     internal static IEnumerable<string> GetEndPointsPolicies()
     {
-        //TODO: return policies being used by the web app
-        return new string[] { "admin", "TEST1", "TEST2" };
+        //TODO: it should load the policies dynamically
+        return new string[] {
+            "USER_SELF_MANAGEMENT",
+
+            "USER_CREATION_MANAGEMENT",
+            "USER_DELETION_MANAGEMENT",
+            "USER_READ_MANAGEMENT",
+            "USER_READ_ALL_MANAGEMENT",
+            "USER_MANAGEMENT_READ_GROUP",
+            "USER_UPDATE_MANAGEMENT",
+
+            "SYSTEM_PERMISSION_ADDITION",
+            "SYSTEM_PERMISSION_REMOVAL",
+            "SYSTEM_PERMISSION_READ",
+
+            "GROUP_MANAGEMENT_ADDUSER",
+            "GROUP_CREATION_MANAGEMENT",
+            "GROUP_DELETION_MANAGEMENT",
+            "GROUP_MANAGEMENT_DELUSER",
+            "GROUP_READ_MANAGEMENT",
+            "GROUP_READ_ALL_MANAGEMENT",
+            "GROUP_MANAGEMENT_READ_USER",
+            "GROUP_UPDATE_MANAGEMENT",
+
+            "DOCUMENT_PERMISSION_ADDITION",
+            "DOCUMENT_CREATION",
+            "DOCUMENT_DELETION",
+            "DOCUMENT_PERMISSION_REMOVAL",
+            "DOCUMENT_READ",
+            "DOCUMENT_PERMISSION_READ",
+            "DOCUMENT_UPDATE"
+        };
     }
 }

@@ -19,5 +19,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages(); //by default will map the razor pages in the Pages subfolder
+app.MapGet("/", () => Results.Redirect("/Menu/DownloadDocument", true));
 
 app.Run();
