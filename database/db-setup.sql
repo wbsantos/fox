@@ -118,7 +118,12 @@ create table if not exists DocumentPermission
 CREATE UNIQUE INDEX UN_USERACCOUNT_01 ON UserAccount(login);
 CREATE UNIQUE INDEX UN_GROUPACCOUNT_01 ON GroupAccount(name);
 CREATE UNIQUE INDEX UN_USERGROUP_01 ON UserGroup(groupId, userId);
-
-/*
-TODO: Define indexes
-*/
+CREATE INDEX IN_STAMP_01 ON Stamp(userId);
+CREATE INDEX IN_STAMP_02 ON Stamp(createdAt);
+CREATE INDEX IN_USERGROUP_01 ON UserGroup(userId);
+CREATE INDEX IN_USERGROUP_02 ON UserGroup(groupId);
+CREATE INDEX IN_SYSTEMPERMISSION_01 ON SystemPermission(holderId);
+CREATE INDEX IN_DOCUMENT_01 ON Document(name);
+CREATE INDEX IN_DOCUMENTMETADATA_01 ON DocumentMetadata(key);
+CREATE INDEX IN_DOCUMENTPERMISSION_01 ON DocumentPermission(holderId);
+CREATE INDEX IN_DOCUMENTPERMISSION_02 ON DocumentPermission(documentId);
