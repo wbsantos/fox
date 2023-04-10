@@ -13,6 +13,12 @@ Under the folder "/database" you can find:
 - db-setup: A script for creating all tables and indexes. You should create your database beforehand using "CREATE DATABASE fox"
 - Other folders (such as document, group, stamp, ...): The subfolders contain all procedures used by the application. You don't have to worry about it during setup, the application will automatically create all the procedures it needs
 
+I do recommend using different databases for development and the unit tests. On the API.Fox project there are three differents appsettings.json
+- appsettings.json: for production
+- appsettings.Development.json: for development
+- appsettings.Test.json: for unit testing
+So it is possible to configure different connection string for each environment.
+
 # API
 Under the folder "/api" you can find the solution "API.Fox.sln".
 The API solution contains 32 endpoints for managing all aspects of the application.
