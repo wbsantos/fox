@@ -15,7 +15,7 @@ Under the folder "/database" you can find:
 
 # API
 Under the folder "/api" you can find the solution "API.Fox.sln".
-The API solution contains 31 endpoints for managing all aspects of the application.
+The API solution contains 32 endpoints for managing all aspects of the application.
 
 Included in this solution is an "End to End test project" called "API.Test.Fox", it tests all endpoints of the API project.
 
