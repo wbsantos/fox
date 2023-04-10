@@ -17,6 +17,7 @@ I do recommend using different databases for development and the unit tests. On 
 - appsettings.json: for production
 - appsettings.Development.json: for development
 - appsettings.Test.json: for unit testing
+
 So it is possible to configure different connection string for each environment.
 
 # API
