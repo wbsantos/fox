@@ -1,16 +1,16 @@
-CREATE OR REPLACE FUNCTION  fox_document_read_binary_v1(_id uuid)
+CREATE OR REPLACE FUNCTION fox_document_read_binary_v1(_id uuid)
 RETURNS bytea
 LANGUAGE plpgsql AS
 $$
-DECLARE _fileBinary bytea;
+DECLARE _file_binary bytea;
 BEGIN
 	
 	SELECT 
-		fileBinary
-	INTO _fileBinary
+		file_binary
+	INTO _file_binary
 	FROM Document 
 	WHERE id = _id ;
 	
-	RETURN _fileBinary;
+	RETURN _file_binary;
 END
 $$;

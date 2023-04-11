@@ -10,6 +10,6 @@ BEGIN
 		SELECT 
 			G.id, 
 			G.name 
-		FROM GroupAccount G;
+		FROM group_account G;
 END
 $$;

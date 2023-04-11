@@ -1,12 +1,12 @@
-CREATE OR REPLACE PROCEDURE  fox_group_delete_v1(_id uuid)
+CREATE OR REPLACE PROCEDURE fox_group_delete_v1(_id uuid)
 LANGUAGE plpgsql AS
 $$
 BEGIN
-	DELETE FROM DocumentPermission WHERE holderId = _id;
-	DELETE FROM SystemPermission WHERE holderId = _id;
-	DELETE FROM UserGroup WHERE groupId = _id;
+	DELETE FROM document_permission WHERE holder_id = _id;
+	DELETE FROM system_permission WHERE holder_id = _id;
+	DELETE FROM user_group WHERE group_id = _id;
 
-	DELETE FROM GroupAccount WHERE id = _id;
+	DELETE FROM group_account WHERE id = _id;
 	DELETE FROM Holder WHERE id = _id;
 END
 $$;

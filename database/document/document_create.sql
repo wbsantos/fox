@@ -1,29 +1,29 @@
-CREATE OR REPLACE FUNCTION  fox_document_create_v1 (
-			_stampId int,
-			_fileBinary bytea,
+CREATE OR REPLACE FUNCTION fox_document_create_v1 (
+			_stamp_id int,
+			_file_binary bytea,
 			_fileName varchar(255),
 			_sizeBytes int
 )
 RETURNS UUID
 LANGUAGE plpgsql AS
 $$
-DECLARE _documentId uuid;
+DECLARE _document_id uuid;
 BEGIN
 	INSERT INTO Document
 	(
-		fileBinary,
-		stampId,
+		file_binary,
+		stamp_id,
 		name,
-		fileSizeBytes
+		file_size_bytes
     )
 	VALUES
 	(
-		_fileBinary,
-		_stampId,
+		_file_binary,
+		_stamp_id,
 		_fileName,
 		_sizeBytes
-    ) RETURNING id INTO _documentId;
+    ) RETURNING id INTO _document_id;
    
-	RETURN _documentId;
+	RETURN _document_id;
 END
 $$

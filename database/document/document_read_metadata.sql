@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION  fox_document_read_metadata_v1(_documentId uuid)
+CREATE OR REPLACE FUNCTION fox_document_read_metadata_v1(_document_id uuid)
 RETURNS TABLE (
 	key varchar(255),
 	value varchar(1023)
@@ -10,7 +10,7 @@ BEGIN
 		SELECT
 			M.key,
 			M.value
-		FROM DocumentMetadata M 
-		WHERE M.documentId = _documentId;
+		FROM document_metadata M 
+		WHERE M.document_id = _document_id;
 END
 $$;

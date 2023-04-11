@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE  fox_user_update_v1(
+CREATE OR REPLACE PROCEDURE fox_user_update_v1(
 			_id uuid,
 			_email varchar(255),
 			_login varchar(63),
@@ -6,7 +6,7 @@ CREATE OR REPLACE PROCEDURE  fox_user_update_v1(
 LANGUAGE plpgsql AS
 $$
 BEGIN
-	UPDATE UserAccount
+	UPDATE user_account
 	SET
 		email = _email,
 		login = _login,

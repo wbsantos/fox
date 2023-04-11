@@ -1,8 +1,8 @@
-CREATE OR REPLACE FUNCTION fox_document_read_information_v1(_documentId uuid)
+CREATE OR REPLACE FUNCTION fox_document_read_information_v1(_document_id uuid)
 RETURNS TABLE (
 	id uuid,
 	name varchar(255),
-	fileSizeBytes int
+	file_size_bytes int
 )
 LANGUAGE plpgsql AS
 $$
@@ -11,8 +11,8 @@ BEGIN
 		SELECT
 			D.id,
 			D.name,
-			D.filesizebytes 
+			D.file_size_bytes 
 		FROM Document D 
-		WHERE D.id = _documentId;
+		WHERE D.id = _document_id;
 END
 $$;

@@ -1,13 +1,13 @@
 CREATE OR REPLACE PROCEDURE fox_document_addpermission_v1 (
-			_stampId int,
-			_documentId uuid,
-			_holderId uuid,
+			_stamp_id int,
+			_document_id uuid,
+			_holder_id uuid,
 			_permission varchar(255)
 )
 LANGUAGE plpgsql AS
 $$
 BEGIN
-	INSERT INTO DocumentPermission (stampId, documentId, holderId, permission)
-	VALUES (_stampId, _documentId, _holderId, _permission);
+	INSERT INTO document_permission (stamp_id, document_id, holder_id, permission)
+	VALUES (_stamp_id, _document_id, _holder_id, _permission);
 END
 $$;

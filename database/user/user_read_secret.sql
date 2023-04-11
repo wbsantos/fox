@@ -1,9 +1,9 @@
-CREATE OR REPLACE FUNCTION  fox_user_read_secret_v1(_userLogin varchar(63))
+CREATE OR REPLACE FUNCTION fox_user_read_secret_v1(_userLogin varchar(63))
 RETURNS TABLE (
 	id uuid,
 	password bytea,
 	salt bytea,
-	hashMethod int
+	hash_method int
 )
 LANGUAGE plpgsql AS
 $$
@@ -13,8 +13,8 @@ BEGIN
 			U.id,
 			U.password,
 			U.salt,
-			U.hashMethod
-		FROM UserAccount U
+			U.hash_method
+		FROM user_account U
 		WHERE 
 			U.login = _userLogin;
 END

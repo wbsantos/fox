@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION  fox_user_read_v1(_userLogin varchar(63))
+CREATE OR REPLACE FUNCTION fox_user_read_v1(_userLogin varchar(63))
 RETURNS TABLE (
 	id uuid,
 	email varchar(255),
@@ -14,7 +14,7 @@ BEGIN
 			U.email,
 			U.login,
 			U.name
-		FROM UserAccount U
+		FROM user_account U
 		WHERE 
 			U.login = _userLogin;
 END

@@ -24,8 +24,8 @@ create table if not exists group_account
 	id uuid default gen_random_uuid() not null,
 	name varchar(255) not null,
 
-	constraint pk_groupaccount primary key(id),
-	constraint fk_groupaccount_holder foreign key (id) references holder(id)
+	constraint pk_group_account primary key(id),
+	constraint fk_group_account_to_holder foreign key (id) references holder(id)
 );
 
 create table if not exists user_account
@@ -38,8 +38,8 @@ create table if not exists user_account
 	hash_method int not null,
 	name varchar(255) not null,
 
-	constraint pk_useraccount primary key(id),
-	constraint fk_useraccount_holder foreign key (id) references holder(id)
+	constraint pk_user_account primary key(id),
+	constraint fk_user_account_to_holder foreign key (id) references holder(id)
 );
 
 create table if not exists stamp
@@ -50,7 +50,7 @@ create table if not exists stamp
 	created_at timestamptz,
 
 	constraint pk_stamp primary key(id),
-	constraint fk_stamp_useraccount foreign key (user_id) references user_account(id)
+	constraint fk_stamp_user_account foreign key (user_id) references user_account(id)
 );
 
 create table if not exists user_group
@@ -60,10 +60,10 @@ create table if not exists user_group
 	group_id uuid not null,
 	stamp_id int not null,
 
-	constraint pk_usergroup primary key(id),
-	constraint fk_usergroup_useraccount foreign key (user_id) references user_account(id),
-	constraint fk_usergroup_groupaccount foreign key (group_id) references group_account(id),
-	constraint fk_usergroup_stamp foreign key (stamp_id) references stamp(id)	
+	constraint pk_user_group primary key(id),
+	constraint fk_user_group_to_user_account foreign key (user_id) references user_account(id),
+	constraint fk_user_group_to_group_account foreign key (group_id) references group_account(id),
+	constraint fk_user_group_to_stamp foreign key (stamp_id) references stamp(id)	
 );
 
 create table if not exists system_permission
@@ -73,9 +73,9 @@ create table if not exists system_permission
 	holder_id uuid not null,
 	permission varchar(255) not null,
 
-	constraint pk_systempermission primary key(id),
-	constraint fk_systempermission_holder foreign key (holder_id) references holder(id),
-	constraint fk_systempermission_stamp foreign key (stamp_id) references stamp(id)	
+	constraint pk_system_permission primary key(id),
+	constraint fk_system_permission_to_holder foreign key (holder_id) references holder(id),
+	constraint fk_system_permission_to_stamp foreign key (stamp_id) references stamp(id)	
 );
 
 create table if not exists document
@@ -87,7 +87,7 @@ create table if not exists document
 	file_size_bytes int,
 
 	constraint pk_document primary key(id),
-	constraint fk_document_stamp foreign key (stamp_id) references stamp(id)	
+	constraint fk_document_to_stamp foreign key (stamp_id) references stamp(id)	
 );
 
 create table if not exists document_metadata
@@ -97,8 +97,8 @@ create table if not exists document_metadata
 	key varchar(255) not null,
 	value varchar(1023),
 
-	constraint pk_documentmetadata primary key(id),
-	constraint fk_documentmetadata_document foreign key (document_id) references document(id)
+	constraint pk_document_metadata primary key(id),
+	constraint fk_document_metadata_to_document foreign key (document_id) references document(id)
 );
 
 create table if not exists document_permission
@@ -109,22 +109,22 @@ create table if not exists document_permission
 	document_id uuid not null,
 	permission varchar(255) not null,
 
-	constraint pk_documentpermission primary key(id),
-	constraint fk_documentpermission_holder foreign key (holder_id) references holder(id),
-	constraint fk_documentpermission_document foreign key (document_id) references document(id),
-	constraint fk_documentpermission_stamp foreign key (stamp_id) references stamp(id)
+	constraint pk_document_permission primary key(id),
+	constraint fk_document_permission_to_holder foreign key (holder_id) references holder(id),
+	constraint fk_document_permission_to_document foreign key (document_id) references document(id),
+	constraint fk_document_permission_to_stamp foreign key (stamp_id) references stamp(id)
 );
 
 --creating indexes
-create unique index un_useraccount_01 on user_account(login);
-create unique index un_groupaccount_01 on group_account(name);
-create unique index un_usergroup_01 on user_group(group_id, user_id);
-create index in_stamp_01 on stamp(user_id);
-create index in_stamp_02 on stamp(created_at);
-create index in_usergroup_01 on user_group(user_id);
-create index in_usergroup_02 on user_group(group_id);
-create index in_systempermission_01 on system_permission(holder_id);
-create index in_document_01 on document(name);
-create index in_documentmetadata_01 on document_metadata(key);
-create index in_documentpermission_01 on document_permission(holder_id);
-create index in_documentpermission_02 on document_permission(document_id);
+create unique index if not exists un_user_account_01 on user_account(login);
+create unique index if not exists un_group_account_01 on group_account(name);
+create unique index if not exists un_user_group_01 on user_group(group_id, user_id);
+create index if not exists in_stamp_01 on stamp(user_id);
+create index if not exists in_stamp_02 on stamp(created_at);
+create index if not exists in_user_group_01 on user_group(user_id);
+create index if not exists in_user_group_02 on user_group(group_id);
+create index if not exists in_system_permission_01 on system_permission(holder_id);
+create index if not exists in_document_01 on document(name);
+create index if not exists in_document_metadata_01 on document_metadata(key);
+create index if not exists in_document_permission_01 on document_permission(holder_id);
+create index if not exists in_document_permission_02 on document_permission(document_id);

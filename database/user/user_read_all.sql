@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION  fox_user_read_all_v1()
+CREATE OR REPLACE FUNCTION fox_user_read_all_v1()
 RETURNS TABLE (
 	id uuid,
 	email varchar(255),
@@ -14,6 +14,6 @@ BEGIN
 			U.email,
 			U.login,
 			U.name
-		FROM UserAccount U;
+		FROM user_account U;
 END
 $$;

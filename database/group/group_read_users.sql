@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION  fox_group_read_users_v1(_groupId uuid)
+CREATE OR REPLACE FUNCTION fox_group_read_users_v1(_group_id uuid)
 RETURNS TABLE (
 	id uuid,
 	email varchar(255),
@@ -14,9 +14,9 @@ BEGIN
 			U.email,
 			U.login,
 			U.name
-		FROM UserAccount U
-		INNER JOIN UserGroup UG ON
-			UG.groupId = _groupId
-			AND UG.userId = U.id;
+		FROM user_account U
+		INNER JOIN user_group UG ON
+			UG.group_id = _group_id
+			AND UG.user_id = U.id;
 END
 $$;

@@ -1,8 +1,8 @@
-CREATE OR REPLACE FUNCTION fox_document_read_information_all_v1(_userId uuid)
+CREATE OR REPLACE FUNCTION fox_document_read_information_all_v1(_user_id uuid)
 RETURNS TABLE (
 	id uuid,
 	name varchar(255),
-	fileSizeBytes int
+	file_size_bytes int
 )
 LANGUAGE plpgsql AS
 $$
@@ -11,21 +11,21 @@ BEGIN
 		SELECT
 			D1.id,
 			D1.name,
-			D1.filesizebytes 
+			D1.file_size_bytes 
 		FROM Document D1
-		INNER JOIN DocumentPermission P1 ON
-			P1.documentId = D1.id
-			AND P1.holderId = _userId
+		INNER JOIN document_permission P1 ON
+			P1.document_id = D1.id
+			AND P1.holder_id = _user_id
 		UNION
 		SELECT
 			D2.id,
 			D2.name,
-			D2.filesizebytes 
+			D2.file_size_bytes 
 		FROM Document D2
-		INNER JOIN UserGroup UG ON
-			UG.userId = _userId
-		INNER JOIN DocumentPermission P2 ON
-			P2.documentId = D2.id
-			AND P2.holderId = UG.groupId;
+		INNER JOIN user_group UG ON
+			UG.user_id = _user_id
+		INNER JOIN document_permission P2 ON
+			P2.document_id = D2.id
+			AND P2.holder_id = UG.group_id;
 END
 $$;
