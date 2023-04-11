@@ -12,22 +12,11 @@ public class UserRead : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid userId, LoggedUser loggedUser, UserRepository userRepo) =>
     {
-        try
-        {
-            if (userId != loggedUser.Id)
-                return Results.Unauthorized();
+        if (userId != loggedUser.Id)
+            return Results.Unauthorized();
 
-            User? userData = userRepo.GetUser(userId);
-            return Results.Ok(userData);
-        }
-        catch(ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch(Exception)
-        {
-            return Results.Problem();
-        }
+        User? userData = userRepo.GetUser(userId);
+        return Results.Ok(userData);
     };
 }
 

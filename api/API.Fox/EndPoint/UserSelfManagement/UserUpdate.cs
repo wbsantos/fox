@@ -12,22 +12,11 @@ public class UserUpdate : IEndPoint
     public EndPointVerb Verb => EndPointVerb.PUT;
     public Delegate Method => (User user, LoggedUser loggedUser, UserRepository userRepo) =>
     {
-        try
-        {
-            if (user.Id != loggedUser.Id)
-                return Results.Unauthorized();
+        if (user.Id != loggedUser.Id)
+            return Results.Unauthorized();
 
-            userRepo.UpdateUser(user);
-            return Results.Ok();
-        }
-        catch(ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch(Exception)
-        {
-            return Results.Problem();
-        }
+        userRepo.UpdateUser(user);
+        return Results.Ok();
     };
 }
 

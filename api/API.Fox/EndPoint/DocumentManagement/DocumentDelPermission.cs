@@ -14,22 +14,7 @@ public class DocumentDelPermission : IEndPoint
     public EndPointVerb Verb => EndPointVerb.DELETE;
     public Delegate Method => (Guid documentId, Guid holderId, DocumentPermission permission, LoggedUser user, DocumentRepository docRepo) =>
     {
-        try
-        {
-            docRepo.DelPermission(documentId, holderId, permission);
-            return Results.Ok();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        docRepo.DelPermission(documentId, holderId, permission);
+        return Results.Ok();
     };
 }

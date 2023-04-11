@@ -12,19 +12,8 @@ public class GroupDelUser : IEndPoint
     public EndPointVerb Verb => EndPointVerb.PUT;
     public Delegate Method => (GroupDeletionData groupDeletion, GroupRepository groupRepository) =>
     {
-        try
-        {
-            groupRepository.DelUserFromGroup(groupDeletion.GroupId, groupDeletion.UserIds);
-            return Results.Ok();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        groupRepository.DelUserFromGroup(groupDeletion.GroupId, groupDeletion.UserIds);
+        return Results.Ok();
     };
 }
 

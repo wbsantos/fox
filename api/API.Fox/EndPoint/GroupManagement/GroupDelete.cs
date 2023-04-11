@@ -12,19 +12,8 @@ public class GroupDelete : IEndPoint
     public EndPointVerb Verb => EndPointVerb.DELETE;
     public Delegate Method => (Guid groupId, GroupRepository groupRepository) =>
     {
-        try
-        {
-            groupRepository.DeleteGroup(groupId);
-            return Results.Ok();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        groupRepository.DeleteGroup(groupId);
+        return Results.Ok();
     };
 }
 

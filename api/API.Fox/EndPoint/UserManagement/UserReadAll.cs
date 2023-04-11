@@ -12,19 +12,8 @@ public class UserReadAll : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (UserRepository userRepo) =>
     {
-        try
-        {
-            IEnumerable<User> userData = userRepo.GetAllUsers();
-            return Results.Ok(new { users = userData });
-        }
-        catch(ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch(Exception)
-        {
-            return Results.Problem();
-        }
+        IEnumerable<User> userData = userRepo.GetAllUsers();
+        return Results.Ok(new { users = userData });
     };
 }
 

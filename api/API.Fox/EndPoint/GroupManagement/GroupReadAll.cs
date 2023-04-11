@@ -12,19 +12,8 @@ public class GroupReadAll : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (GroupRepository groupRepository) =>
     {
-        try
-        {
-            IEnumerable<Group> groups = groupRepository.GetAllGroups();
-            return Results.Ok(new { groups = groups });
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        IEnumerable<Group> groups = groupRepository.GetAllGroups();
+        return Results.Ok(new { groups = groups });
     };
 }
 

@@ -12,18 +12,7 @@ public class GroupReadUser : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid groupId, GroupRepository groupRepository) =>
     {
-        try
-        {
-            IEnumerable<User> users = groupRepository.GetUsersFromGroup(groupId);
-            return Results.Ok(new { users = users } );
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        IEnumerable<User> users = groupRepository.GetUsersFromGroup(groupId);
+        return Results.Ok(new { users = users } );
     };
 }

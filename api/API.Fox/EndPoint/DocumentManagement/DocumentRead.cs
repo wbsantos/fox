@@ -13,22 +13,7 @@ public class DocumentRead : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid documentId, DocumentRepository docRepo) =>
     {
-        try
-        {
-            DocumentInformation? document = docRepo.GetDocumentInformation(documentId);
-            return Results.Ok(document);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        DocumentInformation? document = docRepo.GetDocumentInformation(documentId);
+        return Results.Ok(document);
     };
 }

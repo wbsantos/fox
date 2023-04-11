@@ -12,19 +12,8 @@ public class GroupCreate : IEndPoint
     public EndPointVerb Verb => EndPointVerb.POST;
     public Delegate Method => (Group group, GroupRepository groupRepository) =>
     {
-        try
-        {
-            var groupCreated = groupRepository.CreateGroup(group);
-            return Results.Ok(groupCreated);
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        var groupCreated = groupRepository.CreateGroup(group);
+        return Results.Ok(groupCreated);
     };
 }
 

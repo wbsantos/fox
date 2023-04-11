@@ -11,18 +11,7 @@ public class PermissionRead : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid holderId, PermissionRepository permissionRepo) =>
     {
-        try
-        {
-            IEnumerable<string> permissions = permissionRepo.GetPermissions(holderId);
-            return Results.Ok(new { permissions = permissions });
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        IEnumerable<string> permissions = permissionRepo.GetPermissions(holderId);
+        return Results.Ok(new { permissions = permissions });
     };
 }

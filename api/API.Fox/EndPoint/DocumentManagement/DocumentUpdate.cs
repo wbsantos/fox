@@ -13,30 +13,15 @@ public class DocumentUpdate : IEndPoint
     public EndPointVerb Verb => EndPointVerb.PUT;
     public Delegate Method => (DocumentUpdateData document, DocumentRepository docRepo) =>
     {
-        try
+        DocumentInformation documentModel = new DocumentInformation()
         {
-            DocumentInformation documentModel = new DocumentInformation()
-            {
-                Id = document.Id,
-                Name = document.Name
-            };
-            docRepo.UpdateDocument(documentModel);
-            docRepo.DeleteMetadata(document.Id, document.MetadataToRemove);
-            docRepo.AddMetadata(document.Id, document.MetadataToAdd);
-            return Results.Ok();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+            Id = document.Id,
+            Name = document.Name
+        };
+        docRepo.UpdateDocument(documentModel);
+        docRepo.DeleteMetadata(document.Id, document.MetadataToRemove);
+        docRepo.AddMetadata(document.Id, document.MetadataToAdd);
+        return Results.Ok();
     };
 }
 

@@ -11,19 +11,8 @@ public class PermissionAdd : IEndPoint
     public EndPointVerb Verb => EndPointVerb.POST;
     public Delegate Method => (PermissionAddData data, PermissionRepository permissionRepo) =>
     {
-        try
-        {
-            permissionRepo.AddPermission(data.PermissionHolderId, data.Permission);
-            return Results.Ok();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        permissionRepo.AddPermission(data.PermissionHolderId, data.Permission);
+        return Results.Ok();
     };
 }
 

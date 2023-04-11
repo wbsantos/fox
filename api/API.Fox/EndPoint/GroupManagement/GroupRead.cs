@@ -12,19 +12,8 @@ public class GroupRead : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid groupId, GroupRepository groupRepository) =>
     {
-        try
-        {
-            Group? group = groupRepository.GetGroup(groupId);
-            return Results.Ok(group);
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        Group? group = groupRepository.GetGroup(groupId);
+        return Results.Ok(group);
     };
 }
 

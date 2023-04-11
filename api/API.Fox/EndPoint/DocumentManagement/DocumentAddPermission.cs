@@ -15,23 +15,8 @@ public class DocumentAddPermission : IEndPoint
     public EndPointVerb Verb => EndPointVerb.POST;
     public Delegate Method => (DocumentAddPermissionData permissionData, DocumentRepository docRepo) =>
     {
-        try
-        {
-            docRepo.AddPermission(permissionData.DocumentId, permissionData.HolderId, permissionData.Permission);
-            return Results.Ok();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        docRepo.AddPermission(permissionData.DocumentId, permissionData.HolderId, permissionData.Permission);
+        return Results.Ok();
     };
 }
 

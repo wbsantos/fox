@@ -13,22 +13,7 @@ public class DocumentReadPermission : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid documentId, DocumentRepository docRepo) =>
     {
-        try
-        {
-            IEnumerable<DocumentHolder> permissions = docRepo.GetPermissionByDocument(documentId);
-            return Results.Ok(new { permissions = permissions });
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        IEnumerable<DocumentHolder> permissions = docRepo.GetPermissionByDocument(documentId);
+        return Results.Ok(new { permissions = permissions });
     };
 }

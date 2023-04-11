@@ -12,19 +12,8 @@ public class GroupAddUser : IEndPoint
     public EndPointVerb Verb => EndPointVerb.POST;
     public Delegate Method => (GroupAdditionData groupAddition, GroupRepository groupRepository) =>
     {
-        try
-        {
-            groupRepository.AddUserToGroup(groupAddition.GroupId, groupAddition.UserIds);
-            return Results.Ok();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        groupRepository.AddUserToGroup(groupAddition.GroupId, groupAddition.UserIds);
+        return Results.Ok();
     };
 }
 

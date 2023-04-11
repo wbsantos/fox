@@ -11,18 +11,7 @@ public class PermissionDel : IEndPoint
     public EndPointVerb Verb => EndPointVerb.DELETE;
     public Delegate Method => (Guid holderId, string permission, PermissionRepository permissionRepo) =>
     {
-        try
-        {
-            permissionRepo.DeletePermission(holderId, permission);
-            return Results.Ok();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        permissionRepo.DeletePermission(holderId, permission);
+        return Results.Ok();
     };
 }

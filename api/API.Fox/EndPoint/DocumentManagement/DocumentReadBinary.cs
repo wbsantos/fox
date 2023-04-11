@@ -13,28 +13,13 @@ public class DocumentReadBinary : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid documentId, DocumentRepository docRepo) =>
     {
-        try
-        {
-            DocumentInformation? info = docRepo.GetDocumentInformation(documentId);
-            if (info == null)
-                return Results.BadRequest();
+        DocumentInformation? info = docRepo.GetDocumentInformation(documentId);
+        if (info == null)
+            return Results.BadRequest();
 
-            byte[] file = docRepo.GetDocumentBinary(documentId);
-            return Results.File(file,
-                                fileDownloadName: info.Name,
-                                contentType: "application/octet-stream");
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        byte[] file = docRepo.GetDocumentBinary(documentId);
+        return Results.File(file,
+                            fileDownloadName: info.Name,
+                            contentType: "application/octet-stream");
     };
 }

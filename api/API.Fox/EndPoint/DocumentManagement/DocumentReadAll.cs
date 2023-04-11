@@ -13,22 +13,7 @@ public class DocumentReadAll : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (DocumentRepository docRepo) =>
     {
-        try
-        {
-            IEnumerable<DocumentInformation> documents = docRepo.GetAllDocuments();
-            return Results.Ok(new { documents = documents });
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Results.Unauthorized();
-        }
-        catch (ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch (Exception)
-        {
-            return Results.Problem();
-        }
+        IEnumerable<DocumentInformation> documents = docRepo.GetAllDocuments();
+        return Results.Ok(new { documents = documents });
     };
 }

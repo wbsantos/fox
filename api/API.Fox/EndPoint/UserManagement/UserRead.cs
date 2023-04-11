@@ -12,19 +12,8 @@ public class UserRead : IEndPoint
     public EndPointVerb Verb => EndPointVerb.GET;
     public Delegate Method => (Guid userId, UserRepository userRepo) =>
     {
-        try
-        {
-            User? userData = userRepo.GetUser(userId);
-            return Results.Ok(userData);
-        }
-        catch(ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch(Exception)
-        {
-            return Results.Problem();
-        }
+        User? userData = userRepo.GetUser(userId);
+        return Results.Ok(userData);
     };
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using API.Fox.EndPoint;
 using API.Fox.Settings;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace API.Fox.AppBuilder;
 
@@ -39,8 +40,39 @@ public static class EndPointBuilder
                 handler.RequireAuthorization(endPointAuthorize.PermissionClaim);
             else if (handler != null && implementationInstance != null)
                 handler.AllowAnonymous();
+            
         }
+
+        app.MapExceptionHandler();
         return app;
 	}
+
+    internal static WebApplication MapExceptionHandler(this WebApplication app)
+    {
+        app.UseExceptionHandler(handler =>        
+            handler.Run(async context =>
+            {
+                var ex = context.Features.Get<IExceptionHandlerFeature>();
+                
+                switch (ex?.Error)
+                {
+                    case UnauthorizedAccessException unauthorized:
+                        await Results.Unauthorized()
+                                     .ExecuteAsync(context);
+                        break;
+                    case ArgumentException argumentNull:
+                        await Results.Problem(title: argumentNull.Message, statusCode: 400)
+                                     .ExecuteAsync(context);
+                        break;
+                    default:
+                        await Results.Problem()
+                                     .ExecuteAsync(context);
+                        break;
+                }
+            })
+        );
+
+        return app;
+    }
 }
 

@@ -12,18 +12,7 @@ public class UserDelete : IEndPoint
     public EndPointVerb Verb => EndPointVerb.DELETE;
     public Delegate Method => (Guid userId, UserRepository userRepo) =>
     {
-        try
-        {
-            userRepo.DeleteUser(userId);
-            return Results.Ok();
-        }
-        catch(ArgumentException argumentNull)
-        {
-            return Results.Problem(title: argumentNull.Message, statusCode: 400);
-        }
-        catch(Exception)
-        {
-            return Results.Problem();
-        }
+        userRepo.DeleteUser(userId);
+        return Results.Ok();
     };
 }
