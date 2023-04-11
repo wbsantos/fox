@@ -16,6 +16,7 @@ public class DBConnection
 	public DBConnection(DBSettings settings)
 	{
 		Instance = new NpgsqlConnection(settings.ConnectionString);
+		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 	}
 
 	public IEnumerable<T> Procedure<T>(string procedureName, object parameters)
@@ -68,13 +69,13 @@ public class DBConnection
 		}
     }
 
-	private string GetParametersNames(object parameters)
+	private static string GetParametersNames(object parameters)
 	{
 		if (parameters == null)
 			return string.Empty;
 		string[] names = parameters.GetType()
 								   .GetProperties()
-						           .Select(p => $"{p.Name} => @{p.Name}")
+						           .Select(p => $"{ToSnakeCase(p.Name)} => @{p.Name}")
 								   .ToArray();
 		return string.Join(',', names);
 	}
@@ -112,5 +113,12 @@ public class DBConnection
 	{
 		return Instance.Query<string>("SELECT routine_name FROM information_schema.routines WHERE routine_type in ('FUNCTION', 'PROCEDURE') AND routine_schema = 'public';", commandType: CommandType.Text);
 	}
+
+    public static string ToSnakeCase(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+			return input;
+		return Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLower();
+    }
 }
 

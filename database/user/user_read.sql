@@ -1,4 +1,4 @@
-create or replace function fox_user_read_v1(_userlogin varchar(63))
+create or replace function fox_user_read_v1(_user_login varchar(63))
 returns table (
 	id uuid,
 	email varchar(255),
@@ -16,6 +16,6 @@ begin
 			u.name
 		from user_account u
 		where 
-			u.login = _userlogin;
+			u.login = _user_login;
 end
 $$;

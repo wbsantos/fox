@@ -1,4 +1,4 @@
-create or replace function fox_user_read_secret_v1(_userlogin varchar(63))
+create or replace function fox_user_read_secret_v1(_user_login varchar(63))
 returns table (
 	id uuid,
 	password bytea,
@@ -16,7 +16,7 @@ begin
 			u.hash_method
 		from user_account u
 		where 
-			u.login = _userlogin;
+			u.login = _user_login;
 end
 $$;
 

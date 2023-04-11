@@ -1,8 +1,8 @@
 create or replace function fox_document_create_v1 (
 			_stamp_id int,
 			_file_binary bytea,
-			_filename varchar(255),
-			_sizebytes int
+			_file_name varchar(255),
+			_size_bytes int
 )
 returns uuid
 language plpgsql as
@@ -20,8 +20,8 @@ begin
 	(
 		_file_binary,
 		_stamp_id,
-		_filename,
-		_sizebytes
+		_file_name,
+		_size_bytes
     ) returning id into _document_id;
    
 	return _document_id;
