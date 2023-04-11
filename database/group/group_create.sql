@@ -1,12 +1,12 @@
-CREATE OR REPLACE FUNCTION fox_group_create_v1 (_name varchar(255))
-RETURNS UUID
-LANGUAGE plpgsql AS
+create or replace function fox_group_create_v1 (_name varchar(255))
+returns uuid
+language plpgsql as
 $$
-DECLARE _holder_id uuid;
-BEGIN
-	INSERT INTO Holder DEFAULT VALUES RETURNING id into _holder_id;
-    INSERT INTO group_account (id, name) VALUES (_holder_id, _name);
+declare _holder_id uuid;
+begin
+	insert into holder default values returning id into _holder_id;
+    insert into group_account (id, name) values (_holder_id, _name);
    
-   RETURN _holder_id;
-END
+   return _holder_id;
+end
 $$;

@@ -1,17 +1,17 @@
-CREATE OR REPLACE FUNCTION fox_group_read_byid_v1(_id uuid)
-RETURNS TABLE (
+create or replace function fox_group_read_byid_v1(_id uuid)
+returns table (
 	id uuid,
 	name varchar(255)
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	RETURN query
-		SELECT 
-			G.id, 
-			G.name
-		FROM group_account G 
-		WHERE 
+begin
+	return query
+		select 
+			g.id, 
+			g.name
+		from group_account g 
+		where 
 			g.id = _id;
-END
+end
 $$;

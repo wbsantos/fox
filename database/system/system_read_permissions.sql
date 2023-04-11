@@ -1,13 +1,13 @@
-CREATE OR REPLACE FUNCTION fox_system_read_permission_v1(_holder_id uuid)
-RETURNS TABLE (permission varchar(255))
-LANGUAGE plpgsql AS
+create or replace function fox_system_read_permission_v1(_holder_id uuid)
+returns table (permission varchar(255))
+language plpgsql as
 $$
-BEGIN
-	RETURN query 
-		SELECT
-			S1.permission
-		FROM system_permission S1
-		WHERE 
-			S1.holder_id = _holder_id;
-END
+begin
+	return query 
+		select
+			s1.permission
+		from system_permission s1
+		where 
+			s1.holder_id = _holder_id;
+end
 $$;

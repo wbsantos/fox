@@ -1,19 +1,19 @@
-CREATE OR REPLACE FUNCTION fox_user_create_v1 (
+create or replace function fox_user_create_v1 (
 			_email varchar(255),
 			_login varchar(63),
 			_password bytea,
 			_salt bytea,
 			_hash_method int,
 			_name varchar(255))
-RETURNS UUID
-LANGUAGE plpgsql AS
+returns uuid
+language plpgsql as
 $$
-DECLARE _holder_id uuid;
-BEGIN
+declare _holder_id uuid;
+begin
 	
-	INSERT INTO Holder DEFAULT VALUES RETURNING id into _holder_id;
+	insert into holder default values returning id into _holder_id;
 
-    INSERT INTO user_account
+    insert into user_account
 	(
 		id,
 		email,
@@ -23,7 +23,7 @@ BEGIN
 		hash_method,
 		name
     )
-	VALUES
+	values
 	(
 		_holder_id,
 		_email,
@@ -34,6 +34,6 @@ BEGIN
 		_name
     );
    
-   RETURN _holder_id;
-END
+   return _holder_id;
+end
 $$;

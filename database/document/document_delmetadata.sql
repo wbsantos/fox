@@ -1,16 +1,16 @@
-CREATE OR REPLACE PROCEDURE fox_document_delmetadata_v1 (
+create or replace procedure fox_document_delmetadata_v1 (
 			_document_id uuid,
 			_keys varchar(255)[]
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
+begin
 
-	DELETE FROM document_metadata M
-	USING UNNEST(_keys) AS _key
-	WHERE
-		M.key = _key
-		AND M.document_id = _document_id;
+	delete from document_metadata m
+	using unnest(_keys) as _key
+	where
+		m.key = _key
+		and m.document_id = _document_id;
 
-END
+end
 $$;

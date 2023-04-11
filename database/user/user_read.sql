@@ -1,21 +1,21 @@
-CREATE OR REPLACE FUNCTION fox_user_read_v1(_userLogin varchar(63))
-RETURNS TABLE (
+create or replace function fox_user_read_v1(_userlogin varchar(63))
+returns table (
 	id uuid,
 	email varchar(255),
 	login varchar(63),
 	name varchar(255)
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	RETURN query 
-		SELECT
-			U.id,
-			U.email,
-			U.login,
-			U.name
-		FROM user_account U
-		WHERE 
-			U.login = _userLogin;
-END
+begin
+	return query 
+		select
+			u.id,
+			u.email,
+			u.login,
+			u.name
+		from user_account u
+		where 
+			u.login = _userlogin;
+end
 $$;

@@ -1,17 +1,17 @@
-CREATE OR REPLACE PROCEDURE fox_user_update_password_v1(
+create or replace procedure fox_user_update_password_v1(
 			_id uuid,
 			_password bytea,
 			_salt bytea,
 			_hash_method int)
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	UPDATE user_account
-	SET
+begin
+	update user_account
+	set
 		password = _password,
 		salt = _salt,
 		hash_method = _hash_method
-	WHERE
+	where
 		id = _id;
-END
+end
 $$;

@@ -1,23 +1,23 @@
-CREATE OR REPLACE PROCEDURE fox_group_deluser_v1 (
+create or replace procedure fox_group_deluser_v1 (
 			_group_id uuid,
 			_user_ids uuid[]
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
+begin
 	
-	DELETE FROM Stamp
-	USING user_group, UNNEST(_user_ids) AS _user_id
-	WHERE 
-		user_group.stamp_id = Stamp.Id
-		AND user_group.user_id = _user_id
-		AND user_group.group_id = _group_id;
+	delete from stamp
+	using user_group, unnest(_user_ids) as _user_id
+	where 
+		user_group.stamp_id = stamp.id
+		and user_group.user_id = _user_id
+		and user_group.group_id = _group_id;
 
-	DELETE FROM user_group G
-	USING UNNEST(_user_ids) AS _user_id 
-	WHERE
-		G.user_id = _user_id
-		AND G.group_id = _group_id;
+	delete from user_group g
+	using unnest(_user_ids) as _user_id 
+	where
+		g.user_id = _user_id
+		and g.group_id = _group_id;
 
-END
+end
 $$;

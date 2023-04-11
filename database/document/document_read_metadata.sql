@@ -1,16 +1,16 @@
-CREATE OR REPLACE FUNCTION fox_document_read_metadata_v1(_document_id uuid)
-RETURNS TABLE (
+create or replace function fox_document_read_metadata_v1(_document_id uuid)
+returns table (
 	key varchar(255),
 	value varchar(1023)
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	RETURN query
-		SELECT
-			M.key,
-			M.value
-		FROM document_metadata M 
-		WHERE M.document_id = _document_id;
-END
+begin
+	return query
+		select
+			m.key,
+			m.value
+		from document_metadata m 
+		where m.document_id = _document_id;
+end
 $$;

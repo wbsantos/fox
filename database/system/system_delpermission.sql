@@ -1,13 +1,13 @@
-CREATE OR REPLACE PROCEDURE fox_system_delpermission_v1 (
+create or replace procedure fox_system_delpermission_v1 (
 			_holder_id uuid,
 			_permission varchar(255)
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	DELETE FROM system_permission
-	WHERE
+begin
+	delete from system_permission
+	where
 		holder_id = _holder_id
-		AND permission = _permission;
-END
+		and permission = _permission;
+end
 $$;

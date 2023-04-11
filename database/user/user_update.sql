@@ -1,17 +1,17 @@
-CREATE OR REPLACE PROCEDURE fox_user_update_v1(
+create or replace procedure fox_user_update_v1(
 			_id uuid,
 			_email varchar(255),
 			_login varchar(63),
 			_name varchar(255))
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	UPDATE user_account
-	SET
+begin
+	update user_account
+	set
 		email = _email,
 		login = _login,
 		name = _name
-	WHERE
+	where
 		id = _id;
-END
+end
 $$;

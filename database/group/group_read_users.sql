@@ -1,22 +1,22 @@
-CREATE OR REPLACE FUNCTION fox_group_read_users_v1(_group_id uuid)
-RETURNS TABLE (
+create or replace function fox_group_read_users_v1(_group_id uuid)
+returns table (
 	id uuid,
 	email varchar(255),
 	login varchar(63),
 	name varchar(255)
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	RETURN query 
-		SELECT
-			U.id,
-			U.email,
-			U.login,
-			U.name
-		FROM user_account U
-		INNER JOIN user_group UG ON
-			UG.group_id = _group_id
-			AND UG.user_id = U.id;
-END
+begin
+	return query 
+		select
+			u.id,
+			u.email,
+			u.login,
+			u.name
+		from user_account u
+		inner join user_group ug on
+			ug.group_id = _group_id
+			and ug.user_id = u.id;
+end
 $$;

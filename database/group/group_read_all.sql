@@ -1,15 +1,15 @@
-CREATE OR REPLACE FUNCTION fox_group_read_all_v1()
-RETURNS TABLE (
+create or replace function fox_group_read_all_v1()
+returns table (
 	id uuid,
 	name varchar(255)
 )
-LANGUAGE plpgsql AS
+language plpgsql as
 $$
-BEGIN
-	RETURN query
-		SELECT 
-			G.id, 
-			G.name 
-		FROM group_account G;
-END
+begin
+	return query
+		select 
+			g.id, 
+			g.name 
+		from group_account g;
+end
 $$;

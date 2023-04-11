@@ -1,16 +1,16 @@
-CREATE OR REPLACE FUNCTION fox_document_read_binary_v1(_id uuid)
-RETURNS bytea
-LANGUAGE plpgsql AS
+create or replace function fox_document_read_binary_v1(_id uuid)
+returns bytea
+language plpgsql as
 $$
-DECLARE _file_binary bytea;
-BEGIN
+declare _file_binary bytea;
+begin
 	
-	SELECT 
+	select 
 		file_binary
-	INTO _file_binary
-	FROM Document 
-	WHERE id = _id ;
+	into _file_binary
+	from document 
+	where id = _id ;
 	
-	RETURN _file_binary;
-END
+	return _file_binary;
+end
 $$;

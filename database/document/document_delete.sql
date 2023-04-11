@@ -1,9 +1,9 @@
-CREATE OR REPLACE PROCEDURE fox_document_delete_v1(_id uuid)
-LANGUAGE plpgsql AS
+create or replace procedure fox_document_delete_v1(_id uuid)
+language plpgsql as
 $$
-BEGIN
-	DELETE FROM document_permission WHERE document_id = _id;
-	DELETE FROM document_metadata WHERE document_id = _id;
-	DELETE FROM Document WHERE id = _id;
-END
+begin
+	delete from document_permission where document_id = _id;
+	delete from document_metadata where document_id = _id;
+	delete from document where id = _id;
+end
 $$;
