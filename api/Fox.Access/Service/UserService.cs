@@ -3,65 +3,52 @@ using System.Data;
 using DB.Fox;
 using Fox.Access.Model;
 using Fox.Access.Hash;
+using Fox.Access.Repository;
 
 namespace Fox.Access.Service;
 public class UserService : IService
 {
     private PermissionService PermissionService { get; set; }
-	private DBConnection DB { get; set; }
-    private const string PROC_GETPERMISSIONS = "fox_user_read_permission_v1";
-    private const string PROC_GETSECRET = "fox_user_read_secret_v1";
-    private const string PROC_GETUSER = "fox_user_read_v1";
-    private const string PROC_GETUSER_BYID = "fox_user_read_byid_v1";
-    private const string PROC_GETUSER_ALL = "fox_user_read_all_v1";
-    private const string PROC_CREATEUSER = "fox_user_create_v1";
-    private const string PROC_UPDATEUSER = "fox_user_update_v1";
-    private const string PROC_UPDATEPASSWORD = "fox_user_update_password_v1";
-    private const string PROC_DELETEUSER = "fox_user_delete_v1";
-    private const string PROC_GETGROUPS = "fox_user_read_groups_v1";
+    private UserRepository UserRepository { get; set; }
 
-    public UserService(DBConnection dbConnection, PermissionService permissionService)
+    public UserService(UserRepository userRepo, PermissionService permissionService)
 	{
-		DB = dbConnection;
         PermissionService = permissionService;
-	}
+        UserRepository = userRepo;
+
+    }
 
     public IEnumerable<User> GetAllUsers()
     {
-        return DB.Procedure<User>(PROC_GETUSER_ALL, new { });
+        return UserRepository.GetAllUsers();
     }
 
     public User? GetUser(string login)
-	{
-		var parameters = new { _userLogin = login };
-		return DB.ProcedureFirstOrDefault<User?>(PROC_GETUSER, parameters);
-	}
+    {
+        return UserRepository.GetUser(login);
+    }
 
     public User? GetUser(Guid userId)
     {
-        var parameters = new { _id = userId};
-        return DB.ProcedureFirstOrDefault<User?>(PROC_GETUSER_BYID, parameters);
+        return UserRepository.GetUser(userId);
+    }
+
+    public IEnumerable<string> GetSystemPermissions(Guid userId)
+    {
+        return UserRepository.GetSystemPermissions(userId);
     }
 
     public bool ValidateUserPassword(string login, string password)
 	{
-        var parameters = new { _userLogin = login };
-		UserSecret? userSecret = DB.ProcedureFirstOrDefault<UserSecret?>(PROC_GETSECRET, parameters);
-		if (userSecret == null)
+        UserSecret? userSecret = UserRepository.GetUserSecret(login, password);
+        if (userSecret == null)
 			return false;
-
-		IHashMethod hashMethod = HashMethodFactory.Create(userSecret);
+        IHashMethod hashMethod = HashMethodFactory.Create(userSecret);
 		byte[] passwordInformed = hashMethod.ComputeHash(password);
 		return hashMethod.IsSameHash(passwordInformed, userSecret.Password);
 	}
 
-	public IEnumerable<string> GetSystemPermissions(Guid userId)
-	{
-		var parameters = new { _userId = userId };
-        return DB.Procedure<string>(PROC_GETPERMISSIONS, parameters);		
-	}
-
-	public User CreateUser(User user, string password)
+    public User CreateUser(User user, string password)
 	{
         user = CreateUser(user, password, false);
         return user;
@@ -88,18 +75,7 @@ public class UserService : IService
         IHashMethod hashMethod = HashMethodFactory.Create();
         hashMethod.ComputeHash(password);
         UserSecret secret = hashMethod.GetSecret();
-
-        var parameters = new
-        {
-            _email = user.Email,
-            _login = user.Login,
-            _password = secret.Password,
-            _salt = secret.Salt,
-            _hashMethod = (int)secret.HashMethod,
-            _name = user.Name
-        };
-
-        user.Id = DB.ProcedureFirst<Guid>(PROC_CREATEUSER, parameters);
+        user = UserRepository.CreateUser(user, secret);
 
         if (selfCreation)
             PermissionService.AddPermission(user.Id, user.Id, "USER_SELF_MANAGEMENT");
@@ -111,15 +87,7 @@ public class UserService : IService
     public void UpdateUser(User user)
 	{
 		CheckUserFields(user);
-
-		var parameters = new {
-			_id = user.Id,
-			_email = user.Email,
-			_login = user.Login,
-			_name = user.Name
-		};
-
-		DB.ProcedureExecute(PROC_UPDATEUSER, parameters);
+        UserRepository.UpdateUser(user);
 	}
 
     public void UpdatePassword(Guid id, string password)
@@ -131,24 +99,20 @@ public class UserService : IService
         hashMethod.ComputeHash(password);
         UserSecret secret = hashMethod.GetSecret();
 
-        var parameters = new
-        {
-            _id = id,
-            _password = secret.Password,
-            _salt = secret.Salt,
-            _hashMethod = (int)secret.HashMethod
-        };
-
-        DB.ProcedureExecute(PROC_UPDATEPASSWORD, parameters);
+        UserRepository.UpdatePassword(id, secret);
     }
 
     public void DeleteUser(Guid id)
 	{
-		var parameters = new { _id = id };
-		DB.ProcedureExecute(PROC_DELETEUSER, parameters);
+        UserRepository.DeleteUser(id);
 	}
 
-	private void CheckUserFields(User user)
+    public IEnumerable<Group> GetUserGroups(Guid userId)
+    {
+        return UserRepository.GetUserGroups(userId);
+    }
+
+    private void CheckUserFields(User user)
 	{
         if (string.IsNullOrWhiteSpace(user.Login))
             throw new ArgumentNullException(nameof(User.Login));
@@ -157,12 +121,6 @@ public class UserService : IService
             user.Name = user.Login;
         if (string.IsNullOrWhiteSpace(user.Email))
             user.Email = string.Empty;
-    }
-
-    public IEnumerable<Group> GetUserGroups(Guid userId)
-    {
-        var parameters = new { _userId = userId };
-        return DB.Procedure<Group>(PROC_GETGROUPS, parameters);
     }
 }
 

@@ -5,6 +5,7 @@ using API.Fox.Settings;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
 using System.Linq;
+using Fox.Access.Service;
 
 namespace API.Fox.AppBuilder;
 
@@ -80,5 +81,36 @@ internal static class Auth
                 claims.Add(implementationInstance.PermissionClaim);
         }
         return claims;
+    }
+
+    public static void CreateAdminUser(this WebApplication app)
+    {
+        var userService = app.Services.GetService<UserService>();
+        var security = app.Services.GetService<Security>();
+
+        if (userService == null || security == null)
+            return;
+
+        User? user = userService.GetUser(security.AdminUserLogin);
+        if (user == null) //user doesn't exist
+        {
+            user = new User()
+            {
+                Login = security.AdminUserLogin,
+                Name = security.AdminUserName,
+                Email = security.AdminUserEmail
+            };
+
+            try
+            {
+                user = userService.CreateAdminUser(user, security.AdminUserPassword);
+            }
+            catch
+            {
+                user = userService.GetUser(security.AdminUserLogin);
+                if (user == null)
+                    throw;
+            }
+        }
     }
 }

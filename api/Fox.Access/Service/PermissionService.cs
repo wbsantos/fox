@@ -2,27 +2,26 @@
 using System.Security;
 using DB.Fox;
 using Fox.Access.Model;
+using Fox.Access.Repository;
 
 namespace Fox.Access.Service;
 
 public class PermissionService : IService
 {
     private StampService StampService { get; set; }
-    private DBConnection DB { get; set; }
-    private const string PROC_ADDPERMISSION = "fox_system_addpermission_v1";
-    private const string PROC_DELPERMISSION = "fox_system_delpermission_v1";
-    private const string PROC_GETPERMISSIONS = "fox_system_read_permission_v1";
-
-    public PermissionService(DBConnection dbConnection, StampService stampService)
+    private PermissionRepository PermissionRepository { get; set; }
+    public PermissionService(PermissionRepository permissionRepository, StampService stampService)
     {
-        DB = dbConnection;
+        PermissionRepository = permissionRepository;
         StampService = stampService;
     }
 
     public void AddPermission(Guid permissionHolderId, Guid permissionGiverId, string permission)
     {
+        if (string.IsNullOrWhiteSpace(permission))
+            throw new ArgumentNullException(nameof(permission));
         int stampId = StampService.CreateStamp(permissionGiverId);
-        AddPermission(stampId, permissionHolderId, permission);
+        PermissionRepository.AddPermission(stampId, permissionHolderId, permission);
     }
 
     public void AddPermission(Guid permissionHolderId, string permission)
@@ -30,30 +29,17 @@ public class PermissionService : IService
         if (string.IsNullOrWhiteSpace(permission))
             throw new ArgumentNullException(nameof(permission));
         int stampId = StampService.CreateStamp();
-        AddPermission(stampId, permissionHolderId, permission);
-    }
-
-    private void AddPermission(int stampId, Guid permissionHolderId, string permission)
-    {
-        var parameters = new
-        {
-            _stampId = stampId,
-            _holderId = permissionHolderId,
-            _permission = permission
-        };
-        DB.ProcedureExecute(PROC_ADDPERMISSION, parameters);
+        PermissionRepository.AddPermission(stampId, permissionHolderId, permission);
     }
 
     public void DeletePermission(Guid permissionHolderId, string permission)
     {
-        var parameters = new { _holderId = permissionHolderId, _permission = permission };
-        DB.ProcedureExecute(PROC_DELPERMISSION, parameters);
+        PermissionRepository.DeletePermission(permissionHolderId, permission);
     }
 
     public IEnumerable<string> GetPermissions(Guid holderId)
     {
-        var parameters = new { _holderId = holderId};
-        return DB.Procedure<string>(PROC_GETPERMISSIONS, parameters);
+        return PermissionRepository.GetPermissions(holderId);
     }
 }
 

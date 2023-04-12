@@ -3,6 +3,7 @@ using System.Text;
 using API.Fox.Settings;
 using Fox.Access.Model;
 using System.Linq;
+using Fox.Access.Service;
 
 namespace Web.Fox.AppBuilder;
 
@@ -87,5 +88,36 @@ internal static class Auth
             "DOCUMENT_PERMISSION_READ",
             "DOCUMENT_UPDATE"
         };
+    }
+
+    public static void CreateAdminUser(this WebApplication app)
+    {
+        var userService = app.Services.GetService<UserService>();
+        var security = app.Services.GetService<Security>();
+
+        if (userService == null || security == null)
+            return;
+
+        User? user = userService.GetUser(security.AdminUserLogin);
+        if (user == null) //user doesn't exist
+        {
+            user = new User()
+            {
+                Login = security.AdminUserLogin,
+                Name = security.AdminUserName,
+                Email = security.AdminUserEmail
+            };
+
+            try
+            {
+                user = userService.CreateAdminUser(user, security.AdminUserPassword);
+            }
+            catch
+            {
+                user = userService.GetUser(security.AdminUserLogin);
+                if (user == null)
+                    throw;
+            }
+        }
     }
 }

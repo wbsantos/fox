@@ -11,6 +11,7 @@ builder.AddAppAuth(security);
 builder.AddAppInjections(security, appInfo);
 
 var app = builder.Build();
+app.CreateAdminUser();
 app.MapAppEndPoints();
 app.MapGet("/", () => Results.Redirect("/swagger", true));
 

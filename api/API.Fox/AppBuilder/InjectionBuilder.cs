@@ -20,14 +20,14 @@ internal static class InjectionBuilder
                                 dbSettings.AutoCreateProcedures,
                                 GetTypesThatImplementInterface(typeof(IDBCustomType)));
 
-        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IService));
+        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IService))
+                                              .Union(GetTypesThatImplementInterface(typeof(IRepository)));
         builder.Services.AddTransient<DBConnection>();
         foreach (var implementation in repoImplementation)
         {
             builder.Services.AddTransient(implementation);
         }
 
-        CreateAdminUser(security, dbSettings, appInfo);
         return builder;
     }
 
@@ -38,36 +38,6 @@ internal static class InjectionBuilder
                          .SelectMany(a => a.GetTypes())
                          .Where(c => interfaceType.IsAssignableFrom(c)
                                      && !c.IsInterface);
-    }
-
-    public static void CreateAdminUser(Security security, DB.Fox.DBSettings dbSettings, AppInfo appInfo)
-    {
-        DB.Fox.DBConnection dbConnection = new DB.Fox.DBConnection(dbSettings);
-        var stampService = new StampService(dbConnection, appInfo, new LoggedUser());
-        var permissionService = new PermissionService(dbConnection, stampService);
-        var userService = new UserService(dbConnection, permissionService);
-
-        User? user = userService.GetUser(security.AdminUserLogin);
-        if(user == null) //user doesn't exist
-        {
-            user = new User()
-            {
-                Login = security.AdminUserLogin,
-                Name = security.AdminUserName,
-                Email = security.AdminUserEmail
-            };
-
-            try
-            {
-                user = userService.CreateAdminUser(user, security.AdminUserPassword);
-            }
-            catch
-            {
-                user = userService.GetUser(security.AdminUserLogin);
-                if (user == null)
-                    throw;
-            }
-        }
     }
 }
 

@@ -16,6 +16,7 @@
     <Folder Include="Hash\" />
     <Folder Include="Model\" />
     <Folder Include="Service\" />
+    <Folder Include="Repository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Hash\HashSHA512_S12_P12.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'">

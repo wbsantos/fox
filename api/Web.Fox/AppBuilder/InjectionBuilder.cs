@@ -19,7 +19,8 @@ internal static class InjectionBuilder
                                 dbSettings.AutoCreateProcedures,
                                 GetTypesThatImplementInterface(typeof(IDBCustomType)));
 
-        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IService));
+        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IService))
+                                              .Union(GetTypesThatImplementInterface(typeof(IRepository)));
 
         builder.Services.AddTransient<DBConnection>();
         foreach (var implementation in repoImplementation)
@@ -27,7 +28,6 @@ internal static class InjectionBuilder
             builder.Services.AddTransient(implementation);
         }
 
-        CreateAdminUser(security, dbSettings, appInfo);
         return builder;
     }
 
@@ -37,36 +37,6 @@ internal static class InjectionBuilder
                          .SelectMany(a => a.GetTypes())
                          .Where(c => interfaceType.IsAssignableFrom(c)
                                      && !c.IsInterface);
-    }
-
-    public static void CreateAdminUser(Security security, DB.Fox.DBSettings dbSettings, AppInfo appInfo)
-    {
-        DB.Fox.DBConnection dbConnection = new DB.Fox.DBConnection(dbSettings);
-        StampService stampService = new StampService(dbConnection, appInfo, new LoggedUser());
-        PermissionService permissionService = new PermissionService(dbConnection, stampService);
-        UserService userRepo = new UserService(dbConnection, permissionService);
-
-        User? user = userRepo.GetUser(security.AdminUserLogin);
-        if(user == null) //user doesn't exist
-        {
-            user = new User()
-            {
-                Login = security.AdminUserLogin,
-                Name = security.AdminUserName,
-                Email = security.AdminUserEmail
-            };
-
-            try
-            {
-                user = userRepo.CreateAdminUser(user, security.AdminUserPassword);
-            }
-            catch
-            {
-                user = userRepo.GetUser(security.AdminUserLogin);
-                if (user == null)
-                    throw;
-            }
-        }
     }
 }
 
