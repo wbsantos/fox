@@ -70,8 +70,10 @@ public class DocumentRepository : IRepository
             return;
         var parameters = new {
             _documentId = documentId,
-            _keys = metadata.Keys.ToArray(),
-            _values = metadata.Values.ToArray()
+            _items = metadata.Select(m => new DBCustomTypes.MetadataDictionary() {
+                                         Key = m.Key,
+                                            Value = m.Value })
+                             .ToArray()
         };
         DB.ProcedureExecute(PROC_ADDMETADATA, parameters);
     }

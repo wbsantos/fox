@@ -9,10 +9,12 @@
   <ItemGroup>
     <None Remove="Model\" />
     <None Remove="Repository\" />
+    <None Remove="Repository\DBCustomTypes\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="Repository\" />
+    <Folder Include="Repository\DBCustomTypes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DB.Fox\DB.Fox.csproj" />

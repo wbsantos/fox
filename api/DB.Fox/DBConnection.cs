@@ -15,7 +15,7 @@ public class DBConnection
 
 	public DBConnection(DBSettings settings)
 	{
-		Instance = new NpgsqlConnection(settings.ConnectionString);
+        Instance = new NpgsqlConnection(settings.ConnectionString);
 		Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 	}
 
@@ -87,11 +87,23 @@ public class DBConnection
 		Text
 	}
 
-	public void CreateProcedures()
+	public static void Initialize(DBSettings settings, bool autoCreateProcedures, IEnumerable<Type>? customTypes)
+	{
+		if (customTypes != null)
+		{
+			foreach (var type in customTypes)
+				NpgsqlConnection.GlobalTypeMapper.MapComposite(type, ToSnakeCase(type.Name));
+		}
+		if(autoCreateProcedures)
+			new DBConnection(settings).CreateProcedures();
+    }
+
+	private void CreateProcedures()
 	{
 		string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly()?.Location) ?? string.Empty, "database");
 		string[] sqlFiles =  System.IO.Directory.GetFiles(path, "*.sql", SearchOption.AllDirectories);
 		IEnumerable<string> currentProcedures = GetCurrentProcedures();
+		List<string> proceduresFailed = new List<string>();
 
 		foreach (var sqlFile in sqlFiles)
 		{
@@ -104,9 +116,21 @@ public class DBConnection
 
 			if (!currentProcedures.Contains(match.Groups[2].Value))
 			{
-				Instance.Execute(sql);
+				try
+				{
+					Instance.Execute(sql);
+				}
+				catch
+				{
+					proceduresFailed.Add(match.Groups[2].Value);
+				}
 			}
         }
+
+        currentProcedures = GetCurrentProcedures();
+		proceduresFailed = proceduresFailed.Where(p => !currentProcedures.Contains(p)).ToList();
+		if (proceduresFailed.Count > 0)
+			throw new Exception($"The following procedures couldn't be created: {string.Join(", ", proceduresFailed.ToArray())}");
     }
 
 	private IEnumerable<string> GetCurrentProcedures()

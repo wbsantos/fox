@@ -101,6 +101,18 @@ create table if not exists document_metadata
 	constraint fk_document_metadata_to_document foreign key (document_id) references document(id)
 );
 
+do $$
+begin
+if not exists (select 1 from pg_type where typname = 'metadata_dictionary') then
+	create type metadata_dictionary as
+	(
+		key varchar(255),
+		value varchar(1023)
+	);
+    end if;
+end$$;
+
+
 create table if not exists document_permission
 (
 	id int generated always as identity not null,
