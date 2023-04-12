@@ -15,15 +15,11 @@ internal static class RepositoryBuilder
         DBSettings dbSettings = new();
         builder.Configuration.GetSection("DBSettings").Bind(dbSettings);
         builder.Services.AddSingleton<DBSettings>(dbSettings);
-        if (dbSettings.AutoCreateProcedures)
-            new DBConnection(dbSettings).CreateProcedures();
+        DBConnection.Initialize(dbSettings,
+                                dbSettings.AutoCreateProcedures,
+                                GetTypesThatImplementInterface(typeof(IDBCustomType)));
 
-        Type repoInterface = typeof(IRepository);
-        IEnumerable<Type> repoImplementation =
-                ModuleReferences.GetAssemblies()
-                         .SelectMany(a => a.GetTypes())
-                         .Where(c => repoInterface.IsAssignableFrom(c)
-                                     && !c.IsInterface);
+        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IRepository));
 
         builder.Services.AddTransient<DBConnection>();
         foreach (var implementation in repoImplementation)
@@ -33,6 +29,14 @@ internal static class RepositoryBuilder
 
         CreateAdminUser(security, dbSettings, appInfo);
         return builder;
+    }
+
+    private static IEnumerable<Type> GetTypesThatImplementInterface(Type interfaceType)
+    {
+        return ModuleReferences.GetAssemblies()
+                         .SelectMany(a => a.GetTypes())
+                         .Where(c => interfaceType.IsAssignableFrom(c)
+                                     && !c.IsInterface);
     }
 
     public static void CreateAdminUser(Security security, DB.Fox.DBSettings dbSettings, AppInfo appInfo)

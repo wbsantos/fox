@@ -92,8 +92,10 @@ public class DBConnection
 		if (customTypes != null)
 		{
 			foreach (var type in customTypes)
-				NpgsqlConnection.GlobalTypeMapper.MapComposite(type, ToSnakeCase(type.Name));
-		}
+#pragma warning disable CS0618 // Type or member is obsolete
+                NpgsqlConnection.GlobalTypeMapper.MapComposite(type, ToSnakeCase(type.Name));
+#pragma warning restore CS0618 // Type or member is obsolete
+        }
 		if(autoCreateProcedures)
 			new DBConnection(settings).CreateProcedures();
     }
