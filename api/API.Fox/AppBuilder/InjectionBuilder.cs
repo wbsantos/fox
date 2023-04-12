@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Data.Common;
+using API.Fox.EndPoint;
 using API.Fox.Settings;
 using DB.Fox;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Web.Fox.AppBuilder;
+namespace API.Fox.AppBuilder;
 
-internal static class RepositoryBuilder
+internal static class InjectionBuilder
 {
-	internal static WebApplicationBuilder AddAppRepositories(this WebApplicationBuilder builder, Security security, AppInfo appInfo)
+	internal static WebApplicationBuilder AddAppInjections(this WebApplicationBuilder builder, Security security, AppInfo appInfo)
     {
         DBSettings dbSettings = new();
         builder.Configuration.GetSection("DBSettings").Bind(dbSettings);
@@ -19,8 +20,7 @@ internal static class RepositoryBuilder
                                 dbSettings.AutoCreateProcedures,
                                 GetTypesThatImplementInterface(typeof(IDBCustomType)));
 
-        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IRepository));
-
+        IEnumerable<Type> repoImplementation = GetTypesThatImplementInterface(typeof(IService));
         builder.Services.AddTransient<DBConnection>();
         foreach (var implementation in repoImplementation)
         {
@@ -30,6 +30,7 @@ internal static class RepositoryBuilder
         CreateAdminUser(security, dbSettings, appInfo);
         return builder;
     }
+
 
     private static IEnumerable<Type> GetTypesThatImplementInterface(Type interfaceType)
     {
@@ -42,11 +43,11 @@ internal static class RepositoryBuilder
     public static void CreateAdminUser(Security security, DB.Fox.DBSettings dbSettings, AppInfo appInfo)
     {
         DB.Fox.DBConnection dbConnection = new DB.Fox.DBConnection(dbSettings);
-        StampRepository stampRepo = new StampRepository(dbConnection, appInfo, new LoggedUser());
-        PermissionRepository permissionRepo = new PermissionRepository(dbConnection, stampRepo);
-        UserRepository userRepo = new UserRepository(dbConnection, permissionRepo);
+        var stampService = new StampService(dbConnection, appInfo, new LoggedUser());
+        var permissionService = new PermissionService(dbConnection, stampService);
+        var userService = new UserService(dbConnection, permissionService);
 
-        User? user = userRepo.GetUser(security.AdminUserLogin);
+        User? user = userService.GetUser(security.AdminUserLogin);
         if(user == null) //user doesn't exist
         {
             user = new User()
@@ -58,11 +59,11 @@ internal static class RepositoryBuilder
 
             try
             {
-                user = userRepo.CreateAdminUser(user, security.AdminUserPassword);
+                user = userService.CreateAdminUser(user, security.AdminUserPassword);
             }
             catch
             {
-                user = userRepo.GetUser(security.AdminUserLogin);
+                user = userService.GetUser(security.AdminUserLogin);
                 if (user == null)
                     throw;
             }

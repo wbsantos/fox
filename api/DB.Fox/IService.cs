@@ -1,7 +1,7 @@
 ﻿using System;
 namespace DB.Fox
 {
-	public interface IRepository
+	public interface IService
 	{
 	}
 }

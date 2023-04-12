@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fox.Access.Model;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -41,20 +41,20 @@ public class UserManagementModel : PageModel, INavBarItem
     [BindProperty]
     public string AlterModeNewPassword { get; set; } = string.Empty;
 
-    private UserRepository _userRepo;
-    public UserManagementModel(UserRepository userRepo)
+    private UserService _userService;
+    public UserManagementModel(UserService userService)
     {
-        _userRepo = userRepo;
+        _userService = userService;
     }
 
     public void OnGet()
     {
-        Users = _userRepo.GetAllUsers();
+        Users = _userService.GetAllUsers();
     }
 
     public void OnPostEnterUpdateMode(Guid userId)
     {
-        Users = _userRepo.GetAllUsers();
+        Users = _userService.GetAllUsers();
         AlterModeFor = userId;
     }
 
@@ -63,13 +63,13 @@ public class UserManagementModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("USER_DELETION_MANAGEMENT");
-            _userRepo.DeleteUser(userId);
+            _userService.DeleteUser(userId);
         }
         catch (ArgumentException argEx)
         {
             Msg = argEx.Message;
         }
-        Users = _userRepo.GetAllUsers();
+        Users = _userService.GetAllUsers();
     }
 
     public void OnPostUpdateUser(Guid userId)
@@ -77,7 +77,7 @@ public class UserManagementModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("USER_UPDATE_MANAGEMENT");
-            _userRepo.UpdateUser(new FoxUser()
+            _userService.UpdateUser(new FoxUser()
             {
                 Id = userId,
                 Login = AlterModeNewLogin,
@@ -86,14 +86,14 @@ public class UserManagementModel : PageModel, INavBarItem
             });
 
             if (!string.IsNullOrEmpty(AlterModeNewPassword))
-                _userRepo.UpdatePassword(userId, AlterModeNewPassword);
+                _userService.UpdatePassword(userId, AlterModeNewPassword);
             AlterModeFor = null;
         }
         catch (Exception argEx)
         {
             Msg = argEx.Message;
         }
-        Users = _userRepo.GetAllUsers();
+        Users = _userService.GetAllUsers();
     }
 
     public void OnPostUserGroups(Guid userId)
@@ -101,19 +101,19 @@ public class UserManagementModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("USER_MANAGEMENT_READ_GROUP");
-            UserGroups = _userRepo.GetUserGroups(userId);
+            UserGroups = _userService.GetUserGroups(userId);
             GroupsFor = userId;
         }
         catch (Exception argEx)
         {
             Msg = argEx.Message;
         }
-        Users = _userRepo.GetAllUsers();
+        Users = _userService.GetAllUsers();
     }
 
     public void OnPostCancelUpdate()
     {
         AlterModeFor = null;
-        Users = _userRepo.GetAllUsers();
+        Users = _userService.GetAllUsers();
     }
 }

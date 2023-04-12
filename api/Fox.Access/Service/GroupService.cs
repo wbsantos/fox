@@ -2,11 +2,11 @@
 using DB.Fox;
 using Fox.Access.Model;
 
-namespace Fox.Access.Repository;
+namespace Fox.Access.Service;
 
-public class GroupRepository : IRepository
+public class GroupService : IService
 {
-	private StampRepository StampRepo { get; set; }
+	private StampService StampService { get; set; }
 	private DBConnection DB { get; set; }
     private const string PROC_GETGROUP = "fox_group_read_byid_v1";
     private const string PROC_GETALLGROUPS = "fox_group_read_all_v1";
@@ -17,10 +17,10 @@ public class GroupRepository : IRepository
 	private const string PROC_DELFROMGROUP = "fox_group_deluser_v1";
 	private const string PROC_GETUSERS = "fox_group_read_users_v1";
 
-	public GroupRepository(DBConnection dbConnection, StampRepository stampRepo)
+	public GroupService(DBConnection dbConnection, StampService stampService)
 	{
 		DB = dbConnection;
-		StampRepo = stampRepo;
+		StampService = stampService;
 	}
 
 	public IEnumerable<Group> GetAllGroups()
@@ -63,7 +63,7 @@ public class GroupRepository : IRepository
 
 	public void AddUserToGroup(Guid groupId, Guid[] userIds)
 	{
-		int stampId = StampRepo.CreateStamp();
+		int stampId = StampService.CreateStamp();
 		var parameters = new {
 			_stampId = stampId,
 			_groupId = groupId,

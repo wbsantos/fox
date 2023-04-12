@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using Microsoft.AspNetCore.Authorization;
 
@@ -33,20 +33,20 @@ public class GroupManagementModel : PageModel, INavBarItem
     [BindProperty]
     public string CreateNewGroupName { get; set; } = string.Empty;
 
-    private GroupRepository _groupRepo;
-    public GroupManagementModel(GroupRepository groupRepo)
+    private GroupService _groupService;
+    public GroupManagementModel(GroupService groupService)
     {
-        _groupRepo = groupRepo;
+        _groupService = groupService;
     }
 
     public void OnGet()
     {
-        Groups = _groupRepo.GetAllGroups();
+        Groups = _groupService.GetAllGroups();
     }
 
     public void OnPostEnterUpdateMode(Guid groupId)
     {
-        Groups = _groupRepo.GetAllGroups();
+        Groups = _groupService.GetAllGroups();
         AlterModeFor = groupId;
     }
 
@@ -55,7 +55,7 @@ public class GroupManagementModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("GROUP_DELETION_MANAGEMENT");
-            _groupRepo.DeleteGroup(groupId);
+            _groupService.DeleteGroup(groupId);
             SuccessOnPost = true;
         }
         catch (ArgumentException argEx)
@@ -63,7 +63,7 @@ public class GroupManagementModel : PageModel, INavBarItem
             Msg = argEx.Message;
             SuccessOnPost = false;
         }
-        Groups = _groupRepo.GetAllGroups();
+        Groups = _groupService.GetAllGroups();
     }
 
     public void OnPostUpdateGroup(Guid groupId)
@@ -71,7 +71,7 @@ public class GroupManagementModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("GROUP_UPDATE_MANAGEMENT");
-            _groupRepo.UpdateGroup(new Group()
+            _groupService.UpdateGroup(new Group()
             {
                 Id = groupId,
                 Name = AlterModeNewGroupName
@@ -84,7 +84,7 @@ public class GroupManagementModel : PageModel, INavBarItem
             Msg = argEx.Message;
             SuccessOnPost = false;
         }
-        Groups = _groupRepo.GetAllGroups();
+        Groups = _groupService.GetAllGroups();
     }
 
     public IActionResult OnPostCreateGroup()
@@ -92,7 +92,7 @@ public class GroupManagementModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("GROUP_CREATION_MANAGEMENT");
-            _groupRepo.CreateGroup(new Group()
+            _groupService.CreateGroup(new Group()
             {
                 Name = CreateNewGroupName
             });
@@ -105,13 +105,13 @@ public class GroupManagementModel : PageModel, INavBarItem
             Msg = argEx.Message;
             SuccessOnPost = false;
         }
-        Groups = _groupRepo.GetAllGroups();
+        Groups = _groupService.GetAllGroups();
         return Page();
     }
 
     public void OnPostCancelUpdate()
     {
         AlterModeFor = null;
-        Groups = _groupRepo.GetAllGroups();
+        Groups = _groupService.GetAllGroups();
     }
 }

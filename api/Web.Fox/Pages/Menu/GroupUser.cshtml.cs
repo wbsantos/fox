@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
 using Microsoft.AspNetCore.Authorization;
@@ -28,18 +28,18 @@ public class GroupUserModel : PageModel
     public IEnumerable<FoxUser> UsersInGroup { get; set; } = Array.Empty<FoxUser>();
     public IEnumerable<FoxUser> UsersNotInGroup { get; set; } = Array.Empty<FoxUser>();
 
-    private UserRepository _userRepo;
-    private GroupRepository _groupRepo;
-    public GroupUserModel(GroupRepository groupRepo, UserRepository userRepo)
+    private UserService _userService;
+    private GroupService _groupService;
+    public GroupUserModel(GroupService groupService, UserService userService)
     {
-        _groupRepo = groupRepo;
-        _userRepo = userRepo;
+        _groupService = groupService;
+        _userService = userService;
     }
 
     private void FillUsersList()
     {
-        UsersInGroup = _groupRepo.GetUsersFromGroup(GroupId).OrderBy(u => u.Name);
-        UsersNotInGroup = _userRepo.GetAllUsers()
+        UsersInGroup = _groupService.GetUsersFromGroup(GroupId).OrderBy(u => u.Name);
+        UsersNotInGroup = _userService.GetAllUsers()
                                    .Where(u => !UsersInGroup.Any(ug => ug.Id == u.Id))
                                    .OrderBy(u => u.Name);
     }
@@ -56,7 +56,7 @@ public class GroupUserModel : PageModel
         try
         {
             HttpContext.HasPermission("GROUP_MANAGEMENT_ADDUSER");
-            _groupRepo.AddUserToGroup(GroupId, new Guid[] { userId });
+            _groupService.AddUserToGroup(GroupId, new Guid[] { userId });
         }
         catch(Exception argEx)
         {
@@ -70,7 +70,7 @@ public class GroupUserModel : PageModel
         try
         {
             HttpContext.HasPermission("GROUP_MANAGEMENT_DELUSER");
-            _groupRepo.DelUserFromGroup(GroupId, new Guid[] { userId });
+            _groupService.DelUserFromGroup(GroupId, new Guid[] { userId });
         }
         catch (Exception argEx)
         {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
 using Microsoft.AspNetCore.Authorization;
@@ -32,15 +32,15 @@ public class SystemPermissionModel : PageModel
     public IEnumerable<string> PermissionsGiven { get; set; } = Array.Empty<string>();
     public IEnumerable<string> PermissionsDenied { get; set; } = Array.Empty<string>();
 
-    private PermissionRepository _permissionRepo;
-    public SystemPermissionModel(PermissionRepository permissionRepo)
+    private PermissionService _permissionService;
+    public SystemPermissionModel(PermissionService permissionService)
     {
-        _permissionRepo = permissionRepo;
+        _permissionService = permissionService;
     }
 
     private void FillPermissionsList()
     {
-        PermissionsGiven = _permissionRepo.GetPermissions(HolderId).OrderBy(p => p);
+        PermissionsGiven = _permissionService.GetPermissions(HolderId).OrderBy(p => p);
         PermissionsDenied = Web.Fox.AppBuilder.Auth.GetEndPointsPolicies()
                                                    .Where(pol => !PermissionsGiven.Any(pg => pg == pol))
                                                    .OrderBy(p => p);
@@ -59,7 +59,7 @@ public class SystemPermissionModel : PageModel
         try
         {
             HttpContext.HasPermission("SYSTEM_PERMISSION_ADDITION");
-            _permissionRepo.AddPermission(HolderId, permission);
+            _permissionService.AddPermission(HolderId, permission);
         }
         catch(Exception argEx)
         {
@@ -73,7 +73,7 @@ public class SystemPermissionModel : PageModel
         try
         {
             HttpContext.HasPermission("SYSTEM_PERMISSION_REMOVAL");
-            _permissionRepo.DeletePermission(HolderId, permission);
+            _permissionService.DeletePermission(HolderId, permission);
         }
         catch (Exception argEx)
         {

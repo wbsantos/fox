@@ -1,7 +1,7 @@
 ﻿using System;
-using Fox.Dox.Repository;
+using Fox.Dox.Service;
 using API.Fox.EndPoint;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 
 namespace API.Fox.EndPoint.DocumentManagement;
 
@@ -10,9 +10,9 @@ public class DocumentDelete : IEndPoint
     public string PermissionClaim => "DOCUMENT_DELETION";
     public string UrlPattern => "/document";
     public EndPointVerb Verb => EndPointVerb.DELETE;
-    public Delegate Method => (Guid documentId, DocumentRepository docRepo) =>
+    public Delegate Method => (Guid documentId, DocumentService docService) =>
     {        
-        if (docRepo.DeleteDocument(documentId))
+        if (docService.DeleteDocument(documentId))
             return Results.Ok();
         else
             return Results.Unauthorized();

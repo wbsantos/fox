@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Fox.Settings;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +18,7 @@ namespace Web.Fox.Pages;
 [AllowAnonymous]
 public class LoginModel : PageModel
 {
-    private UserRepository _userRepo;
+    private UserService _userService;
 
     [BindProperty(Name = "ReturnUrl", SupportsGet = true)]
     public string ReturnUrl { get; set; } = string.Empty;
@@ -28,9 +28,9 @@ public class LoginModel : PageModel
     public string UserPassword { get; set; } = string.Empty;
     public string Msg { get; set; } = string.Empty;
 
-    public LoginModel(UserRepository userRepo)
+    public LoginModel(UserService userService)
     {
-        _userRepo = userRepo;
+        _userService = userService;
     }
 
     public void OnGet()
@@ -39,14 +39,14 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPost()
     { 
-        if (!_userRepo.ValidateUserPassword(UserLogin, UserPassword))
+        if (!_userService.ValidateUserPassword(UserLogin, UserPassword))
             return InvalidCredentials();
 
-        FoxUser? userData = _userRepo.GetUser(UserLogin);
+        FoxUser? userData = _userService.GetUser(UserLogin);
         if (userData == null)
             return InvalidCredentials();
 
-        IEnumerable<string> permissions = _userRepo.GetSystemPermissions(userData.Id);
+        IEnumerable<string> permissions = _userService.GetSystemPermissions(userData.Id);
         IEnumerable<Claim> permissionsClaims = permissions.Select(permissionKey => new Claim("SystemPermission", permissionKey));
 
         await HttpContext.SignInAsync(

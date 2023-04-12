@@ -2,16 +2,16 @@
 using API.Fox.Settings;
 using DB.Fox;
 
-namespace Fox.Access.Repository;
+namespace Fox.Access.Service;
 
-public class StampRepository : IRepository
+public class StampService : IService
 {
     private Model.LoggedUser User { get; set; }
     private DBConnection DB { get; set; }
     private AppInfo AppInfo { get; set; }
     private const string PROC_CREATESTAMP = "fox_stamp_create_v1";
     
-    public StampRepository(DBConnection dbConnection, AppInfo appInfo, Model.LoggedUser user)
+    public StampService(DBConnection dbConnection, AppInfo appInfo, Model.LoggedUser user)
     {
         DB = dbConnection;
         AppInfo = appInfo;

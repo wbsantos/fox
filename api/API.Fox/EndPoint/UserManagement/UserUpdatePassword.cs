@@ -1,7 +1,7 @@
 ﻿using System;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 
 namespace API.Fox.EndPoint.UserManagement;
 
@@ -10,9 +10,9 @@ public class UserUpdatePassword : IEndPoint
     public string PermissionClaim => "USER_UPDATE_MANAGEMENT";
     public string UrlPattern => "/management/user/password";
     public EndPointVerb Verb => EndPointVerb.PUT;
-    public Delegate Method => (UserUpdatePasswordData user, UserRepository userRepo) =>
+    public Delegate Method => (UserUpdatePasswordData user, UserService userService) =>
     {
-        userRepo.UpdatePassword(user.Id, user.Password);
+        userService.UpdatePassword(user.Id, user.Password);
         return Results.Ok();
     };
 }

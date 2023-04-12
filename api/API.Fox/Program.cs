@@ -8,7 +8,7 @@ builder.Services.AddHttpContextAccessor();
 var (corpInfo, appInfo, security) = builder.AddAppConfig();
 builder.AddAppSwagger(corpInfo, appInfo);
 builder.AddAppAuth(security);
-builder.AddAppRepositories(security, appInfo);
+builder.AddAppInjections(security, appInfo);
 
 var app = builder.Build();
 app.MapAppEndPoints();

@@ -2,16 +2,16 @@
 using System.Xml.Linq;
 using DB.Fox;
 using Fox.Access.Model;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Dox.Model;
 
-namespace Fox.Dox.Repository;
+namespace Fox.Dox.Service;
 
-public class DocumentRepository : IRepository
+public class DocumentService : IService
 {
 	private LoggedUser LoggedUser { get; set; }
-    private UserRepository UserRepo { get; set; }
-    private StampRepository StampRepo { get; set; }
+    private UserService UserService { get; set; }
+    private StampService StampService { get; set; }
 	private DBConnection DB { get; set; }
 	private const string PROC_CREATEDOC = "fox_document_create_v1";
     private const string PROC_DELETEDOC = "fox_document_delete_v1";
@@ -27,19 +27,19 @@ public class DocumentRepository : IRepository
     private const string PROC_READ_ALL = "fox_document_read_information_all_v1";
     private const string PROC_UPDATE = "fox_document_update_v1";
 
-    public DocumentRepository(DBConnection dbConnection, LoggedUser loggedUser, StampRepository stampRepo, UserRepository userRepo)
+    public DocumentService(DBConnection dbConnection, LoggedUser loggedUser, StampService stampService, UserService userService)
 	{
 		DB = dbConnection;
 		LoggedUser = loggedUser;
-        StampRepo = stampRepo;
-        UserRepo = userRepo;
+        StampService = stampService;
+        UserService = userService;
 	}
 
     public Document CreateDocument(Document document)
     {
         CheckDocumentFields(document);
 
-        int stampId = StampRepo.CreateStamp();
+        int stampId = StampService.CreateStamp();
 
         var parameters = new
         {
@@ -70,7 +70,7 @@ public class DocumentRepository : IRepository
             return;
         var parameters = new {
             _documentId = documentId,
-            _items = metadata.Select(m => new DBCustomTypes.MetadataDictionary() {
+            _items = metadata.Select(m => new Fox.Dox.Repository.DBCustomTypes.MetadataDictionary() {
                                          Key = m.Key,
                                             Value = m.Value })
                              .ToArray()
@@ -97,7 +97,7 @@ public class DocumentRepository : IRepository
         string permissionToManage = DocumentPermission.Manage.ToString().ToUpper();
         bool hasPermission = permissions.Any(p => p.ToUpper() == permissionToTest || p.ToUpper() == permissionToManage);
 
-        hasPermission = hasPermission || UserRepo.IsAdmin(LoggedUser.Id);
+        hasPermission = hasPermission || UserService.IsAdmin(LoggedUser.Id);
         return hasPermission;
     }
 
@@ -146,7 +146,7 @@ public class DocumentRepository : IRepository
     {
         if (!HasPermission(documentId, DocumentPermission.Manage))
             throw new UnauthorizedAccessException();
-        int stampId = StampRepo.CreateStamp();
+        int stampId = StampService.CreateStamp();
         var parameters = new {
             _stampId = stampId,
             _documentId = documentId,

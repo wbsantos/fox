@@ -1,7 +1,7 @@
 ﻿using System;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 
 namespace API.Fox.EndPoint.GroupManagement;
 
@@ -10,9 +10,9 @@ public class GroupDelUser : IEndPoint
     public string PermissionClaim => "GROUP_MANAGEMENT_DELUSER";
     public string UrlPattern => "/management/group/user";
     public EndPointVerb Verb => EndPointVerb.PUT;
-    public Delegate Method => (GroupDeletionData groupDeletion, GroupRepository groupRepository) =>
+    public Delegate Method => (GroupDeletionData groupDeletion, GroupService groupService) =>
     {
-        groupRepository.DelUserFromGroup(groupDeletion.GroupId, groupDeletion.UserIds);
+        groupService.DelUserFromGroup(groupDeletion.GroupId, groupDeletion.UserIds);
         return Results.Ok();
     };
 }

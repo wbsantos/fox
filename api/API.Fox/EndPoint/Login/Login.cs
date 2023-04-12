@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Linq;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using API.Fox.EndPoint;
 
@@ -17,9 +17,9 @@ public class Login : IEndPointAnonymous
     public string UrlPattern => "/security/token";
     public EndPointVerb Verb => EndPointVerb.POST;
     
-    public Delegate Method => (LoginData user, UserRepository userRepo, Security security) =>
+    public Delegate Method => (LoginData user, UserService userService, Security security) =>
     {
-        if (!(user.GrandType == "password" && userRepo.ValidateUserPassword(user.UserName, user.Password)))
+        if (!(user.GrandType == "password" && userService.ValidateUserPassword(user.UserName, user.Password)))
             return Results.Unauthorized();
 
         var issuer = security.TokenIssuers.First();
@@ -28,10 +28,10 @@ public class Login : IEndPointAnonymous
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-        User? userData = userRepo.GetUser(user.UserName);
+        User? userData = userService.GetUser(user.UserName);
         if (userData == null)
             return Results.Unauthorized();
-        IEnumerable<string> permissions = userRepo.GetSystemPermissions(userData.Id);
+        IEnumerable<string> permissions = userService.GetSystemPermissions(userData.Id);
         IEnumerable<Claim> permissionsClaims = permissions.Select(permissionKey => new Claim("SystemPermission", permissionKey));
         
         var tokenDescriptor = new SecurityTokenDescriptor

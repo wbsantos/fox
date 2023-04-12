@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Fox.Dox.Repository;
+using Fox.Dox.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Fox.Dox.Model;
@@ -25,18 +25,18 @@ public class DownloadDocumentModel : PageModel, INavBarItem
     [BindProperty]
     public Guid? HoldersFor { get; set; }
     
-    private DocumentRepository _docRepo;
-    public DownloadDocumentModel(DocumentRepository documentRepo)
+    private DocumentService _docService;
+    public DownloadDocumentModel(DocumentService docService)
     {
-        _docRepo = documentRepo;
+        _docService = docService;
     }
 
     private void FillDocuments()
     {
-        Documents = _docRepo.GetAllDocuments();
+        Documents = _docService.GetAllDocuments();
         foreach (var item in Documents)
         {
-            DocumentInformation? docWithMetadata = _docRepo.GetDocumentInformation(item.Id);
+            DocumentInformation? docWithMetadata = _docService.GetDocumentInformation(item.Id);
             if(docWithMetadata != null)
                 item.Metadata = docWithMetadata.Metadata;
         }
@@ -53,7 +53,7 @@ public class DownloadDocumentModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("DOCUMENT_DELETION");
-            _docRepo.DeleteDocument(documentId);
+            _docService.DeleteDocument(documentId);
         }
         catch (ArgumentException argEx)
         {
@@ -67,7 +67,7 @@ public class DownloadDocumentModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("DOCUMENT_PERMISSION_READ");
-            DocumentHolders = _docRepo.GetPermissionByDocument(documentId);
+            DocumentHolders = _docService.GetPermissionByDocument(documentId);
             HoldersFor = documentId;
         }
         catch (Exception argEx)
@@ -82,7 +82,7 @@ public class DownloadDocumentModel : PageModel, INavBarItem
         try
         {
             HttpContext.HasPermission("DOCUMENT_READ");
-            var docFile = _docRepo.GetDocumentBinary(documentId);
+            var docFile = _docService.GetDocumentBinary(documentId);
             FillDocuments();
             return File(docFile, "application/octet-stream", documentName);
         }

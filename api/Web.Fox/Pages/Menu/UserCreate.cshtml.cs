@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
 using Microsoft.AspNetCore.Authorization;
@@ -14,10 +14,10 @@ namespace Web.Fox.Pages.Menu;
 [Authorize(Policy = "USER_CREATION_MANAGEMENT")]
 public class UserCreateModel : PageModel
 {
-    UserRepository _userRepo;
-    public UserCreateModel(UserRepository userRepo)
+    UserService _userService;
+    public UserCreateModel(UserService userService)
     {
-        _userRepo = userRepo;
+        _userService = userService;
     }
 
     public bool SuccessOnPost { get; set; } = true;
@@ -37,7 +37,7 @@ public class UserCreateModel : PageModel
         {
             if (UserData.Password != UserData.PasswordConfirmation)
                 throw new ArgumentException("The password confirmation do not match");
-            _userRepo.CreateUser(new FoxUser()
+            _userService.CreateUser(new FoxUser()
             {
                 Login = UserData.Login,
                 Name = UserData.Name,

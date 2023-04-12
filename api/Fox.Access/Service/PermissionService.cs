@@ -3,25 +3,25 @@ using System.Security;
 using DB.Fox;
 using Fox.Access.Model;
 
-namespace Fox.Access.Repository;
+namespace Fox.Access.Service;
 
-public class PermissionRepository : IRepository
+public class PermissionService : IService
 {
-    private StampRepository StampRepo { get; set; }
+    private StampService StampService { get; set; }
     private DBConnection DB { get; set; }
     private const string PROC_ADDPERMISSION = "fox_system_addpermission_v1";
     private const string PROC_DELPERMISSION = "fox_system_delpermission_v1";
     private const string PROC_GETPERMISSIONS = "fox_system_read_permission_v1";
 
-    public PermissionRepository(DBConnection dbConnection, StampRepository stampRepo)
+    public PermissionService(DBConnection dbConnection, StampService stampService)
     {
         DB = dbConnection;
-        StampRepo = stampRepo;
+        StampService = stampService;
     }
 
     public void AddPermission(Guid permissionHolderId, Guid permissionGiverId, string permission)
     {
-        int stampId = StampRepo.CreateStamp(permissionGiverId);
+        int stampId = StampService.CreateStamp(permissionGiverId);
         AddPermission(stampId, permissionHolderId, permission);
     }
 
@@ -29,7 +29,7 @@ public class PermissionRepository : IRepository
     {
         if (string.IsNullOrWhiteSpace(permission))
             throw new ArgumentNullException(nameof(permission));
-        int stampId = StampRepo.CreateStamp();
+        int stampId = StampService.CreateStamp();
         AddPermission(stampId, permissionHolderId, permission);
     }
 

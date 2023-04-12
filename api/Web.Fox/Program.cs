@@ -8,7 +8,7 @@ builder.Services.AddHttpContextAccessor();
 
 var (appInfo, security) = builder.AddAppConfig();
 builder.AddAppAuth(security);
-builder.AddAppRepositories(security, appInfo);
+builder.AddAppInjections(security, appInfo);
 var razorBuilder = builder.Services.AddRazorPages();
 if (builder.Environment.IsDevelopment())
     razorBuilder.AddRazorRuntimeCompilation();

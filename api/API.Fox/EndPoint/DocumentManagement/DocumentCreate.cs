@@ -1,8 +1,8 @@
 ﻿using System;
-using Fox.Dox.Repository;
+using Fox.Dox.Service;
 using Fox.Dox.Model;
 using API.Fox.EndPoint;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 
 namespace API.Fox.EndPoint.DocumentManagement;
 
@@ -11,7 +11,7 @@ public class DocumentCreate : IEndPoint
     public string PermissionClaim => "DOCUMENT_CREATION";
     public string UrlPattern => "/document";
     public EndPointVerb Verb => EndPointVerb.POST;
-    public Delegate Method => (DocumentCreateData document, DocumentRepository docRepo) =>
+    public Delegate Method => (DocumentCreateData document, DocumentService docService) =>
     {
         Document documentModel = new Document()
         {
@@ -20,7 +20,7 @@ public class DocumentCreate : IEndPoint
             FileBinary = Convert.FromBase64String(document.FileBase64),
         };
         documentModel.FileSizeBytes = documentModel.FileBinary.Length;
-        documentModel = docRepo.CreateDocument(documentModel);
+        documentModel = docService.CreateDocument(documentModel);
         return Results.Ok(new DocumentInformation()
         {
             Id = documentModel.Id,

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using Fox.Access.Model;
 using FoxUser = Fox.Access.Model.User;
 using Microsoft.AspNetCore.Authorization;
@@ -19,10 +19,10 @@ public class ProfileModel : PageModel, INavBarItem
     public LoggedUser LoggedUser { get; set; }
     public string MenuCategory => "SELF_MANAGEMENT";
 
-    UserRepository _userRepo;
-    public ProfileModel(UserRepository userRepo, LoggedUser loggedUser)
+    UserService _userService;
+    public ProfileModel(UserService userService, LoggedUser loggedUser)
     {
-        _userRepo = userRepo;
+        _userService = userService;
         LoggedUser = loggedUser;
     }
 
@@ -34,7 +34,7 @@ public class ProfileModel : PageModel, INavBarItem
 
     public void OnGet()
     {
-        var currentUserInformation = _userRepo.GetUser(LoggedUser.Id);
+        var currentUserInformation = _userService.GetUser(LoggedUser.Id);
         if (currentUserInformation == null)
             return;
         UserData.Login = currentUserInformation.Login;
@@ -46,7 +46,7 @@ public class ProfileModel : PageModel, INavBarItem
     {
         try
         {
-            _userRepo.UpdateUser(new FoxUser()
+            _userService.UpdateUser(new FoxUser()
             {
                 Id = LoggedUser.Id,
                 Login = UserData.Login,
@@ -71,7 +71,7 @@ public class ProfileModel : PageModel, INavBarItem
             {
                 throw new ArgumentException("The password confirmation do not match");
             }
-            _userRepo.UpdatePassword(LoggedUser.Id, UserData.Password);
+            _userService.UpdatePassword(LoggedUser.Id, UserData.Password);
             MsgPassword = "Password changed!";
             SuccessOnPost = true;
         }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 using FoxUser = Fox.Access.Model.User;
 using FoxGroup = Fox.Access.Model.Group;
-using Fox.Dox.Repository;
+using Fox.Dox.Service;
 using Fox.Dox.Model;
 using Microsoft.AspNetCore.Authorization;
 using Fox.Access.Model;
@@ -35,25 +35,25 @@ public class DocumentPermissionModel : PageModel
     public IEnumerable<DocumentHolder> PermissionsGiven { get; set; } = Array.Empty<DocumentHolder>();
     public IEnumerable<DocumentHolder> PermissionsDenied { get; set; } = Array.Empty<DocumentHolder>();
 
-    private DocumentRepository _docRepo;
-    private GroupRepository _groupRepo;
-    private UserRepository _userRepo;
-    public DocumentPermissionModel(DocumentRepository documentRepo, GroupRepository groupRepo, UserRepository userRepo)
+    private DocumentService _docService;
+    private GroupService _groupService;
+    private UserService _userService;
+    public DocumentPermissionModel(DocumentService docService, GroupService groupService, UserService userService)
     {
-        _docRepo = documentRepo;
-        _groupRepo = groupRepo;
-        _userRepo = userRepo;
+        _docService = docService;
+        _groupService = groupService;
+        _userService = userService;
     }
 
     private void FillPermissionsList()
     {
-        PermissionsGiven = _docRepo.GetPermissionByDocument(DocumentId)
+        PermissionsGiven = _docService.GetPermissionByDocument(DocumentId)
                                    .Where(p => p.HolderType.ToLower() == HolderType.ToLower())
                                    .OrderBy(p => p.Permission)
                                    .ThenBy(p => p.HolderName);
         if (HolderType.ToLower() == "user")
         {
-            PermissionsDenied = _userRepo.GetAllUsers()
+            PermissionsDenied = _userService.GetAllUsers()
                                          .Select(user => new DocumentHolder()
                                          {
                                              HolderId = user.Id,
@@ -64,7 +64,7 @@ public class DocumentPermissionModel : PageModel
         }
         else
         {
-            PermissionsDenied = _groupRepo.GetAllGroups()
+            PermissionsDenied = _groupService.GetAllGroups()
                                           .Select(group => new DocumentHolder()
                                           {
                                               HolderId = group.Id,
@@ -89,7 +89,7 @@ public class DocumentPermissionModel : PageModel
         try
         {
             HttpContext.HasPermission("DOCUMENT_PERMISSION_ADDITION");
-            _docRepo.AddPermission(DocumentId, holderId, permission);
+            _docService.AddPermission(DocumentId, holderId, permission);
         }
         catch(Exception argEx)
         {
@@ -103,7 +103,7 @@ public class DocumentPermissionModel : PageModel
         try
         {
             HttpContext.HasPermission("DOCUMENT_PERMISSION_REMOVAL");
-            _docRepo.DelPermission(DocumentId, holderId, permission);
+            _docService.DelPermission(DocumentId, holderId, permission);
         }
         catch (Exception argEx)
         {

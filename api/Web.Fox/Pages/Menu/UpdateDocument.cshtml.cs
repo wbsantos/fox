@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
-using Fox.Dox.Repository;
+using Fox.Access.Service;
+using Fox.Dox.Service;
 using Fox.Access.Model;
 using Fox.Dox.Model;
 using FoxUser = Fox.Access.Model.User;
@@ -18,10 +18,10 @@ public class UpdateDocumentModel : PageModel
 {
     public LoggedUser LoggedUser { get; set; }
 
-    DocumentRepository _docRepo;
-    public UpdateDocumentModel(DocumentRepository documentRepo, LoggedUser loggedUser)
+    DocumentService _docService;
+    public UpdateDocumentModel(DocumentService docService, LoggedUser loggedUser)
     {
-        _docRepo = documentRepo;
+        _docService = docService;
         LoggedUser = loggedUser;
         DocumentInformation = new DocumentInformation();
     }
@@ -45,7 +45,7 @@ public class UpdateDocumentModel : PageModel
     {
         DocumentName = DocumentNameQuery;
         DocumentId = DocumentIdQuery;
-        DocumentInformation = _docRepo.GetDocumentInformation(DocumentId) ?? new DocumentInformation();
+        DocumentInformation = _docService.GetDocumentInformation(DocumentId) ?? new DocumentInformation();
     }
 
     public IActionResult OnPostUpdateDocument(List<MetadataModel> metadata)
@@ -61,10 +61,10 @@ public class UpdateDocumentModel : PageModel
             foreach (var item in metadata.Where(m => !string.IsNullOrWhiteSpace(m.Key)))
                 document.Metadata.Add(item.Key, item.Value);
 
-            _docRepo.UpdateDocument(document);
-            var currentDocument = _docRepo.GetDocumentInformation(DocumentId) ?? new DocumentInformation();
-            _docRepo.DeleteMetadata(DocumentId, currentDocument.Metadata.Keys.ToArray());
-            _docRepo.AddMetadata(DocumentId, document.Metadata);
+            _docService.UpdateDocument(document);
+            var currentDocument = _docService.GetDocumentInformation(DocumentId) ?? new DocumentInformation();
+            _docService.DeleteMetadata(DocumentId, currentDocument.Metadata.Keys.ToArray());
+            _docService.AddMetadata(DocumentId, document.Metadata);
 
             SuccessOnPost = true;
             MsgInformation = "Document updated!";

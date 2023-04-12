@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Fox.Access.Repository;
-using Fox.Dox.Repository;
+using Fox.Access.Service;
+using Fox.Dox.Service;
 using Fox.Access.Model;
 using Fox.Dox.Model;
 using FoxUser = Fox.Access.Model.User;
@@ -21,10 +21,10 @@ public class UploadDocumentModel : PageModel, INavBarItem
     public string MenuCategory => "DOCUMENT";
     public LoggedUser LoggedUser { get; set; }
 
-    DocumentRepository _docRepo;
-    public UploadDocumentModel(DocumentRepository documentRepo, LoggedUser loggedUser)
+    DocumentService _docService;
+    public UploadDocumentModel(DocumentService docService, LoggedUser loggedUser)
     {
-        _docRepo = documentRepo;
+        _docService = docService;
         LoggedUser = loggedUser;
     }
 
@@ -59,7 +59,7 @@ public class UploadDocumentModel : PageModel, INavBarItem
                 document.FileBinary = ms.ToArray();
             }
 
-            _docRepo.CreateDocument(document);
+            _docService.CreateDocument(document);
             SuccessOnPost = true;
             MsgInformation = "Document uploaded!";
             return RedirectToPage("DownloadDocument");

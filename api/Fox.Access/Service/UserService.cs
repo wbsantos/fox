@@ -4,10 +4,10 @@ using DB.Fox;
 using Fox.Access.Model;
 using Fox.Access.Hash;
 
-namespace Fox.Access.Repository;
-public class UserRepository : IRepository
+namespace Fox.Access.Service;
+public class UserService : IService
 {
-    private PermissionRepository PermissionRepo { get; set; }
+    private PermissionService PermissionService { get; set; }
 	private DBConnection DB { get; set; }
     private const string PROC_GETPERMISSIONS = "fox_user_read_permission_v1";
     private const string PROC_GETSECRET = "fox_user_read_secret_v1";
@@ -20,10 +20,10 @@ public class UserRepository : IRepository
     private const string PROC_DELETEUSER = "fox_user_delete_v1";
     private const string PROC_GETGROUPS = "fox_user_read_groups_v1";
 
-    public UserRepository(DBConnection dbConnection, PermissionRepository permissionRepository)
+    public UserService(DBConnection dbConnection, PermissionService permissionService)
 	{
 		DB = dbConnection;
-        PermissionRepo = permissionRepository;
+        PermissionService = permissionService;
 	}
 
     public IEnumerable<User> GetAllUsers()
@@ -70,7 +70,7 @@ public class UserRepository : IRepository
     public User CreateAdminUser(User user, string password)
     {
         user = CreateUser(user, password, true);
-        PermissionRepo.AddPermission(user.Id, user.Id, "admin");
+        PermissionService.AddPermission(user.Id, user.Id, "admin");
         return user;
     }
 
@@ -102,9 +102,9 @@ public class UserRepository : IRepository
         user.Id = DB.ProcedureFirst<Guid>(PROC_CREATEUSER, parameters);
 
         if (selfCreation)
-            PermissionRepo.AddPermission(user.Id, user.Id, "USER_SELF_MANAGEMENT");
+            PermissionService.AddPermission(user.Id, user.Id, "USER_SELF_MANAGEMENT");
         else
-            PermissionRepo.AddPermission(user.Id, "USER_SELF_MANAGEMENT");
+            PermissionService.AddPermission(user.Id, "USER_SELF_MANAGEMENT");
         return user;
     }
 

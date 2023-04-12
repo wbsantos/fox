@@ -1,8 +1,8 @@
 ﻿using System;
-using Fox.Dox.Repository;
+using Fox.Dox.Service;
 using Fox.Dox.Model;
 using API.Fox.EndPoint;
-using Fox.Access.Repository;
+using Fox.Access.Service;
 
 namespace API.Fox.EndPoint.DocumentManagement;
 
@@ -11,16 +11,16 @@ public class DocumentUpdate : IEndPoint
     public string PermissionClaim => "DOCUMENT_UPDATE";
     public string UrlPattern => "/document";
     public EndPointVerb Verb => EndPointVerb.PUT;
-    public Delegate Method => (DocumentUpdateData document, DocumentRepository docRepo) =>
+    public Delegate Method => (DocumentUpdateData document, DocumentService docService) =>
     {
         DocumentInformation documentModel = new DocumentInformation()
         {
             Id = document.Id,
             Name = document.Name
         };
-        docRepo.UpdateDocument(documentModel);
-        docRepo.DeleteMetadata(document.Id, document.MetadataToRemove);
-        docRepo.AddMetadata(document.Id, document.MetadataToAdd);
+        docService.UpdateDocument(documentModel);
+        docService.DeleteMetadata(document.Id, document.MetadataToRemove);
+        docService.AddMetadata(document.Id, document.MetadataToAdd);
         return Results.Ok();
     };
 }
