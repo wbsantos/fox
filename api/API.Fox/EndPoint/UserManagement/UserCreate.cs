@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
 using Fox.Access.Service;
@@ -19,6 +20,7 @@ public class UserCreate : IEndPoint
 
 public class UserCreationData : User
 {
+    [Required]
     public string Password { get; set; } = string.Empty;
 }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
 using Fox.Access.Service;
@@ -17,4 +18,4 @@ public class UserUpdatePassword : IEndPoint
     };
 }
 
-record UserUpdatePasswordData(Guid Id, string Password);
+record UserUpdatePasswordData([Required] Guid Id, [Required] string Password);

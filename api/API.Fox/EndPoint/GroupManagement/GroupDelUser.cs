@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
 using Fox.Access.Service;
@@ -18,4 +19,4 @@ public class GroupDelUser : IEndPoint
 }
 
 
-record GroupDeletionData(Guid GroupId, Guid[] UserIds);
+record GroupDeletionData([Required] Guid GroupId, [Required] Guid[] UserIds);

@@ -9,6 +9,7 @@ using System.Linq;
 using Fox.Access.Service;
 using Fox.Access.Model;
 using API.Fox.EndPoint;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Fox.EndPoint.Login;
 
@@ -55,4 +56,4 @@ public class Login : IEndPointAnonymous
     }; 
 }
 
-record LoginData(string UserName, string Password, string GrandType);
+record LoginData([Required] string UserName, [Required] string Password, [Required] string GrandType);

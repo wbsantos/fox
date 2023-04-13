@@ -3,6 +3,7 @@ using Fox.Dox.Service;
 using Fox.Dox.Model;
 using API.Fox.EndPoint;
 using Fox.Access.Service;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Fox.EndPoint.DocumentManagement;
 
@@ -27,7 +28,9 @@ public class DocumentUpdate : IEndPoint
 
 public class DocumentUpdateData
 {
+    [Required]
     public Guid Id { get; set; }
+    [Required]
     public string Name { get; set; } = string.Empty;
     public Dictionary<string, string> MetadataToAdd { get; set; } = new Dictionary<string, string>();
     public string[] MetadataToRemove { get; set; } = Array.Empty<string>();

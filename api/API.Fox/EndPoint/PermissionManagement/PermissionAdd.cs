@@ -1,6 +1,7 @@
 ﻿using System;
 using Fox.Access.Service;
 using API.Fox.EndPoint;
+using System.ComponentModel.DataAnnotations;
 
 namespace API.Fox.EndPoint.PermissionManagement;
 
@@ -16,4 +17,4 @@ public class PermissionAdd : IEndPoint
     };
 }
 
-public record PermissionAddData(Guid PermissionHolderId, string Permission);
+public record PermissionAddData([Required] Guid PermissionHolderId, [Required] string Permission);

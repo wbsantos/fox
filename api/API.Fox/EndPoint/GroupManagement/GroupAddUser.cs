@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using API.Fox.EndPoint;
 using Fox.Access.Model;
 using Fox.Access.Service;
@@ -17,4 +18,4 @@ public class GroupAddUser : IEndPoint
     };
 }
 
-record GroupAdditionData(Guid GroupId, Guid[] UserIds);
+record GroupAdditionData([Required] Guid GroupId, [Required] Guid[] UserIds);
