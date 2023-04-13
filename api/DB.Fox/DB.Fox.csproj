@@ -93,10 +93,6 @@
       <Link>database\document\document_delete.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\database\document\document_read_binary.sql">
-      <Link>database\document\document_read_binary.sql</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="..\..\database\document\document_read_information_all.sql">
       <Link>database\document\document_read_information_all.sql</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

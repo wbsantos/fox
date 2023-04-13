@@ -77,14 +77,14 @@ public class DownloadDocumentModel : PageModel, INavBarItem
         FillDocuments();
     }
 
-    public IActionResult OnPostDownload(Guid documentId, string documentName)
+    public async Task<IActionResult> OnPostDownloadAsync(Guid documentId, string documentName)
     {
         try
         {
             HttpContext.HasPermission("DOCUMENT_READ");
-            var docFile = _docService.GetDocumentBinary(documentId);
+            var file = await _docService.GetDocumentBinaryAsync(documentId);
             FillDocuments();
-            return File(docFile, "application/octet-stream", documentName);
+            return File(file, "application/octet-stream", documentName);
         }
         catch (ArgumentException argEx)
         {

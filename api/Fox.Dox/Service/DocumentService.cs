@@ -5,6 +5,7 @@ using Fox.Access.Model;
 using Fox.Access.Service;
 using Fox.Dox.Model;
 using Fox.Dox.Repository;
+using Fox.Dox.Storage;
 
 namespace Fox.Dox.Service;
 
@@ -14,24 +15,39 @@ public class DocumentService : IService
     private UserService UserService { get; set; }
     private StampService StampService { get; set; }
 	private DocumentRepository DocumentRepository { get; set; }
+    private IFileStorage FileStorage { get; set; }
 
-    public DocumentService(DocumentRepository documentRepository, LoggedUser loggedUser, StampService stampService, UserService userService)
+    public DocumentService(DocumentRepository documentRepository,
+                           LoggedUser loggedUser,
+                           StampService stampService,
+                           UserService userService,
+                           IFileStorage fileStorage)
 	{
         DocumentRepository = documentRepository;
 		LoggedUser = loggedUser;
         StampService = stampService;
         UserService = userService;
+        FileStorage = fileStorage;
 	}
 
-    public Document CreateDocument(Document document)
+    public async Task<DocumentInformation> CreateDocumentAsync(DocumentInformation document, Stream fileToStore)
     {
-        CheckDocumentFields(document);
+        CheckDocumentFields(document, fileToStore);
+
+        document.FileSizeBytes = fileToStore.Length;
         int stampId = StampService.CreateStamp();
         document = DocumentRepository.CreateDocument(document, stampId);
+        await FileStorage.UploadAsync(document.Id, fileToStore);
 
         AddMetadata(document.Id, document.Metadata);
         AddPermission(document.Id, LoggedUser.Id, DocumentPermission.Manage);
-        return document;
+        return new DocumentInformation()
+        {
+            Id = document.Id,
+            Name = document.Name,
+            FileSizeBytes = document.FileSizeBytes,
+            Metadata = document.Metadata
+        };
     }
 
     public bool DeleteDocument(Guid id)
@@ -39,6 +55,7 @@ public class DocumentService : IService
         if (!HasPermission(id, DocumentPermission.Manage))
             return false;
         DocumentRepository.DeleteDocument(id);
+        FileStorage.DeleteFile(id);
         return true;
     }
 
@@ -91,11 +108,14 @@ public class DocumentService : IService
         return DocumentRepository.GetDocumentInformation(id);
     }
 
-    public byte[] GetDocumentBinary(Guid id)
+    public async Task<Stream> GetDocumentBinaryAsync(Guid id)
     {
         if (!HasPermission(id, DocumentPermission.Download))
             throw new UnauthorizedAccessException();
-        return DocumentRepository.GetDocumentBinary(id);
+
+        MemoryStream memory = new MemoryStream();
+        await FileStorage.DownloadAsync(id, memory);
+        return memory;
     }
 
     public void AddPermission(Guid documentId, Guid holderId, DocumentPermission permission)
@@ -126,12 +146,12 @@ public class DocumentService : IService
         DocumentRepository.UpdateDocument(document);
     }
 
-    private void CheckDocumentFields(Document document)
+    private void CheckDocumentFields(DocumentInformation document, Stream fileToCreate)
     {
         if (string.IsNullOrWhiteSpace(document.Name))
-            throw new ArgumentNullException(nameof(Document.Name));
-        if (document.FileBinary.Length == 0)
-            throw new ArgumentNullException(nameof(Document.FileBinary));
+            throw new ArgumentNullException(nameof(DocumentInformation.Name));
+        if (fileToCreate.Length == 0)
+            throw new ArgumentNullException(nameof(fileToCreate));
     }
 }
 

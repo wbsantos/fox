@@ -11,23 +11,19 @@ public class DocumentCreate : IEndPoint
     public string PermissionClaim => "DOCUMENT_CREATION";
     public string UrlPattern => "/document";
     public EndPointVerb Verb => EndPointVerb.POST;
-    public Delegate Method => (DocumentCreateData document, DocumentService docService) =>
+    public Delegate Method => async (DocumentCreateData document, DocumentService docService) =>
     {
-        Document documentModel = new Document()
+        DocumentInformation documentModel = new DocumentInformation()
         {
             Name = document.Name,
-            Metadata = document.Metadata,
-            FileBinary = Convert.FromBase64String(document.FileBase64),
+            Metadata = document.Metadata
         };
-        documentModel.FileSizeBytes = documentModel.FileBinary.Length;
-        documentModel = docService.CreateDocument(documentModel);
-        return Results.Ok(new DocumentInformation()
+
+        using (var fileToCreate = new MemoryStream(Convert.FromBase64String(document.FileBase64)))
         {
-            Id = documentModel.Id,
-            Name = documentModel.Name,
-            FileSizeBytes = documentModel.FileSizeBytes,
-            Metadata = documentModel.Metadata
-        });
+            var documentCreated = await docService.CreateDocumentAsync(documentModel, fileToCreate);
+            return Results.Ok(documentCreated);
+        }
     };
 }
 

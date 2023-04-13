@@ -85,31 +85,34 @@ internal static class Auth
 
     public static void CreateAdminUser(this WebApplication app)
     {
-        var userService = app.Services.GetService<UserService>();
-        var security = app.Services.GetService<Security>();
-
-        if (userService == null || security == null)
-            return;
-
-        User? user = userService.GetUser(security.AdminUserLogin);
-        if (user == null) //user doesn't exist
+        using (var serviceScope = app.Services.CreateScope())
         {
-            user = new User()
-            {
-                Login = security.AdminUserLogin,
-                Name = security.AdminUserName,
-                Email = security.AdminUserEmail
-            };
+            var userService = serviceScope.ServiceProvider.GetService<UserService>();
+            var security = serviceScope.ServiceProvider.GetService<Security>();
 
-            try
+            if (userService == null || security == null)
+                return;
+
+            User? user = userService.GetUser(security.AdminUserLogin);
+            if (user == null) //user doesn't exist
             {
-                user = userService.CreateAdminUser(user, security.AdminUserPassword);
-            }
-            catch
-            {
-                user = userService.GetUser(security.AdminUserLogin);
-                if (user == null)
-                    throw;
+                user = new User()
+                {
+                    Login = security.AdminUserLogin,
+                    Name = security.AdminUserName,
+                    Email = security.AdminUserEmail
+                };
+
+                try
+                {
+                    user = userService.CreateAdminUser(user, security.AdminUserPassword);
+                }
+                catch
+                {
+                    user = userService.GetUser(security.AdminUserLogin);
+                    if (user == null)
+                        throw;
+                }
             }
         }
     }

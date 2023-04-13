@@ -83,8 +83,7 @@ create table if not exists document
 	id uuid default gen_random_uuid() not null,
 	stamp_id int not null,
 	name varchar(255),
-	file_binary bytea not null,
-	file_size_bytes int,
+	file_size_bytes bigint,
 
 	constraint pk_document primary key(id),
 	constraint fk_document_to_stamp foreign key (stamp_id) references stamp(id)	

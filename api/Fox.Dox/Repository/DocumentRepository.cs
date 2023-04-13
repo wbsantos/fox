@@ -29,14 +29,13 @@ public class DocumentRepository : IRepository
 		DB = dbConnection;
 	}
 
-    public Document CreateDocument(Document document, int stampId)
+    public DocumentInformation CreateDocument(DocumentInformation document, int stampId)
     {
         var parameters = new
         {
             _stampId = stampId,
-            _fileBinary = document.FileBinary,
             _fileName = document.Name,
-            _sizeBytes = document.FileBinary.Length
+            _sizeBytes = document.FileSizeBytes
         };
 
         document.Id = DB.ProcedureFirst<Guid>(PROC_CREATEDOC, parameters);
@@ -139,14 +138,6 @@ public class DocumentRepository : IRepository
     {
         var parameters = new { _id = document.Id, _name = document.Name };
         DB.ProcedureExecute(PROC_UPDATE, parameters);
-    }
-
-    private void CheckDocumentFields(Document document)
-    {
-        if (string.IsNullOrWhiteSpace(document.Name))
-            throw new ArgumentNullException(nameof(Document.Name));
-        if (document.FileBinary.Length == 0)
-            throw new ArgumentNullException(nameof(Document.FileBinary));
     }
 }
 

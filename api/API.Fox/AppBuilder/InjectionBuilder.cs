@@ -6,6 +6,7 @@ using DB.Fox;
 using Fox.Access.Service;
 using Fox.Access.Model;
 using Microsoft.Extensions.DependencyInjection;
+using Fox.Dox.Storage;
 
 namespace API.Fox.AppBuilder;
 
@@ -27,6 +28,11 @@ internal static class InjectionBuilder
         {
             builder.Services.AddTransient(implementation);
         }
+
+        FileStorageSettings fileStorageSettings = new();
+        builder.Configuration.GetSection("FileStorage").Bind(fileStorageSettings);
+        builder.Services.AddSingleton<FileStorageSettings>(fileStorageSettings);
+        builder.Services.AddTransient<IFileStorage, FileStorage>();
 
         return builder;
     }

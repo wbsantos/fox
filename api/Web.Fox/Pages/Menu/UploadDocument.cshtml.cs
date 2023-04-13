@@ -38,14 +38,14 @@ public class UploadDocumentModel : PageModel, INavBarItem
         
     }
 
-    public IActionResult OnPostUploadDocument(List<MetadataModel> metadata)
+    public async Task<IActionResult> OnPostUploadDocumentAsync(List<MetadataModel> metadata)
     {
         try
         {
             if (FileBinary == null)
                 throw new ArgumentException("No file was selected");
 
-            var document = new Document()
+            var document = new DocumentInformation()
             {
                 Name = FileBinary.FileName,
                 Metadata = new Dictionary<string, string>()
@@ -56,10 +56,9 @@ public class UploadDocumentModel : PageModel, INavBarItem
             using (var ms = new MemoryStream())
             {
                 FileBinary.CopyTo(ms);
-                document.FileBinary = ms.ToArray();
+                await _docService.CreateDocumentAsync(document, ms);
             }
 
-            _docService.CreateDocument(document);
             SuccessOnPost = true;
             MsgInformation = "Document uploaded!";
             return RedirectToPage("DownloadDocument");

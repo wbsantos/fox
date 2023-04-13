@@ -37,7 +37,8 @@ public class E2EGroupManagementTest : IClassFixture<FoxApplicationFactory<Progra
         var usersInGroup = await AddUsersInGroup(token, groupId);
         await DeleteUserFromGroup(token, groupId, usersInGroup);
         var userTest = new E2EUserManagementTest(_factory);
-        usersInGroup.ToList().ForEach(async ug => await userTest.DeleteUser(token, ug));
+        foreach(var ug in usersInGroup)
+            await userTest.DeleteUser(token, ug);
 
         await DeleteGroup(token, groupId);
         await GetGroup(token, groupId, false);

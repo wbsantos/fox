@@ -2,7 +2,7 @@ create or replace function fox_document_read_information_v1(_document_id uuid)
 returns table (
 	id uuid,
 	name varchar(255),
-	file_size_bytes int
+	file_size_bytes bigint
 )
 language plpgsql as
 $$

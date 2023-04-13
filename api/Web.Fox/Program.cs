@@ -14,6 +14,7 @@ if (builder.Environment.IsDevelopment())
     razorBuilder.AddRazorRuntimeCompilation();
 
 var app = builder.Build();
+app.CreateAdminUser();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

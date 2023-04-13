@@ -81,7 +81,13 @@ public class UserService : IService
             PermissionService.AddPermission(user.Id, user.Id, "USER_SELF_MANAGEMENT");
         else
             PermissionService.AddPermission(user.Id, "USER_SELF_MANAGEMENT");
-        return user;
+        return new User()
+        {
+            Id = user.Id,
+            Login = user.Login,
+            Email = user.Email,
+            Name = user.Name
+        };
     }
 
     public void UpdateUser(User user)
